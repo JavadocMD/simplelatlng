@@ -22,7 +22,24 @@ package simplelatlng.util;
  * @author Tyler Coles
  */
 public enum LengthUnit {
-	MILE(0.6213712), KILOMETER(1.0);
+	/**
+	 * Miles, using the scale factor 0.6213712 miles per kilometer.
+	 */
+	MILE(0.6213712),
+	/**
+	 * Nautical miles, using the scale factor 0.5399568 nautical miles per kilometer.
+	 */
+	NAUTICAL_MILE(0.5399568),
+	/**
+	 * Rods, using the scale factor 0.0050292 rods to the kilometer.
+	 * Because your car gets forty rods to the hogshead and that's 
+	 * they way you likes it.
+	 */
+	ROD(0.0050292),
+	/**
+	 * Kilometers, the primary unit.
+	 */
+	KILOMETER(1.0);
 
 	/**
 	 * The primary length unit. All scale factors are relative
