@@ -1,6 +1,7 @@
 syntax: regexp
-^target$
-^bin$
+^dist/.*$
+^bin/.*$
+^work/.*$
 ^\.classpath$
 ^\.project$
 ^\.settings$
