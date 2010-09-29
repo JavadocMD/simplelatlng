@@ -1,4 +1,4 @@
-<project name="simplelatlng" default="distribute-all" basedir=".">
+<project name="simplelatlng" default="full-dist" basedir=".">
 	
 	<!-- Project Properties -->
 	<property name="version"        value="0.0.1" />
@@ -6,8 +6,6 @@
 	<property name="java.dir"       value="${basedir}/src/main/java" />
 	<property name="resource.dir"   value="${basedir}/src/main/resources" />
 	<property name="test.dir"		value="${basedir}/src/main/test" />
-	<property name="lib.dir"        value="${basedir}/lib" />
-	<property name="lib.test.dir"   value="${lib.dir}/test" />
 	<property name="dist.dir"       value="${basedir}/dist" />
 	<property name="doc.dir"        value="${dist.dir}/doc" />
 	<property name="work.dir"		value="${basedir}/work" />
@@ -15,13 +13,15 @@
 	<property name="test.work.dir"	value="${work.dir}/test" />
 	<property name="junit.work.dir" value="${work.dir}/junit-summary" />
 	
+	<property file="${basedir}/build.properties" />
+	
 	<!-- Project Classpaths -->
 	<path id="project-path">
 		<pathelement path="${jar.work.dir}" />
 	</path>
 	
 	<path id="test-compile-path">
-		<fileset dir="${lib.test.dir}">
+		<fileset dir="${junit.path}">
 			<include name="*.jar" />
 		</fileset>
 		<path refid="project-path" />
@@ -57,7 +57,7 @@
 		</javac>
 	</target>
 	
-	<target name="test" depends="compile-tests">
+	<target name="test" depends="clean, prepare, compile, compile-tests">
 		<junit printsummary="yes" haltonfailure="yes">
 			<classpath refid="test-compile-path" />
 			<classpath refid="test-run-path" />
@@ -118,16 +118,17 @@
 			manifest="${doc.dir}/META-INF/MANIFEST.MF" />
 	</target>
 	
-	<target name="run-tests">
-		<antcall target="clean" />
-		<antcall target="prepare" />
-		<antcall target="test" />
-	</target>
-	
-	<target name="distribute-all">
+	<target name="full-dist-no-test">
 		<antcall target="clean" />
 		<antcall target="prepare" />
 		<antcall target="compile" />
+		<antcall target="dist" />
+		<antcall target="javadoc" />
+		<antcall target="dist-doc" />
+	</target>
+	
+	<target name="full-dist">
+		<antcall target="test" />
 		<antcall target="dist" />
 		<antcall target="javadoc" />
 		<antcall target="dist-doc" />
