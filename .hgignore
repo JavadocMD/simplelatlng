@@ -1,0 +1,7 @@
+syntax: regexp
+^target$
+^bin$
+^\.classpath$
+^\.project$
+^\.settings$
+Thumbs.db$
