@@ -15,6 +15,10 @@
 	
 	<property file="${basedir}/build.properties" />
 	
+	<tstamp>
+		<format property="today" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
+	
 	<!-- Project Classpaths -->
 	<path id="project-path">
 		<pathelement path="${jar.work.dir}" />
@@ -71,12 +75,12 @@
 	</target>
 	
 	<target name="dist">
-		<tstamp>
-			<format property="today" pattern="yyyy-MM-dd HH:mm:ss" />
-		</tstamp>
-		
 		<copy todir="${jar.work.dir}/META-INF">
-			<fileset dir="${resource.dir}" />
+			<fileset dir="${basedir}">
+				<include name="LICENSE.txt" />
+				<include name="NOTICE.txt" />
+				<include name="README.txt" />
+			</fileset>
 		</copy>
 		
 		<manifest file="${jar.work.dir}/META-INF/MANIFEST.MF">
@@ -95,14 +99,15 @@
 	</target>
 	
 	<target name="dist-doc">
-		<tstamp>
-			<format property="today" pattern="yyyy-MM-dd HH:mm:ss" />
-		</tstamp>
-		
 		<copy todir="${doc.dir}/META-INF">
-			<fileset dir="${resource.dir}" />
+			<fileset dir="${basedir}">
+				<include name="LICENSE.txt" />
+				<include name="NOTICE.txt" />
+				<include name="README.txt" />
+			</fileset>
 		</copy>
 		
+		<!-- Include source -->
 		<copy todir="${doc.dir}">
 			<fileset dir="${java.dir}" />
 		</copy>
