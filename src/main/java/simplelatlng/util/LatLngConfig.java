@@ -72,4 +72,8 @@ public class LatLngConfig {
 			EARTH_RADIUS[toUnit.ordinal()] = unit.convertTo(toUnit, radius);
 		}
 	}
+	
+	
+	private LatLngConfig() {
+	}
 }
