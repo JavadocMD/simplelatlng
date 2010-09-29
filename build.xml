@@ -1,8 +1,7 @@
 <project name="simplelatlng" default="distribute-all" basedir=".">
 	
 	<!-- Project Properties -->
-	<property name="version"           value="0.1" />
-	<property name="build-number.file" value="build.num" />
+	<property name="version"        value="0.1" />
 	
 	<property name="java.dir"       value="${basedir}/src/main/java" />
 	<property name="resource.dir"   value="${basedir}/src/main/resources" />
@@ -73,21 +72,17 @@
 	</target>
 	
 	<target name="dist">
-		<buildnumber file="${resource.dir}/${build-number.file}" />
-		
 		<tstamp>
 			<format property="today" pattern="yyyy-MM-dd HH:mm:ss" />
 		</tstamp>
 		
 		<copy todir="${jar.work.dir}/META-INF">
-			<fileset dir="${resource.dir}">
-				<exclude name="${build-number.file}" />
-			</fileset>
+			<fileset dir="${resource.dir}" />
 		</copy>
 		
 		<manifest file="${jar.work.dir}/META-INF/MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}" />
-			<attribute name="Implementation-Version" value="${version}-b${build.number}" />
+			<attribute name="Implementation-Version" value="${version}" />
 			<attribute name="Built-Date" value="${today}" />
 		</manifest>
 		
