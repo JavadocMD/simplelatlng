@@ -1,7 +1,7 @@
 <project name="simplelatlng" default="distribute-all" basedir=".">
 	
 	<!-- Project Properties -->
-	<property name="version"        value="0.1" />
+	<property name="version"        value="0.0.1" />
 	
 	<property name="java.dir"       value="${basedir}/src/main/java" />
 	<property name="resource.dir"   value="${basedir}/src/main/resources" />
@@ -48,8 +48,7 @@
 	</target>
 	
 	<target name="compile">
-		<javac srcdir="${java.dir}" destdir="${jar.work.dir}">
-		</javac>
+		<javac srcdir="${java.dir}" destdir="${jar.work.dir}" />
 	</target>
 	
 	<target name="compile-tests" depends="compile">
@@ -88,8 +87,35 @@
 		
 		<jar destfile="${dist.dir}/${ant.project.name}-${version}.jar" 
 			basedir="${jar.work.dir}" 
-			manifest="${jar.work.dir}/META-INF/MANIFEST.MF">
-		</jar>
+			manifest="${jar.work.dir}/META-INF/MANIFEST.MF" />
+	</target>
+	
+	<target name="javadoc">
+		<javadoc sourcepath="${java.dir}" destdir="${doc.dir}" />
+	</target>
+	
+	<target name="dist-doc">
+		<tstamp>
+			<format property="today" pattern="yyyy-MM-dd HH:mm:ss" />
+		</tstamp>
+		
+		<copy todir="${doc.dir}/META-INF">
+			<fileset dir="${resource.dir}" />
+		</copy>
+		
+		<copy todir="${doc.dir}">
+			<fileset dir="${java.dir}" />
+		</copy>
+		
+		<manifest file="${doc.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Implementation-Version" value="${version}" />
+			<attribute name="Built-Date" value="${today}" />
+		</manifest>
+		
+		<jar destfile="${dist.dir}/${ant.project.name}-${version}-doc.jar"
+			basedir="${doc.dir}"
+			manifest="${doc.dir}/META-INF/MANIFEST.MF" />
 	</target>
 	
 	<target name="run-tests">
@@ -103,5 +129,7 @@
 		<antcall target="prepare" />
 		<antcall target="compile" />
 		<antcall target="dist" />
+		<antcall target="javadoc" />
+		<antcall target="dist-doc" />
 	</target>
 </project>
