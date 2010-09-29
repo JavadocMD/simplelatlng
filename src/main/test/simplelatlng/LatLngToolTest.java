@@ -8,13 +8,14 @@ import static simplelatlng.LatLngTool.normalizeLongitude;
 
 import org.junit.Test;
 
+import simplelatlng.util.LatLngConfig;
 import simplelatlng.util.LengthUnit;
 
 public class LatLngToolTest {
 
 	@Test
 	public void testNormalizeLatitude() {
-		double t = TestConfig.DOUBLE_TOLERANCE;
+		double t = LatLngConfig.DEGREE_TOLERANCE;
 		assertEquals(0, normalizeLatitude(0), t);
 		assertEquals(-0.0, normalizeLatitude(-0.0), t);
 		assertEquals(5.3, normalizeLatitude(5.3), t);
@@ -29,11 +30,12 @@ public class LatLngToolTest {
 		assertEquals(-90, normalizeLatitude(-5738), t);
 		assertEquals(90, normalizeLatitude(Double.POSITIVE_INFINITY), t);
 		assertEquals(-90, normalizeLatitude(Double.NEGATIVE_INFINITY), t);
+		assertEquals(Double.NaN, normalizeLatitude(Double.NaN), t);
 	}
 
 	@Test
 	public void testNormalizeLongitude() {
-		double t = TestConfig.DOUBLE_TOLERANCE;
+		double t = LatLngConfig.DEGREE_TOLERANCE;
 		assertEquals(0, normalizeLongitude(0), t);
 		assertEquals(-0.0, normalizeLongitude(-0.0), t);
 		assertEquals(5.3, normalizeLongitude(5.3), t);
@@ -54,16 +56,34 @@ public class LatLngToolTest {
 		assertEquals(146.516091, normalizeLongitude(-213.483909), t);
 		assertEquals(-170, normalizeLongitude(1990), t);
 		assertEquals(170, normalizeLongitude(-1990), t);
-		assertEquals(Double.NaN, LatLngTool
-				.normalizeLongitude(Double.POSITIVE_INFINITY), t);
-		assertEquals(Double.NaN, LatLngTool
-				.normalizeLongitude(Double.NEGATIVE_INFINITY), t);
+		assertEquals(Double.NaN, normalizeLongitude(Double.POSITIVE_INFINITY), t);
+		assertEquals(Double.NaN, normalizeLongitude(Double.NEGATIVE_INFINITY), t);
+		assertEquals(Double.NaN, normalizeLongitude(Double.NaN), t);
 	}
 
 	@Test
 	public void testDistance() {
-		assertEquals(5133.7, distance(new LatLng(-67.5, 45), new LatLng(0, 0),
-				LengthUnit.MILE), 0.1);
+		double t = 0.01; // Distance tolerance is less picky.
+		assertEquals(0, distance(new LatLng(0, 0), new LatLng(0, 0),
+				LengthUnit.MILE), t);
+		assertEquals(0, distance(new LatLng(36.79283, -127.36629), new LatLng(
+				36.79283, -127.36629), LengthUnit.MILE), t);
+
+		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(0, 1),
+				LengthUnit.KILOMETER), t);
+		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(1, 0),
+				LengthUnit.KILOMETER), t);
+		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(0, -1),
+				LengthUnit.KILOMETER), t);
+		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(-1, 0),
+				LengthUnit.KILOMETER), t);
+		assertEquals(111.19, distance(new LatLng(-1, 0), new LatLng(0, 0),
+				LengthUnit.KILOMETER), t);
+
+		assertEquals(5133.65, distance(new LatLng(-67.5, 45), new LatLng(0, 0),
+				LengthUnit.MILE), t);
+		assertEquals(8261.81, distance(new LatLng(-67.5, 45), new LatLng(0, 0),
+				LengthUnit.KILOMETER), t);
 	}
 
 	@Test
@@ -74,8 +94,13 @@ public class LatLngToolTest {
 		distRadTest(45, new LatLng(0, 0), new LatLng(45, 0));
 	}
 
+	@Test
+	public void distanceToDegrees() {
+		// TODO: unit tests for this.
+	}
+
 	private static void distRadTest(double expected, LatLng point1, LatLng point2) {
 		assertEquals(expected, Math.toDegrees(distanceInRadians(point1, point2)),
-				TestConfig.DOUBLE_TOLERANCE);
+				.00001);
 	}
 }

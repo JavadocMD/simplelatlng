@@ -4,7 +4,8 @@ import simplelatlng.LatLng;
 
 /**
  * An interface specifying a region in the latitude/longitude space.
- * Implementations will decide upon the shape of this region.
+ * Implementations will decide upon the shape of this region. LatLngWindow
+ * implementations are inclusive of their edges.
  * 
  * @author Tyler Coles
  */
@@ -12,6 +13,7 @@ public interface LatLngWindow {
 
 	/**
 	 * Returns the center point of the window.
+	 * 
 	 * @return the window's center point.
 	 */
 	public LatLng getCenter();

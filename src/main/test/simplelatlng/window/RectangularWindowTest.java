@@ -4,19 +4,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
-
 import org.junit.Test;
 
 import simplelatlng.LatLng;
-import simplelatlng.TestConfig;
+import simplelatlng.util.LatLngConfig;
 
 public class RectangularWindowTest {
 
+	// TODO: test constructors for exceptions.
+
 	@Test
 	public void testRectangularWindow1() {
-		double t = TestConfig.DOUBLE_TOLERANCE;
-		RectangularWindow w = new RectangularWindow(new LatLng(45, -67.5), 45, 30);
+		double t = LatLngConfig.DEGREE_TOLERANCE;
+		RectangularWindow w = new RectangularWindow(new LatLng(45, -67.5), 30, 45);
 		assertEquals(-90, w.getMinLongitude(), t);
 		assertEquals(-45, w.getMaxLongitude(), t);
 		assertEquals(30, w.getMinLatitude(), t);
@@ -26,7 +26,7 @@ public class RectangularWindowTest {
 
 	@Test
 	public void testRectangularWindow2() {
-		double t = TestConfig.DOUBLE_TOLERANCE;
+		double t = LatLngConfig.DEGREE_TOLERANCE;
 		RectangularWindow w = new RectangularWindow(new LatLng(-90, 0), 30, 30);
 		assertEquals(-15, w.getMinLongitude(), t);
 		assertEquals(15, w.getMaxLongitude(), t);
@@ -37,19 +37,19 @@ public class RectangularWindowTest {
 
 	@Test
 	public void testRectangularWindow3() {
-		double t = TestConfig.DOUBLE_TOLERANCE;
+		double t = LatLngConfig.DEGREE_TOLERANCE;
 		RectangularWindow w = new RectangularWindow(new LatLng(0, 180), 40, 20);
-		assertEquals(-160, w.getMinLongitude(), t);
-		assertEquals(160, w.getMaxLongitude(), t);
-		assertEquals(-10, w.getMinLatitude(), t);
-		assertEquals(10, w.getMaxLatitude(), t);
+		assertEquals(-170, w.getMinLongitude(), t);
+		assertEquals(170, w.getMaxLongitude(), t);
+		assertEquals(-20, w.getMinLatitude(), t);
+		assertEquals(20, w.getMaxLatitude(), t);
 		assertTrue(w.crosses180thMeridian());
 	}
 
 	@Test
 	public void testContains() {
-		RectangularWindow w1 = new RectangularWindow(new LatLng(45, -67.5), 45,
-				30);
+		RectangularWindow w1 = new RectangularWindow(new LatLng(45, -67.5), 30,
+				45);
 		assertTrue(w1.contains(new LatLng(45, -67.5)));
 		assertTrue(w1.contains(new LatLng(30, -67.5)));
 		assertTrue(w1.contains(new LatLng(60, -67.5)));
@@ -70,29 +70,36 @@ public class RectangularWindowTest {
 
 		RectangularWindow w2 = new RectangularWindow(new LatLng(-90, 0), 30, 30);
 		assertTrue(w2.contains(new LatLng(-90, 0)));
+		assertTrue(w2.contains(new LatLng(-90, 10)));
+		assertTrue(w2.contains(new LatLng(-90, 180)));
+		assertTrue(w2.contains(new LatLng(-90, -240)));
+		assertTrue(w2.contains(new LatLng(-90, 7293.1298383)));
+		assertTrue(w2.contains(new LatLng(-1000, 0)));
+		assertTrue(w2.contains(new LatLng(-1000, 360)));
+		assertTrue(w2.contains(new LatLng(-75, 0)));
+		assertTrue(w2.contains(new LatLng(-75, 15)));
+		assertTrue(w2.contains(new LatLng(-75, -15)));
+		assertFalse(w2.contains(new LatLng(-74.999999, 0)));
+		assertFalse(w2.contains(new LatLng(-74.999999, 14.999999)));
 
-		RectangularWindow w3 = new RectangularWindow(new LatLng(0, 180), 40, 20);
-		assertTrue(w3.contains(new LatLng(0, 180)));
-	}
-	
-	public static void main(String[] args) {
-		RectangularWindow rw = new RectangularWindow(new LatLng(0,0), 10, 10);
-		LatLng point = new LatLng(0,0);
-		Date d1 = new Date();
-		for (int i = 0; i < 1000000; i++) {
-			rw.contains(point);
+		RectangularWindow w3 = new RectangularWindow(new LatLng(0, 180), 40, 360);
+		for (double lng = 0; lng < 720; lng += 20) {
+			assertTrue(w3.contains(new LatLng(0, lng)));
+			assertTrue(w3.contains(new LatLng(5, lng)));
+			assertTrue(w3.contains(new LatLng(10, lng)));
+			assertTrue(w3.contains(new LatLng(20, lng)));
+			assertTrue(w3.contains(new LatLng(-5, lng)));
+			assertTrue(w3.contains(new LatLng(-10, lng)));
+			assertTrue(w3.contains(new LatLng(-15, lng)));
+			assertTrue(w3.contains(new LatLng(-20, lng)));
+			assertFalse(w3.contains(new LatLng(-20.1, lng)));
+			assertFalse(w3.contains(new LatLng(20.1, lng)));
+			assertFalse(w3.contains(new LatLng(40, lng)));
+			assertFalse(w3.contains(new LatLng(-40, lng)));
+			assertFalse(w3.contains(new LatLng(-90, lng)));
+			assertFalse(w3.contains(new LatLng(90, lng)));
 		}
-		Date d2 = new Date();
-		
-		System.out.println(d2.getTime() - d1.getTime());
-		
-		CircularWindow cw = new CircularWindow(new LatLng(0,0), 10);
-		d1 = new Date();
-		for (int i = 0; i < 1000000; i++) {
-			cw.contains(point);
-		}
-		d2 = new Date();
-		
-		System.out.println(d2.getTime() - d1.getTime());
+
 	}
+
 }

@@ -4,7 +4,16 @@ import simplelatlng.util.LatLngConfig;
 import simplelatlng.util.LengthUnit;
 
 /**
- * Primary calculations and tools.
+ * <p>Primary calculations and tools.</p> 
+ * 
+ * <p>Note: distance calculations are done using the Haversine formula
+ * which uses a spherical approximation of the Earth. Values are known
+ * to differ from reality by as much as 0.3% so if complete accuracy is very 
+ * important to you, you should be using a different library. Furthermore, 
+ * by default this library uses the mean radius of the Earth (6371.009 km). 
+ * If your calculations are localized to a particular region of the Earth, 
+ * there may be values to use for this radius which will yield more accurate 
+ * results. To set the radius used by this library, see {@link simplelatlng.util.LatLngConfig}.</p> 
  * 
  * @author Tyler Coles
  */
@@ -42,6 +51,22 @@ public class LatLngTool {
 	}
 
 	/**
+	 * Find the internal angle which corresponds to an arc of a given distance. 
+	 * 
+	 * @param distance the length of the arc.
+	 * @param unit the unit of measure for the arc length.
+	 * @return the corresponding internal angle in degrees.
+	 */
+	public static double distanceToDegrees(double distance, LengthUnit unit) {
+		/* If R is the radius of our circle, d is the arc's length, 
+		 * and phi is the angle we're interested in (in radians):
+		 *   
+		 * d = (phi*R)
+		 */
+		return Math.toDegrees(distance / LatLngConfig.getEarthRadius(unit));
+	}
+
+	/**
 	 * Clamp latitude to +/- 90 degrees.
 	 * 
 	 * @param latitude in degrees.
@@ -49,7 +74,7 @@ public class LatLngTool {
 	 * the input is NaN.
 	 */
 	public static double normalizeLatitude(double latitude) {
-		if (latitude == Double.NaN)
+		if (Double.isNaN(latitude))
 			return Double.NaN;
 		if (latitude > 0) {
 			return Math.min(latitude, 90.0);
@@ -66,8 +91,7 @@ public class LatLngTool {
 	 * is NaN, positive infinity, or negative infinity.
 	 */
 	public static double normalizeLongitude(double longitude) {
-		if (longitude == Double.NaN || longitude == Double.POSITIVE_INFINITY
-				|| longitude == Double.NEGATIVE_INFINITY)
+		if (Double.isNaN(longitude) || Double.isInfinite(longitude))
 			return Double.NaN;
 		double longitudeResult = longitude % 360;
 		if (longitudeResult > 180) {

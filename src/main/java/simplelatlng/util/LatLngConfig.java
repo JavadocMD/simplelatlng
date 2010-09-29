@@ -1,6 +1,5 @@
 package simplelatlng.util;
 
-
 /**
  * Configuration parameters for latitude and longitude calculations.
  * 
@@ -8,16 +7,50 @@ package simplelatlng.util;
  */
 public class LatLngConfig {
 
+	/**
+	 * The tolerance (in degrees) by which two points can differ and still be considered the same.
+	 * A tolerance of 1e-6 yields a precision of nearly 1 centimeter, which is far more accurate
+	 * than any of the distance calculations can claim to be.
+	 */
+	public static final double DEGREE_TOLERANCE = 0.000001;
+
+	/**
+	 * The Earth's mean radius in kilometers. Used as the default radius 
+	 * for calculations.
+	 */
+	public static final double EARTH_MEAN_RADIUS_KILOMETERS = 6371.009;
+
+	/**
+	 * Earth's radius stored in all of the support unit types.
+	 * This is pre-calculated to eliminate unit conversions
+	 * when doing many distance calculations.
+	 */
 	private static double[] EARTH_RADIUS;
 
 	static {
-		setEarthRadius(6371.009, LengthUnit.KILOMETER);
+		// Initialize earth radius using the mean radius.
+		setEarthRadius(EARTH_MEAN_RADIUS_KILOMETERS, LengthUnit.KILOMETER);
 	}
 
+	/**
+	 * Retrieve the Earth's spherical approximation radius in the desired unit.
+	 * 
+	 * @param unit the desired unit for the result.
+	 * @return the Earth's radius in the desired unit.
+	 */
 	public static double getEarthRadius(LengthUnit unit) {
 		return EARTH_RADIUS[unit.ordinal()];
 	}
 
+	/**
+	 * Sets the Earth's radius for the purposes of all future 
+	 * calculations in this library. If there is a radius that 
+	 * is more accurate for the locations you most care about,
+	 * you can configure that here.
+	 * 
+	 * @param radius the Earth's spherical approximation radius.
+	 * @param unit the unit the radius is given in.
+	 */
 	synchronized public static void setEarthRadius(double radius, LengthUnit unit) {
 		EARTH_RADIUS = new double[LengthUnit.values().length];
 		for (LengthUnit toUnit : LengthUnit.values()) {
