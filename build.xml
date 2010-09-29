@@ -95,7 +95,7 @@
 	</target>
 	
 	<target name="javadoc">
-		<javadoc sourcepath="${java.dir}" destdir="${doc.dir}" />
+		<javadoc sourcepath="${java.dir}" destdir="${doc.dir}" overview="${java.dir}/overview.html" />
 	</target>
 	
 	<target name="dist-doc">

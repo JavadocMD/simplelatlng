@@ -119,4 +119,7 @@ public class LatLngTool {
 		return longitudeResult;
 	}
 
+	private LatLngTool() {
+
+	}
 }
