@@ -41,4 +41,13 @@ public interface LatLngWindow {
 	 * or if we cannot determine because the point is ill-defined.
 	 */
 	public boolean contains(LatLng point);
+
+	/*
+	 * TODO: this method and FilterHelper class (make LatLngWindow abstract).
+	 * @param <T>
+	 * @param collection
+	 * @param helper
+	 * @return
+	 */
+	//public <T> Collection<T> filter(Collection<T> collection, FilterHelper<T> helper);
 }
