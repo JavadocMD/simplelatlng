@@ -107,14 +107,17 @@ public class RectangularWindow implements LatLngWindow {
 
 	@Override
 	public boolean contains(LatLng point) {
-		if (point.getLatitude() > maxLatitude
-				|| point.getLatitude() < minLatitude) {
+
+		boolean onLatLine = LatLng.degreesEqual(point.getLatitude(), maxLatitude)
+				|| LatLng.degreesEqual(point.getLatitude(), minLatitude);
+		if (!onLatLine
+				&& (point.getLatitude() > maxLatitude || point.getLatitude() < minLatitude)) {
 			return false;
 		}
 
-		if ((maxLatitude == 90 && point.getLatitude() == 90)
-				|| (minLatitude == -90 && point.getLatitude() == -90)) {
-			// At the poles, all longitudes intersect.
+		if (LatLng.degreesEqual(point.getLongitude(), maxLongitude)
+				|| LatLng.degreesEqual(point.getLongitude(), minLongitude)) {
+			// Passed latitude test, lies on a longitude line.
 			return true;
 		}
 

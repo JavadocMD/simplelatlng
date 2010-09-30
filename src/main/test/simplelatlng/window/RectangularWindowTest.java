@@ -94,8 +94,8 @@ public class RectangularWindowTest {
 		assertTrue(w2.contains(new LatLng(-75, 0)));
 		assertTrue(w2.contains(new LatLng(-75, 15)));
 		assertTrue(w2.contains(new LatLng(-75, -15)));
-		assertFalse(w2.contains(new LatLng(-74.999999, 0)));
-		assertFalse(w2.contains(new LatLng(-74.999999, 14.999999)));
+		assertFalse(w2.contains(new LatLng(-74.999998, 0)));
+		assertFalse(w2.contains(new LatLng(-74.999998, 14.999998)));
 
 		RectangularWindow w3 = new RectangularWindow(new LatLng(0, 180), 40, 360);
 		for (double lng = 0; lng < 720; lng += 20) {

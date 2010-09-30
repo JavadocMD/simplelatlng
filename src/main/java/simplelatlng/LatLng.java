@@ -118,12 +118,12 @@ public class LatLng {
 	}
 
 	/**
-	 * Tests whether two degree measurements fall within the tolerance
+	 * Tests whether two angles fall within the tolerance
 	 * allowed in {@link simplelatlng.util.LatLngConfig}. Ignores
 	 * NaN and infinite values, returning false in either case.
 	 * 
-	 * @param degree1 one degree measurement.
-	 * @param degree2 another degree measurement.
+	 * @param degree1 one degree angle.
+	 * @param degree2 another degree angle.
 	 * @return true if they should be considered equal, false otherwise.
 	 */
 	public static boolean degreesEqual(double degree1, double degree2) {
@@ -132,5 +132,22 @@ public class LatLng {
 		if (Double.isInfinite(degree1) || Double.isInfinite(degree2))
 			return false;
 		return Math.abs(degree2 - degree1) <= LatLngConfig.DEGREE_TOLERANCE;
+	}
+
+	/**
+	 * Tests whether two angles fall within the tolerance
+	 * allowed in {@link simplelatlng.util.LatLngConfig}. Ignores
+	 * NaN and infinite values, returning false in either case.
+	 * 
+	 * @param radian1 one radian angle.
+	 * @param radian2 another radian angle.
+	 * @return true if they should be considered equal, false otherwise.
+	 */
+	public static boolean radiansEqual(double radians1, double radians2) {
+		if (Double.isNaN(radians1) || Double.isNaN(radians2))
+			return false;
+		if (Double.isInfinite(radians1) || Double.isInfinite(radians2))
+			return false;
+		return Math.abs(radians2 - radians1) <= LatLngConfig.RADIAN_TOLERANCE;
 	}
 }
