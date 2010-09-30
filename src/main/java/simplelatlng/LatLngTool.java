@@ -66,19 +66,28 @@ public class LatLngTool {
 	}
 
 	/**
-	 * Find the internal angle which corresponds to an arc of a given distance. 
+	 * <p>Find an approximate internal angle which corresponds to an arc of a 
+	 * given distance. Note: values from this function are best used over small 
+	 * distances (maybe within a few hundred kilometers) local to a given point. 
+	 * Since arc per degree latitude is constant over the sphere while arc per 
+	 * degree longitude decreases as you travel towards the poles, this calculation 
+	 * averages the latitude/longitude angle that would correspond to the given arc.</p>
+	 * 
+	 * <p>This function is optionally used to create windows with a desired size.</p>
 	 * 
 	 * @param distance the length of the arc.
 	 * @param unit the unit of measure for the arc length.
 	 * @return the corresponding internal angle in degrees.
 	 */
-	public static double distanceToDegrees(double distance, LengthUnit unit) {
-		/* If R is the radius of our circle, d is the arc's length, 
-		 * and phi is the angle we're interested in (in radians):
-		 *   
-		 * d = (phi*R)
+	public static double distanceToDegrees(LatLng point, double distance,
+			LengthUnit unit) {
+		/* Approximate by averaging the angle needed for a latitudinal arc and
+		 * a longitudinal arc from the given point.
 		 */
-		return Math.toDegrees(distance / LatLngConfig.getEarthRadius(unit));
+		double latAngle = distance / LatLngConfig.getEarthRadius(unit);
+		double lngAngle = latAngle
+				/ Math.cos(Math.toRadians(point.getLongitude()));
+		return Math.toDegrees((lngAngle + latAngle) / 2.0);
 	}
 
 	/**

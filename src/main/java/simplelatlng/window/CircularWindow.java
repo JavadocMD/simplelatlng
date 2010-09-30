@@ -57,7 +57,8 @@ public class CircularWindow implements LatLngWindow {
 	 * @param unit the unit to use for the radius.
 	 */
 	public CircularWindow(LatLng center, double radius, LengthUnit unit) {
-
+		this.center = center;
+		this.radius = LatLngTool.distanceToDegrees(center, radius, unit);
 	}
 
 	@Override
