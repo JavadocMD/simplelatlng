@@ -23,16 +23,17 @@ package simplelatlng.util;
 public class LatLngConfig {
 
 	/**
-	 * The tolerance (in degrees) by which two points can differ and still be considered the same.
+	 * The tolerance (in degrees) by which two angles can differ and still be considered the same.
 	 * A tolerance of 1e-6 yields a precision of nearly 1 centimeter, which is far more accurate
 	 * than any of the distance calculations can claim to be.
 	 */
 	public static final double DEGREE_TOLERANCE = 0.000001;
 	/**
-	 * The tolerance (in radians) by which two points can differ and still be considered the same.
+	 * The tolerance (in radians) by which two angles can differ and still be considered the same.
 	 * Equivalent to DEGREE_TOLERANCE.
 	 */
-	public static final double RADIAN_TOLERANCE = Math.toRadians(DEGREE_TOLERANCE);
+	public static final double RADIAN_TOLERANCE = Math
+			.toRadians(DEGREE_TOLERANCE);
 
 	/**
 	 * The Earth's mean radius in kilometers. Used as the default radius 
@@ -77,8 +78,7 @@ public class LatLngConfig {
 			EARTH_RADIUS[toUnit.ordinal()] = unit.convertTo(toUnit, radius);
 		}
 	}
-	
-	
+
 	private LatLngConfig() {
 	}
 }
