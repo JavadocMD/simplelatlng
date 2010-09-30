@@ -23,8 +23,7 @@ import simplelatlng.util.LengthUnit;
 /**
  * <p>A circular window.</p>
  * 
- * <p>Warning: this class is not yet well-tested. I am very certain it 
- * will see poor behavior around the poles.</p>
+ * <p>Warning: this class is not yet well-tested.</p>
  * 
  * @author Tyler Coles
  */
@@ -38,19 +37,20 @@ public class CircularWindow implements LatLngWindow {
 	 * 
 	 * @param center the center point.
 	 * @param radiusInDegrees the radius of the circle given in 
-	 * latitude/longitude degrees. Since we are using a spherical
-	 * approximation of the Earth, one degree of latitude spans
-	 * the same surface distance as one degree of longitude.
+	 * degrees of angle required to create the circle. This angle is
+	 * measured from an axis that joins the center of the Earth
+	 * to our circle's center point on the surface.
 	 */
 	public CircularWindow(LatLng center, double radiusInDegrees) {
 		if (Double.isNaN(radiusInDegrees))
 			throw new IllegalArgumentException("Invalid radius given.");
 		this.center = center;
-		this.radius = Math.toRadians(Math.max(Math.abs(radiusInDegrees), 360.0));
+		this.radius = Math.toRadians(Math.min(Math.abs(radiusInDegrees), 360.0));
 	}
 
 	/**
-	 * Constructs a circular window.
+	 * Constructs a circular window that will contain all points
+	 * within the specified radius.
 	 * 
 	 * @param center the center point.
 	 * @param radius the radius of the circle given in length units.
@@ -58,12 +58,13 @@ public class CircularWindow implements LatLngWindow {
 	 */
 	public CircularWindow(LatLng center, double radius, LengthUnit unit) {
 		this.center = center;
-		this.radius = LatLngTool.distanceToDegrees(center, radius, unit);
+		this.radius = radius / LatLngConfig.getEarthRadius(unit);
 	}
 
 	@Override
 	public boolean contains(LatLng point) {
-		return LatLngTool.distanceInRadians(center, point) <= radius;
+		double difference = LatLngTool.distanceInRadians(center, point);
+		return LatLng.radiansEqual(difference, radius) || difference < radius;
 	}
 
 	@Override
