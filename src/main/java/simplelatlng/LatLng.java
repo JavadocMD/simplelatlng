@@ -15,6 +15,8 @@
  */
 package simplelatlng;
 
+import java.util.Random;
+
 import simplelatlng.util.LatLngConfig;
 
 /**
@@ -29,6 +31,24 @@ import simplelatlng.util.LatLngConfig;
  * @author Tyler Coles
  */
 public class LatLng {
+
+	/**
+	 * Creates a random latitude and longitude. (Not inclusive of (-90, 0))
+	 */
+	public static LatLng random() {
+		return random(new Random());
+	}
+
+	/**
+	 * Creates a random latitude and longitude. (Not inclusive of (-90, 0))
+	 * 
+	 * @param r the random number generator to use, if you want to be 
+	 * specific or are creating many LatLngs at once.
+	 */
+	public static LatLng random(Random r) {
+		return new LatLng((r.nextDouble() * -180.0) + 90.0,
+				(r.nextDouble() * -360.0) + 180.0);
+	}
 
 	private double latitude;
 	private double longitude;
