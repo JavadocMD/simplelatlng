@@ -30,7 +30,8 @@ import simplelatlng.util.LengthUnit;
 public class CircularWindow implements LatLngWindow {
 
 	private LatLng center;
-	private double radius; // Stored in radians.
+	private double radius;
+	private long radiusInternal;
 
 	/**
 	 * Constructs a circular window.
@@ -42,10 +43,8 @@ public class CircularWindow implements LatLngWindow {
 	 * to our circle's center point on the surface.
 	 */
 	public CircularWindow(LatLng center, double radiusInDegrees) {
-		if (Double.isNaN(radiusInDegrees))
-			throw new IllegalArgumentException("Invalid radius given.");
-		this.center = center;
-		this.radius = Math.toRadians(Math.min(Math.abs(radiusInDegrees), 360.0));
+		this.setCenter(center);
+		this.setRadius(radiusInDegrees);
 	}
 
 	/**
@@ -57,14 +56,14 @@ public class CircularWindow implements LatLngWindow {
 	 * @param unit the unit to use for the radius.
 	 */
 	public CircularWindow(LatLng center, double radius, LengthUnit unit) {
-		this.center = center;
-		this.radius = radius / LatLngConfig.getEarthRadius(unit);
+		this.setCenter(center);
+		this.setRadius(radius / LatLngConfig.getEarthRadius(unit));
 	}
 
 	@Override
 	public boolean contains(LatLng point) {
-		double difference = LatLngTool.distanceInRadians(center, point);
-		return LatLng.radiansEqual(difference, radius) || difference < radius;
+		return LatLng.doubleToLong(Math.toDegrees(LatLngTool.distanceInRadians(
+				center, point))) <= radiusInternal;
 	}
 
 	@Override
@@ -73,12 +72,23 @@ public class CircularWindow implements LatLngWindow {
 	}
 
 	/**
+	 * Sets the center of this window.
+	 * 
+	 * @param the center point; may not be null.
+	 */
+	public void setCenter(LatLng center) {
+		if (center == null)
+			throw new IllegalArgumentException("Window's center may not be null.");
+		this.center = center;
+	}
+
+	/**
 	 * Gets the radius of this window in degrees.
 	 * 
 	 * @return the radius in degrees.
 	 */
 	public double getRadius() {
-		return Math.toDegrees(radius);
+		return radius;
 	}
 
 	/**
@@ -89,5 +99,17 @@ public class CircularWindow implements LatLngWindow {
 	 */
 	public double getRadius(LengthUnit unit) {
 		return radius * LatLngConfig.getEarthRadius(unit);
+	}
+
+	/**
+	 * Sets the radius of this window.
+	 * 
+	 * @param radius radius in degrees.
+	 */
+	public void setRadius(double radius) {
+		if (Double.isNaN(radius))
+			throw new IllegalArgumentException("Invalid radius given.");
+		this.radius = Math.min(Math.abs(radius), 360.0);
+		this.radiusInternal = LatLng.doubleToLong(radius);
 	}
 }

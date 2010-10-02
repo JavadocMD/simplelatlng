@@ -103,16 +103,20 @@ public class LatLngTest {
 		assertTrue(degreesEqual(-123456789.123456, -123456789.123456));
 		assertTrue(degreesEqual(-123456789.1234560, -123456789.1234569));
 
-		assertFalse(degreesEqual(0, 1));
+		assertFalse(degreesEqual(0.0, 1.0));
 		assertFalse(degreesEqual(-123, 123));
-		assertFalse(degreesEqual(0.0, 0.2));
-		assertFalse(degreesEqual(0.0, 0.02));
-		assertFalse(degreesEqual(0.0, 0.002));
-		assertFalse(degreesEqual(0.0, 0.0002));
-		assertFalse(degreesEqual(0.0, 0.00002));
-		assertFalse(degreesEqual(0.0, 0.000002));
-		assertTrue(degreesEqual(0.0, 0.0000002));
+		assertFalse(degreesEqual(0.0, 0.1));
+		assertFalse(degreesEqual(0.0, 0.01));
+		assertFalse(degreesEqual(0.0, 0.001));
+		assertFalse(degreesEqual(0.0, 0.0001));
+		assertFalse(degreesEqual(0.0, 0.00001));
+		assertFalse(degreesEqual(0.0, 0.000001));
+		assertTrue(degreesEqual(0.0, 0.0000001));
 		assertTrue(degreesEqual(0.0, 0.000000999999));
+
+		assertFalse(degreesEqual(15, 15.000001));
+		assertFalse(degreesEqual(-15, -15.000001));
+		assertFalse(degreesEqual(-15, 15.000001));
 	}
 
 }

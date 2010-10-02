@@ -109,11 +109,6 @@ public class LatLngToolTest {
 		distRadTest(45, new LatLng(0, 0), new LatLng(45, 0));
 	}
 
-	@Test
-	public void distanceToDegrees() {
-		// TODO: unit tests for this.
-	}
-
 	private static void distRadTest(double expected, LatLng point1, LatLng point2) {
 		assertEquals(expected, Math.toDegrees(distanceInRadians(point1, point2)),
 				.00001);

@@ -64,7 +64,7 @@ public class CircularWindowTest {
 			assertTrue(w.contains(new LatLng(70, 90)));
 			assertTrue(w.contains(new LatLng(70, -90)));
 			assertTrue(w.contains(new LatLng(70, 180)));
-			assertFalse(w.contains(new LatLng(69.999998, 0)));
+			assertFalse(w.contains(new LatLng(69.999999, 0)));
 			assertFalse(w.contains(new LatLng(-90, 0)));
 			assertFalse(w.contains(new LatLng(0, 0)));
 		}

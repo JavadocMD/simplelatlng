@@ -17,8 +17,6 @@ package simplelatlng;
 
 import java.util.Random;
 
-import simplelatlng.util.LatLngConfig;
-
 /**
  * <p>A representation of a single point in latitude and longitude.
  * All data is handled in degrees and will be normalized if possible 
@@ -52,6 +50,8 @@ public class LatLng {
 
 	private double latitude;
 	private double longitude;
+	private long latitudeInternal;
+	private long longitudeInternal;
 
 	/**
 	 * Creates a LatLng point.
@@ -89,7 +89,7 @@ public class LatLng {
 	 */
 	public void setLatitudeLongitude(double latitude, double longitude) {
 		this.setLatitude(latitude);
-		if (degreesEqual(Math.abs(this.latitude), 90)) {
+		if (Math.abs(this.latitudeInternal) == 90000000L) {
 			// At the poles all longitudes intersect. Simplify for later comparison.
 			this.setLongitude(0);
 		} else {
@@ -105,6 +105,7 @@ public class LatLng {
 		if (Double.isNaN(lat))
 			throw new IllegalArgumentException("Invalid latitude given.");
 		this.latitude = lat;
+		this.latitudeInternal = doubleToLong(lat);
 	}
 
 	/**
@@ -115,6 +116,7 @@ public class LatLng {
 		if (Double.isNaN(lng))
 			throw new IllegalArgumentException("Invalid longitude given.");
 		this.longitude = lng;
+		this.longitudeInternal = doubleToLong(lng);
 	}
 
 	@Override
@@ -125,16 +127,11 @@ public class LatLng {
 			return false;
 
 		LatLng latlng = (LatLng) obj;
-		if (!degreesEqual(this.latitude, latlng.latitude)) {
+		if (this.latitudeInternal != latlng.latitudeInternal) {
 			return false;
 		}
 
-		if (degreesEqual(this.latitude, 90)) {
-			// Latitudes are both 90, longitude doesn't matter.
-			return true;
-		}
-
-		return degreesEqual(this.longitude, latlng.longitude);
+		return this.longitudeInternal == latlng.longitudeInternal;
 	}
 
 	/**
@@ -151,23 +148,18 @@ public class LatLng {
 			return false;
 		if (Double.isInfinite(degree1) || Double.isInfinite(degree2))
 			return false;
-		return Math.abs(degree2 - degree1) <= LatLngConfig.DEGREE_TOLERANCE;
+		return doubleToLong(degree1) == doubleToLong(degree2);
 	}
 
 	/**
-	 * Tests whether two angles fall within the tolerance
-	 * allowed in {@link simplelatlng.util.LatLngConfig}. Ignores
-	 * NaN and infinite values, returning false in either case.
+	 * Function used to convert an angle in degrees to its internal long representation.
+	 * Not very useful for the average user.
 	 * 
-	 * @param radian1 one radian angle.
-	 * @param radian2 another radian angle.
-	 * @return true if they should be considered equal, false otherwise.
+	 * @param value the value to convert.
+	 * @return the long value.
 	 */
-	public static boolean radiansEqual(double radians1, double radians2) {
-		if (Double.isNaN(radians1) || Double.isNaN(radians2))
-			return false;
-		if (Double.isInfinite(radians1) || Double.isInfinite(radians2))
-			return false;
-		return Math.abs(radians2 - radians1) <= LatLngConfig.RADIAN_TOLERANCE;
+	public static long doubleToLong(double value) {
+		return (long) (value * 1000000L);
 	}
+
 }
