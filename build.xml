@@ -1,7 +1,7 @@
 <project name="simplelatlng" default="full-dist" basedir=".">
 	
 	<!-- Project Properties -->
-	<property name="version"        value="0.0.1" />
+	<property name="version"        value="0.0.2" />
 	
 	<property name="java.dir"       value="${basedir}/src/main/java" />
 	<property name="resource.dir"   value="${basedir}/src/main/resources" />
@@ -75,6 +75,10 @@
 	</target>
 	
 	<target name="dist">
+		<copy todir="${jar.work.dir}">
+			<fileset dir="${java.dir}" />
+		</copy>
+		
 		<copy todir="${jar.work.dir}/META-INF">
 			<fileset dir="${basedir}">
 				<include name="LICENSE.txt" />
