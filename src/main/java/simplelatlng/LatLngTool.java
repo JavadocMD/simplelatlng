@@ -49,7 +49,7 @@ public class LatLngTool {
 
 	/**
 	 * <p>This "distance" function is mostly for internal use. Most users will simply
-	 * rely upon {@link distance(LatLng, LatLng, LengthUnit)}</p>
+	 * rely upon {@link #distance(LatLng, LatLng, LengthUnit)}</p>
 	 * 
 	 * <p>Yields the internal angle for an arc between two points on the surface of a sphere
 	 * in radians. This angle is in the plane of the great circle connecting the two points

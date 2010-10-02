@@ -74,7 +74,7 @@ public class CircularWindow implements LatLngWindow {
 	/**
 	 * Sets the center of this window.
 	 * 
-	 * @param the center point; may not be null.
+	 * @param center the center point; may not be null.
 	 */
 	public void setCenter(LatLng center) {
 		if (center == null)
