@@ -17,6 +17,8 @@ package simplelatlng;
 
 import java.util.Random;
 
+import simplelatlng.util.LatLngConfig;
+
 /**
  * <p>A representation of a single point in latitude and longitude.
  * All data is handled in degrees and will be normalized if possible 
@@ -46,6 +48,34 @@ public class LatLng {
 	public static LatLng random(Random r) {
 		return new LatLng((r.nextDouble() * -180.0) + 90.0,
 				(r.nextDouble() * -360.0) + 180.0);
+	}
+
+	/**
+	 * Tests whether two angles fall within the tolerance
+	 * allowed in {@link simplelatlng.util.LatLngConfig}. Ignores
+	 * NaN and infinite values, returning false in either case.
+	 * 
+	 * @param degree1 one degree angle.
+	 * @param degree2 another degree angle.
+	 * @return true if they should be considered equal, false otherwise.
+	 */
+	public static boolean degreesEqual(double degree1, double degree2) {
+		if (Double.isNaN(degree1) || Double.isNaN(degree2))
+			return false;
+		if (Double.isInfinite(degree1) || Double.isInfinite(degree2))
+			return false;
+		return doubleToLong(degree1) == doubleToLong(degree2);
+	}
+
+	/**
+	 * Function used to convert an angle in degrees to its internal long representation.
+	 * Not very useful for the average user.
+	 * 
+	 * @param value the value to convert.
+	 * @return the long value.
+	 */
+	public static long doubleToLong(double value) {
+		return (long) (value * 1000000L);
 	}
 
 	private double latitude;
@@ -134,32 +164,9 @@ public class LatLng {
 		return this.longitudeInternal == latlng.longitudeInternal;
 	}
 
-	/**
-	 * Tests whether two angles fall within the tolerance
-	 * allowed in {@link simplelatlng.util.LatLngConfig}. Ignores
-	 * NaN and infinite values, returning false in either case.
-	 * 
-	 * @param degree1 one degree angle.
-	 * @param degree2 another degree angle.
-	 * @return true if they should be considered equal, false otherwise.
-	 */
-	public static boolean degreesEqual(double degree1, double degree2) {
-		if (Double.isNaN(degree1) || Double.isNaN(degree2))
-			return false;
-		if (Double.isInfinite(degree1) || Double.isInfinite(degree2))
-			return false;
-		return doubleToLong(degree1) == doubleToLong(degree2);
+	@Override
+	public String toString() {
+		return "(" + LatLngConfig.DEGREE_FORMAT.format(this.latitude) + ","
+				+ LatLngConfig.DEGREE_FORMAT.format(this.longitude) + ")";
 	}
-
-	/**
-	 * Function used to convert an angle in degrees to its internal long representation.
-	 * Not very useful for the average user.
-	 * 
-	 * @param value the value to convert.
-	 * @return the long value.
-	 */
-	public static long doubleToLong(double value) {
-		return (long) (value * 1000000L);
-	}
-
 }

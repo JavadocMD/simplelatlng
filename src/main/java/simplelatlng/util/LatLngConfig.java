@@ -15,6 +15,9 @@
  */
 package simplelatlng.util;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 /**
  * Configuration parameters for latitude and longitude calculations.
  * 
@@ -28,6 +31,8 @@ public class LatLngConfig {
 	 * than any of the distance calculations can claim to be.
 	 */
 	public static final double DEGREE_TOLERANCE = 0.000001;
+	public static final NumberFormat DEGREE_FORMAT = new DecimalFormat(
+			"0.000000");
 
 	/**
 	 * The Earth's mean radius in kilometers. Used as the default radius 
