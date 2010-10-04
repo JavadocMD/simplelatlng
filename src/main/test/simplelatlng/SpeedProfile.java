@@ -17,7 +17,7 @@ import simplelatlng.window.RectangularWindow;
  */
 public class SpeedProfile {
 
-	private static final int NUMBER_OF_POINTS = 1000000;
+	private static final int NUMBER_OF_POINTS = 100000;
 
 	private static final NumberFormat integer = NumberFormat.getInstance();
 	private static final NumberFormat decimal = new DecimalFormat("0.00");
@@ -31,6 +31,7 @@ public class SpeedProfile {
 		p.profileDistance();
 		p.profileRectangularWindow();
 		p.profileCircularWindow();
+		p.profileGeohasher();
 	}
 
 	private LatLng[] points;
@@ -66,6 +67,26 @@ public class SpeedProfile {
 
 		System.out.printf("Tested equality in %s ms.\n", integer.format(end
 				.getTime()
+				- start.getTime()));
+	}
+
+	private void profileGeohasher() {
+		Date start = new Date();
+		for (int i = 0; i < points.length; i++) {
+			Geohasher.hash(points[i]);
+		}
+		Date end = new Date();
+
+		System.out.printf("Geohashed in %s ms.\n", integer.format(end.getTime()
+				- start.getTime()));
+
+		start = new Date();
+		for (int i = 0; i < points.length; i++) {
+			points[i].hashCode();
+		}
+		end = new Date();
+
+		System.out.printf("hashCode() in %s ms.\n", integer.format(end.getTime()
 				- start.getTime()));
 	}
 
