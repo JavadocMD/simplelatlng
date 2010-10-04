@@ -165,6 +165,13 @@ public class LatLng {
 	}
 
 	@Override
+	public int hashCode() {
+		String s = Long.toString(latitudeInternal) + "|"
+				+ Long.toString(longitudeInternal);
+		return s.hashCode();
+	}
+
+	@Override
 	public String toString() {
 		return "(" + LatLngConfig.DEGREE_FORMAT.format(this.latitude) + ","
 				+ LatLngConfig.DEGREE_FORMAT.format(this.longitude) + ")";
