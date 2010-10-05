@@ -35,8 +35,10 @@ import simplelatlng.LatLngTool;
  */
 public class RectangularWindow implements LatLngWindow {
 
-	// TODO: get width and height (in length units and degrees) methods 
+	// TODO: get width and height (in length units) methods 
 
+	private double latitudeDelta;
+	private double longitudeDelta;
 	private double minLatitude;
 	private double maxLatitude;
 	private double minLongitude;
@@ -76,6 +78,8 @@ public class RectangularWindow implements LatLngWindow {
 		this.setLngWindow(center.getLongitude(), dlng);
 
 		this.center = center;
+		this.latitudeDelta = dlat;
+		this.longitudeDelta = dlng;
 	}
 
 	/**
@@ -153,6 +157,14 @@ public class RectangularWindow implements LatLngWindow {
 	 */
 	public boolean crosses180thMeridian() {
 		return crosses180thMeridian;
+	}
+
+	public double getLatitudeDelta() {
+		return latitudeDelta;
+	}
+
+	public double getLongitudeDelta() {
+		return longitudeDelta;
 	}
 
 	public double getMinLatitude() {
