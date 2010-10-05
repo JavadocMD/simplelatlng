@@ -16,6 +16,8 @@
 package simplelatlng.window;
 
 import simplelatlng.LatLng;
+import simplelatlng.util.LatLngConfig;
+import simplelatlng.util.LengthUnit;
 
 /**
  * An interface specifying a region in the latitude/longitude space.
@@ -24,14 +26,43 @@ import simplelatlng.LatLng;
  * 
  * @author Tyler Coles
  */
-public interface LatLngWindow {
+public abstract class LatLngWindow {
+
+	/**
+	 * Converts a length measurement into the latitude that that length
+	 * spans. (This method can also be used for arcs measured along any great circle.)
+	 * 
+	 * @param length the length of the arc.
+	 * @param unit the units for <code>length</code>.
+	 * @return the degrees of equivalent latitude.
+	 */
+	public static double lengthToLatitudeDelta(double length, LengthUnit unit) {
+		return length / LatLngConfig.getEarthRadius(unit);
+	}
+
+	/**
+	 * Converts a length measurement into the longitude that that length 
+	 * spans at the given latitude. This method is required because the
+	 * length of an arc covering X-degrees longitude changes as latitude changes.
+	 * 
+	 * @param length the length of the arc.
+	 * @param unit the units for <code>length</code>.
+	 * @param latitude the latitude at which this result applies.
+	 * @return the degrees of equivalent longitude.
+	 */
+	public static double lengthToLongitudeDelta(double length, LengthUnit unit,
+			double latitude) {
+		return Math.toDegrees(length
+				/ (LatLngConfig.getEarthRadius(unit) * Math.cos(Math
+						.toRadians(latitude))));
+	}
 
 	/**
 	 * Returns the center point of the window.
 	 * 
 	 * @return the window's center point.
 	 */
-	public LatLng getCenter();
+	public abstract LatLng getCenter();
 
 	/**
 	 * Tests to see if the given point falls within this window.
@@ -40,10 +71,10 @@ public interface LatLngWindow {
 	 * @return true if the window contains the point, false otherwise
 	 * or if we cannot determine because the point is ill-defined.
 	 */
-	public boolean contains(LatLng point);
+	public abstract boolean contains(LatLng point);
 
 	/*
-	 * TODO: this method and FilterHelper class (make LatLngWindow abstract).
+	 * TODO: this method and FilterHelper class. (Filter helper is what gives us access to T's LatLng.)
 	 * @param <T>
 	 * @param collection
 	 * @param helper

@@ -19,6 +19,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.min;
 import simplelatlng.LatLng;
 import simplelatlng.LatLngTool;
+import simplelatlng.util.LengthUnit;
 
 /**
  * <p>A "pseudo-rectangular" window bounded by a minimum and maximum latitude
@@ -33,7 +34,7 @@ import simplelatlng.LatLngTool;
  * 
  * @author Tyler Coles
  */
-public class RectangularWindow implements LatLngWindow {
+public class RectangularWindow extends LatLngWindow {
 
 	// TODO: get width and height (in length units) methods 
 
@@ -54,6 +55,28 @@ public class RectangularWindow implements LatLngWindow {
 	 * @param deltaLng the span of the window in longitude in degrees.
 	 */
 	public RectangularWindow(LatLng center, double deltaLat, double deltaLng) {
+		this.setWindow(center, deltaLat, deltaLng);
+	}
+
+	/**
+	 * Creates a psuedo-rectangular window. The height will include the all latitudes
+	 * within <code>height / 2</code> North and South, while the width will include all
+	 * longitudes within <code>width / 2</code> East and West of the center point. This
+	 * is an approximation that will work fine for small window away from the poles, but
+	 * keep in mind that, for example in the northern hemisphere, the top of the rectangle
+	 * is less wide than the bottom of the rectangle, with the middle of the rectangle's width
+	 * being somewhere in between. 
+	 * 
+	 * @param center the center point of the window.
+	 * @param width the approximate width of the window in <code>LenghtUnit</code>s. 
+	 * @param height the height of the window in <code>LenghtUnit</code>s.
+	 * @param unit the units for <code>width</code> and <code>height</code>.
+	 */
+	public RectangularWindow(LatLng center, double width, double height,
+			LengthUnit unit) {
+		double deltaLat = LatLngWindow.lengthToLatitudeDelta(height, unit);
+		double deltaLng = LatLngWindow.lengthToLongitudeDelta(width, unit,
+				deltaLat);
 		this.setWindow(center, deltaLat, deltaLng);
 	}
 

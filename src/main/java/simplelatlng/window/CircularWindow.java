@@ -27,7 +27,7 @@ import simplelatlng.util.LengthUnit;
  * 
  * @author Tyler Coles
  */
-public class CircularWindow implements LatLngWindow {
+public class CircularWindow extends LatLngWindow {
 
 	private LatLng center;
 	private double radius;
@@ -57,7 +57,7 @@ public class CircularWindow implements LatLngWindow {
 	 */
 	public CircularWindow(LatLng center, double radius, LengthUnit unit) {
 		this.setCenter(center);
-		this.setRadius(radius / LatLngConfig.getEarthRadius(unit));
+		this.setRadius(LatLngWindow.lengthToLatitudeDelta(radius, unit));
 	}
 
 	@Override
