@@ -121,4 +121,17 @@ public class RectangularWindowTest {
 
 	}
 
+	@Test
+	public void testOverlaps() {
+		RectangularWindow w1 = new RectangularWindow(new LatLng(0, 0), 10, 10);
+		RectangularWindow w2 = new RectangularWindow(new LatLng(0, 0), 10, 10);
+		assertTrue(w1.overlaps(w2));
+		assertTrue(w2.overlaps(w1));
+		RectangularWindow w3 = new RectangularWindow(new LatLng(5, 5), 10, 10);
+		RectangularWindow w4 = new RectangularWindow(new LatLng(10, 10), 10, 10);
+		assertTrue(w1.overlaps(w3));
+		assertTrue(w1.overlaps(w4));
+		RectangularWindow w5 = new RectangularWindow(new LatLng(11, 11), 10, 10);
+		assertFalse(w1.overlaps(w5));
+	}
 }

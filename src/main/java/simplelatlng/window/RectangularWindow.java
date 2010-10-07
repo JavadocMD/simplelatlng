@@ -162,6 +162,26 @@ public class RectangularWindow extends LatLngWindow {
 		return true;
 	}
 
+	// TODO: make this abstract method in superclass and implement for CircularWindow
+	public boolean overlaps(RectangularWindow window) {
+		if (window.getMaxLatitude() < minLatitude
+				|| window.getMinLatitude() > maxLatitude) {
+			return false;
+		}
+		if (crosses180thMeridian) {
+			if (window.getMaxLongitude() > minLongitude
+					|| window.getMinLongitude() < maxLongitude) {
+				return false;
+			}
+		} else {
+			if (window.getMaxLongitude() < minLongitude
+					|| window.getMinLongitude() > maxLongitude) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	@Override
 	public LatLng getCenter() {
 		return center;
