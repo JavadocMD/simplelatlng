@@ -37,7 +37,7 @@ public abstract class LatLngWindow {
 	 * @return the degrees of equivalent latitude.
 	 */
 	public static double lengthToLatitudeDelta(double length, LengthUnit unit) {
-		return length / LatLngConfig.getEarthRadius(unit);
+		return Math.toDegrees(length / LatLngConfig.getEarthRadius(unit));
 	}
 
 	/**
