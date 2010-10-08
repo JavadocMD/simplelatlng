@@ -79,8 +79,8 @@ public abstract class LatLngWindow<T extends LatLngWindow<T>> {
 	/**
 	 * Test if this window overlaps the given window.
 	 * 
-	 * @param window
-	 * @return
+	 * @param window the window to test against this one.
+	 * @return true if the windows overlap.
 	 */
 	public abstract boolean overlaps(T window);
 
