@@ -34,7 +34,7 @@ import simplelatlng.util.LengthUnit;
  * 
  * @author Tyler Coles
  */
-public class RectangularWindow extends LatLngWindow {
+public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 
 	// TODO: get width and height (in length units) methods 
 
@@ -162,8 +162,9 @@ public class RectangularWindow extends LatLngWindow {
 		return true;
 	}
 
-	// TODO: make this abstract method in superclass and implement for CircularWindow
+	@Override
 	public boolean overlaps(RectangularWindow window) {
+
 		if (window.getMaxLatitude() < minLatitude
 				|| window.getMinLatitude() > maxLatitude) {
 			return false;

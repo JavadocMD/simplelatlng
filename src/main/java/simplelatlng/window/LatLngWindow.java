@@ -15,6 +15,9 @@
  */
 package simplelatlng.window;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import simplelatlng.LatLng;
 import simplelatlng.util.LatLngConfig;
 import simplelatlng.util.LengthUnit;
@@ -26,7 +29,7 @@ import simplelatlng.util.LengthUnit;
  * 
  * @author Tyler Coles
  */
-public abstract class LatLngWindow {
+public abstract class LatLngWindow<T extends LatLngWindow<T>> {
 
 	/**
 	 * Converts a length measurement into the latitude that that length
@@ -73,12 +76,33 @@ public abstract class LatLngWindow {
 	 */
 	public abstract boolean contains(LatLng point);
 
-	/*
-	 * TODO: this method and FilterHelper class. (Filter helper is what gives us access to T's LatLng.)
-	 * @param <T>
-	 * @param collection
-	 * @param helper
-	 * @return
+	/**
+	 * Test if this window overlaps the given window.
+	 * 
+	 * @param window the window to test against this one.
+	 * @return true if the windows overlap.
 	 */
-	//public <T> Collection<T> filter(Collection<T> collection, FilterHelper<T> helper);
+	public abstract boolean overlaps(T window);
+
+	/**
+	 * Goes through the given collection removing items whose LatLng
+	 * point does not fall within this window. The LatLng point used
+	 * in this collection traversal is accessed via the FilterHelper
+	 * instance passed in.
+	 * 
+	 * @param <E> the type of elements in the collection.
+	 * @param collection the collection of elements.
+	 * @param helper the instance of FilterHelper that gives this 
+	 * method access to E's LatLng value that we will test against
+	 * this window.
+	 */
+	public <E> void filter(Collection<E> collection, FilterHelper<E> helper) {
+		for (Iterator<E> i = collection.iterator(); i.hasNext();) {
+			E object = i.next();
+			if (!this.contains(helper.getLatLng(object))) {
+				i.remove();
+			}
+		}
+	}
+
 }

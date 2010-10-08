@@ -27,7 +27,7 @@ import simplelatlng.util.LengthUnit;
  * 
  * @author Tyler Coles
  */
-public class CircularWindow extends LatLngWindow {
+public class CircularWindow extends LatLngWindow<CircularWindow> {
 
 	private LatLng center;
 	private double radius;
@@ -64,6 +64,13 @@ public class CircularWindow extends LatLngWindow {
 	public boolean contains(LatLng point) {
 		return LatLng.doubleToLong(Math.toDegrees(LatLngTool.distanceInRadians(
 				center, point))) <= radiusInternal;
+	}
+
+	@Override
+	public boolean overlaps(CircularWindow window) {
+		double angle = LatLng.doubleToLong(Math.toDegrees(LatLngTool
+				.distanceInRadians(this.center, window.getCenter())));
+		return angle <= (this.radius + window.radius);
 	}
 
 	@Override
