@@ -1,0 +1,5 @@
+SimpleLatLng
+Copyright 2010 Tyler Coles
+
+This product includes software developed by
+Tyler Coles

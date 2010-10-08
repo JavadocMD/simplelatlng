@@ -1,0 +1,145 @@
+<project name="simplelatlng" default="full-dist" basedir=".">
+	
+	<!-- Project Properties -->
+	<property name="version"        value="0.0.2" />
+	
+	<property name="java.dir"       value="${basedir}/src/main/java" />
+	<property name="resource.dir"   value="${basedir}/src/main/resources" />
+	<property name="test.dir"		value="${basedir}/src/main/test" />
+	<property name="dist.dir"       value="${basedir}/dist" />
+	<property name="doc.dir"        value="${dist.dir}/doc" />
+	<property name="work.dir"		value="${basedir}/work" />
+	<property name="jar.work.dir"	value="${work.dir}/jar" />
+	<property name="test.work.dir"	value="${work.dir}/test" />
+	<property name="junit.work.dir" value="${work.dir}/junit-summary" />
+	
+	<property file="${basedir}/build.properties" />
+	
+	<tstamp>
+		<format property="today" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
+	
+	<!-- Project Classpaths -->
+	<path id="project-path">
+		<pathelement path="${jar.work.dir}" />
+	</path>
+	
+	<path id="test-compile-path">
+		<fileset dir="${junit.path}">
+			<include name="*.jar" />
+		</fileset>
+		<path refid="project-path" />
+	</path>
+	
+	<path id="test-run-path">
+		<pathelement path="${test.work.dir}" />
+	</path>
+	
+	<!-- Project Targets -->
+	<target name="clean">
+		<delete dir="${work.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete dir="${doc.dir}" />
+	</target>
+	
+	<target name="prepare">
+		<mkdir dir="${work.dir}" />
+		<mkdir dir="${jar.work.dir}" />
+		<mkdir dir="${test.work.dir}" />
+		<mkdir dir="${junit.work.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${doc.dir}" />
+	</target>
+	
+	<target name="compile">
+		<javac srcdir="${java.dir}" destdir="${jar.work.dir}" />
+	</target>
+	
+	<target name="compile-tests" depends="compile">
+		<javac srcdir="${test.dir}" destdir="${test.work.dir}">
+			<classpath refid="test-compile-path" />
+		</javac>
+	</target>
+	
+	<target name="test" depends="clean, prepare, compile, compile-tests">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath refid="test-compile-path" />
+			<classpath refid="test-run-path" />
+			<formatter type="plain" />
+			<batchtest todir="${junit.work.dir}">
+				<fileset dir="${test.work.dir}">
+					<include name="**/*Test.*" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<target name="dist">
+		<copy todir="${jar.work.dir}">
+			<fileset dir="${java.dir}" />
+		</copy>
+		
+		<copy todir="${jar.work.dir}/META-INF">
+			<fileset dir="${basedir}">
+				<include name="LICENSE.txt" />
+				<include name="NOTICE.txt" />
+				<include name="README.txt" />
+			</fileset>
+		</copy>
+		
+		<manifest file="${jar.work.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Implementation-Version" value="${version}" />
+			<attribute name="Built-Date" value="${today}" />
+		</manifest>
+		
+		<jar destfile="${dist.dir}/${ant.project.name}-${version}.jar" 
+			basedir="${jar.work.dir}" 
+			manifest="${jar.work.dir}/META-INF/MANIFEST.MF" />
+	</target>
+	
+	<target name="javadoc">
+		<javadoc sourcepath="${java.dir}" destdir="${doc.dir}" overview="${java.dir}/overview.html" />
+	</target>
+	
+	<target name="dist-doc">
+		<copy todir="${doc.dir}/META-INF">
+			<fileset dir="${basedir}">
+				<include name="LICENSE.txt" />
+				<include name="NOTICE.txt" />
+				<include name="README.txt" />
+			</fileset>
+		</copy>
+		
+		<!-- Include source -->
+		<copy todir="${doc.dir}">
+			<fileset dir="${java.dir}" />
+		</copy>
+		
+		<manifest file="${doc.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Implementation-Version" value="${version}" />
+			<attribute name="Built-Date" value="${today}" />
+		</manifest>
+		
+		<jar destfile="${dist.dir}/${ant.project.name}-${version}-doc.jar"
+			basedir="${doc.dir}"
+			manifest="${doc.dir}/META-INF/MANIFEST.MF" />
+	</target>
+	
+	<target name="full-dist-no-test">
+		<antcall target="clean" />
+		<antcall target="prepare" />
+		<antcall target="compile" />
+		<antcall target="dist" />
+		<antcall target="javadoc" />
+		<antcall target="dist-doc" />
+	</target>
+	
+	<target name="full-dist">
+		<antcall target="test" />
+		<antcall target="dist" />
+		<antcall target="javadoc" />
+		<antcall target="dist-doc" />
+	</target>
+</project>

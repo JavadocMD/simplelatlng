@@ -1,0 +1,8 @@
+syntax: regexp
+^dist/.*$
+^bin/.*$
+^work/.*$
+^\.classpath$
+^\.project$
+^\.settings$
+Thumbs.db$
