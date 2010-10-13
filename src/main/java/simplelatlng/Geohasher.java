@@ -9,7 +9,8 @@ import java.util.Map;
  * algorithm for hashing latitude and longitude points. Note: this implementation
  * is only "stable" with 12-character hashes. Decoding "s" and re-hashing the 
  * result yields "t40000000000". Decoding and re-hashing "t40000000000" yields 
- * the same.
+ * the same. 12 characters was chosen because this gives us precision up to
+ * one-millionth of a degree, like the rest of this library.
  * 
  * @author Tyler Coles
  */
@@ -26,8 +27,8 @@ public class Geohasher {
 	 */
 	public static final int PRECISION = 12;
 	private static final int BITS = ((PRECISION * 5) / 2) + PRECISION % 2;
-	private static double MAX_LAT = 90.0;
-	private static double MAX_LNG = 180.0;
+	private static final double MAX_LAT = 90.0;
+	private static final double MAX_LNG = 180.0;
 	private static final char[] HASH_CHARS_ARRAY = new char[]{'0', '1', '2',
 			'3', '4', '5', '6', '7', '8', '9', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
 			'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
