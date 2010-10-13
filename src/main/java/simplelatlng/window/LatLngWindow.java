@@ -105,4 +105,32 @@ public abstract class LatLngWindow<T extends LatLngWindow<T>> {
 		}
 	}
 
+	/**
+	 * <p>Goes through the source collection copying items whose LatLng
+	 * point falls within this window to the destination collection.
+	 * The LatLng point used in this collection traversal is accessed via 
+	 * the FilterHelper instance passed in.</p>
+	 * <p>This should save you from copying an entire collection and then 
+	 * filtering it when you want to leave the first collection intact.
+	 * This is a shallow copy, meaning <strong>changes made to objects within 
+	 * the copied collection will be reflected in the original</strong>, 
+	 * so beware.</p>
+	 * 
+	 * @param <E> the type of elements in the collection.
+	 * @param source the source collection of elements.
+	 * @param destination the destination collection; after this method 
+	 * runs, destination contains all items that fit within this window.
+	 * @param helper the instance of FilterHelper that gives this 
+	 * method access to E's LatLng value that we will test against
+	 * this window.
+	 */
+	public <E> void filterCopy(Collection<E> source, Collection<E> destination,
+			FilterHelper<E> helper) {
+		for (Iterator<E> i = source.iterator(); i.hasNext();) {
+			E object = i.next();
+			if (this.contains(helper.getLatLng(object))) {
+				destination.add(object);
+			}
+		}
+	}
 }

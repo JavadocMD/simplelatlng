@@ -62,61 +62,69 @@ public class RectangularWindowTest {
 	}
 
 	@Test
-	public void testContains() {
-		RectangularWindow w1 = new RectangularWindow(new LatLng(45, -67.5), 30,
-				45);
-		assertTrue(w1.contains(new LatLng(45, -67.5)));
-		assertTrue(w1.contains(new LatLng(30, -67.5)));
-		assertTrue(w1.contains(new LatLng(60, -67.5)));
-		assertTrue(w1.contains(new LatLng(45, -90)));
-		assertTrue(w1.contains(new LatLng(45, -45)));
-		assertTrue(w1.contains(new LatLng(30, -90)));
-		assertTrue(w1.contains(new LatLng(60, -45)));
-		assertTrue(w1.contains(new LatLng(60, -90)));
-		assertTrue(w1.contains(new LatLng(30, -45)));
-		assertTrue(w1.contains(new LatLng(30, -405)));
-		assertFalse(w1.contains(new LatLng(45, -100)));
-		assertFalse(w1.contains(new LatLng(45, -30)));
-		assertFalse(w1.contains(new LatLng(29, -67.5)));
-		assertFalse(w1.contains(new LatLng(61, -67.5)));
-		assertFalse(w1.contains(new LatLng(0, 0)));
-		assertFalse(w1.contains(new LatLng(30, -127.32001)));
-		assertFalse(w1.contains(new LatLng(30, -487.32001)));
+	public void testContains1() {
+		RectangularWindow window = new RectangularWindow(new LatLng(45, -67.5),
+				30, 45);
+		assertTrue(window.contains(new LatLng(45, -67.5)));
+		assertTrue(window.contains(new LatLng(30, -67.5)));
+		assertTrue(window.contains(new LatLng(60, -67.5)));
+		assertTrue(window.contains(new LatLng(45, -90)));
+		assertTrue(window.contains(new LatLng(45, -45)));
+		assertTrue(window.contains(new LatLng(30, -90)));
+		assertTrue(window.contains(new LatLng(60, -45)));
+		assertTrue(window.contains(new LatLng(60, -90)));
+		assertTrue(window.contains(new LatLng(30, -45)));
+		assertTrue(window.contains(new LatLng(30, -405)));
+		assertFalse(window.contains(new LatLng(45, -100)));
+		assertFalse(window.contains(new LatLng(45, -30)));
+		assertFalse(window.contains(new LatLng(29, -67.5)));
+		assertFalse(window.contains(new LatLng(61, -67.5)));
+		assertFalse(window.contains(new LatLng(0, 0)));
+		assertFalse(window.contains(new LatLng(30, -127.32001)));
+		assertFalse(window.contains(new LatLng(30, -487.32001)));
+	}
 
-		RectangularWindow w2 = new RectangularWindow(new LatLng(-90, 0), 30, 30);
-		assertTrue(w2.contains(new LatLng(-90, 0)));
-		assertTrue(w2.contains(new LatLng(-90, 10)));
-		assertTrue(w2.contains(new LatLng(-90, 180)));
-		assertTrue(w2.contains(new LatLng(-90, -240)));
-		assertTrue(w2.contains(new LatLng(-90, 7293.1298383)));
-		assertTrue(w2.contains(new LatLng(-1000, 0)));
-		assertTrue(w2.contains(new LatLng(-1000, 360)));
-		assertTrue(w2.contains(new LatLng(-75, 0)));
-		assertTrue(w2.contains(new LatLng(-75, 15)));
-		assertTrue(w2.contains(new LatLng(-75, -15)));
-		assertFalse(w2.contains(new LatLng(-75, 15.000001)));
-		assertTrue(w2.contains(new LatLng(-75, 14.999999)));
-		assertFalse(w2.contains(new LatLng(-75, -15.000001)));
-		assertTrue(w2.contains(new LatLng(-75, -14.999999)));
-		assertFalse(w2.contains(new LatLng(-74.999999, 0)));
-		assertFalse(w2.contains(new LatLng(-74.999999, 14.999999)));
+	@Test
+	public void testContains2() {
+		RectangularWindow window = new RectangularWindow(new LatLng(-90, 0), 30,
+				30);
+		assertTrue(window.contains(new LatLng(-90, 0)));
+		assertTrue(window.contains(new LatLng(-90, 10)));
+		assertTrue(window.contains(new LatLng(-90, 180)));
+		assertTrue(window.contains(new LatLng(-90, -240)));
+		assertTrue(window.contains(new LatLng(-90, 7293.1298383)));
+		assertTrue(window.contains(new LatLng(-1000, 0)));
+		assertTrue(window.contains(new LatLng(-1000, 360)));
+		assertTrue(window.contains(new LatLng(-75, 0)));
+		assertTrue(window.contains(new LatLng(-75, 15)));
+		assertTrue(window.contains(new LatLng(-75, -15)));
+		assertFalse(window.contains(new LatLng(-75, 15.000001)));
+		assertTrue(window.contains(new LatLng(-75, 14.999999)));
+		assertFalse(window.contains(new LatLng(-75, -15.000001)));
+		assertTrue(window.contains(new LatLng(-75, -14.999999)));
+		assertFalse(window.contains(new LatLng(-74.999999, 0)));
+		assertFalse(window.contains(new LatLng(-74.999999, 14.999999)));
+	}
 
-		RectangularWindow w3 = new RectangularWindow(new LatLng(0, 180), 40, 360);
+	@Test
+	public void testContains3() {
+		RectangularWindow window = new RectangularWindow(new LatLng(0, 180), 40,
+				360);
 		for (double lng = 0; lng < 720; lng += 20) {
-			assertTrue(w3.contains(new LatLng(0, lng)));
-			assertTrue(w3.contains(new LatLng(5, lng)));
-			assertTrue(w3.contains(new LatLng(10, lng)));
-			assertTrue(w3.contains(new LatLng(20, lng)));
-			assertTrue(w3.contains(new LatLng(-5, lng)));
-			assertTrue(w3.contains(new LatLng(-10, lng)));
-			assertTrue(w3.contains(new LatLng(-15, lng)));
-			assertTrue(w3.contains(new LatLng(-20, lng)));
-			assertFalse(w3.contains(new LatLng(-20.1, lng)));
-			assertFalse(w3.contains(new LatLng(20.1, lng)));
-			assertFalse(w3.contains(new LatLng(40, lng)));
-			assertFalse(w3.contains(new LatLng(-40, lng)));
-			assertFalse(w3.contains(new LatLng(-90, lng)));
-			assertFalse(w3.contains(new LatLng(90, lng)));
+			assertTrue(window.contains(new LatLng(0, lng)));
+			assertTrue(window.contains(new LatLng(5, lng)));
+			assertTrue(window.contains(new LatLng(10, lng)));
+			assertTrue(window.contains(new LatLng(20, lng)));
+			assertTrue(window.contains(new LatLng(-5, lng)));
+			assertTrue(window.contains(new LatLng(-10, lng)));
+			assertTrue(window.contains(new LatLng(-15, lng)));
+			assertTrue(window.contains(new LatLng(-20, lng)));
+			assertFalse(window.contains(new LatLng(-20.1, lng)));
+			assertFalse(window.contains(new LatLng(20.1, lng)));
+			assertFalse(window.contains(new LatLng(40, lng)));
+			assertFalse(window.contains(new LatLng(-40, lng)));
+			assertFalse(window.contains(new LatLng(-90, lng)));
+			assertFalse(window.contains(new LatLng(90, lng)));
 		}
 
 	}
