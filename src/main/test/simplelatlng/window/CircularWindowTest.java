@@ -75,4 +75,22 @@ public class CircularWindowTest {
 		// TODO:
 	}
 
+	@Test
+	public void testOverlaps() {
+		CircularWindow w1 = new CircularWindow(new LatLng(0, 0), 10);
+		CircularWindow w2 = new CircularWindow(new LatLng(0, 0), 10);
+		assertTrue(w1.overlaps(w2));
+		assertTrue(w2.overlaps(w1));
+		CircularWindow w3 = new CircularWindow(new LatLng(1, 1), 5);
+		assertTrue(w1.overlaps(w3));
+		CircularWindow w4 = new CircularWindow(new LatLng(10, 0), 10);
+		assertTrue(w1.overlaps(w4));
+		CircularWindow w5 = new CircularWindow(new LatLng(45, 45), 5);
+		assertFalse(w1.overlaps(w5));
+	}
+
+	@Test
+	public void testFilter() {
+		// TODO:
+	}
 }
