@@ -1,17 +1,20 @@
 <project name="simplelatlng" default="full-dist" basedir=".">
 	
 	<!-- Project Properties -->
+	
 	<property name="version"        value="0.0.2" />
 	
 	<property name="java.dir"       value="${basedir}/src/main/java" />
 	<property name="resource.dir"   value="${basedir}/src/main/resources" />
 	<property name="test.dir"		value="${basedir}/src/main/test" />
 	<property name="dist.dir"       value="${basedir}/dist" />
-	<property name="doc.dir"        value="${dist.dir}/doc" />
 	<property name="work.dir"		value="${basedir}/work" />
 	<property name="jar.work.dir"	value="${work.dir}/jar" />
 	<property name="test.work.dir"	value="${work.dir}/test" />
-	<property name="junit.work.dir" value="${work.dir}/junit-summary" />
+	<property name="junit.work.dir" value="${test.work.dir}/report" />
+	<property name="doc.work.dir"   value="${work.dir}/doc" />
+	<property name="cobertura.work.dir" value="${work.dir}/cobertura" />
+	<property name="cobertura.report.dir" value="${cobertura.work.dir}/report" />
 	
 	<property file="${basedir}/build.properties" />
 	
@@ -19,52 +22,64 @@
 		<format property="today" pattern="yyyy-MM-dd HH:mm:ss" />
 	</tstamp>
 	
+	
 	<!-- Project Classpaths -->
-	<path id="project-path">
+	
+	<path id="project.classpath">
 		<pathelement path="${jar.work.dir}" />
 	</path>
 	
-	<path id="test-compile-path">
+	<path id="test.classpath">
 		<fileset dir="${junit.path}">
 			<include name="*.jar" />
 		</fileset>
-		<path refid="project-path" />
-	</path>
-	
-	<path id="test-run-path">
 		<pathelement path="${test.work.dir}" />
 	</path>
 	
+	<path id="cobertura.classpath">
+		<fileset dir="${cobertura.path}">
+			<include name="cobertura.jar" />
+			<include name="lib/**/*.jar" />
+		</fileset>
+		<pathelement path="${cobertura.work.dir}" />
+	</path>
+	
+	
 	<!-- Project Targets -->
-	<target name="clean">
+	
+	<target name="clean" description="Cleans all build-generated files.">
 		<delete dir="${work.dir}" />
 		<delete dir="${dist.dir}" />
-		<delete dir="${doc.dir}" />
+		<delete dir="${doc.work.dir}" />
 	</target>
 	
-	<target name="prepare">
+	
+	<target name="prepare" description="Creates build-necessary directories.">
 		<mkdir dir="${work.dir}" />
+		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${jar.work.dir}" />
 		<mkdir dir="${test.work.dir}" />
 		<mkdir dir="${junit.work.dir}" />
-		<mkdir dir="${dist.dir}" />
-		<mkdir dir="${doc.dir}" />
 	</target>
 	
-	<target name="compile">
-		<javac srcdir="${java.dir}" destdir="${jar.work.dir}" />
+	
+	<target name="compile" depends="prepare" description="Compiles the base project source.">
+		<javac srcdir="${java.dir}" destdir="${jar.work.dir}" debug="${javac.debug}" />
 	</target>
 	
-	<target name="compile-tests" depends="compile">
-		<javac srcdir="${test.dir}" destdir="${test.work.dir}">
-			<classpath refid="test-compile-path" />
+	
+	<target name="compile-tests" depends="prepare, compile" description="Compiles jUnit tests.">
+		<javac srcdir="${test.dir}" destdir="${test.work.dir}" debug="${javac.debug}">
+			<classpath refid="project.classpath" />
+			<classpath refid="test.classpath" />
 		</javac>
 	</target>
 	
-	<target name="test" depends="clean, prepare, compile, compile-tests">
+	
+	<target name="test" depends="compile, compile-tests" if="junit.path" description="Runs jUnit tests.">
 		<junit printsummary="yes" haltonfailure="yes">
-			<classpath refid="test-compile-path" />
-			<classpath refid="test-run-path" />
+			<classpath refid="project.classpath" />
+			<classpath refid="test.classpath" />
 			<formatter type="plain" />
 			<batchtest todir="${junit.work.dir}">
 				<fileset dir="${test.work.dir}">
@@ -74,12 +89,13 @@
 		</junit>
 	</target>
 	
-	<target name="dist">
-		<copy todir="${jar.work.dir}">
+	
+	<target name="copy-source-and-manifest" if="dest" description="Utility target for copying all source, license information, and a manifest file to a destination directory given by parameter 'dest'.">
+		<copy todir="${dest}">
 			<fileset dir="${java.dir}" />
 		</copy>
 		
-		<copy todir="${jar.work.dir}/META-INF">
+		<copy todir="${dest}/META-INF">
 			<fileset dir="${basedir}">
 				<include name="LICENSE.txt" />
 				<include name="NOTICE.txt" />
@@ -87,56 +103,80 @@
 			</fileset>
 		</copy>
 		
-		<manifest file="${jar.work.dir}/META-INF/MANIFEST.MF">
+		<manifest file="${dest}/META-INF/MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}" />
 			<attribute name="Implementation-Version" value="${version}" />
 			<attribute name="Built-Date" value="${today}" />
 		</manifest>
+	</target>
+	
+	
+	<target name="dist" depends="prepare, compile" description="Creates the project runtime jar.">
+		<antcall target="copy-source-and-manifest">
+			<param name="dest" value="${jar.work.dir}" />
+		</antcall>
 		
 		<jar destfile="${dist.dir}/${ant.project.name}-${version}.jar" 
 			basedir="${jar.work.dir}" 
 			manifest="${jar.work.dir}/META-INF/MANIFEST.MF" />
 	</target>
 	
-	<target name="javadoc">
-		<javadoc sourcepath="${java.dir}" destdir="${doc.dir}" overview="${java.dir}/overview.html" />
+	
+	<target name="javadoc" depends="prepare" description="Generates the project's Javadoc.">
+		<javadoc sourcepath="${java.dir}" destdir="${doc.work.dir}" overview="${java.dir}/overview.html" />
 	</target>
 	
-	<target name="dist-doc">
-		<copy todir="${doc.dir}/META-INF">
-			<fileset dir="${basedir}">
-				<include name="LICENSE.txt" />
-				<include name="NOTICE.txt" />
-				<include name="README.txt" />
-			</fileset>
-		</copy>
-		
-		<!-- Include source -->
-		<copy todir="${doc.dir}">
-			<fileset dir="${java.dir}" />
-		</copy>
-		
-		<manifest file="${doc.dir}/META-INF/MANIFEST.MF">
-			<attribute name="Built-By" value="${user.name}" />
-			<attribute name="Implementation-Version" value="${version}" />
-			<attribute name="Built-Date" value="${today}" />
-		</manifest>
+	
+	<target name="dist-doc" depends="prepare, javadoc" description="Creates the project's Javadoc jar.">
+		<antcall target="copy-source-and-manifest">
+			<param name="dest" value="${doc.work.dir}" />
+		</antcall>
 		
 		<jar destfile="${dist.dir}/${ant.project.name}-${version}-doc.jar"
-			basedir="${doc.dir}"
-			manifest="${doc.dir}/META-INF/MANIFEST.MF" />
+			basedir="${doc.work.dir}"
+			manifest="${doc.work.dir}/META-INF/MANIFEST.MF" />
 	</target>
 	
-	<target name="full-dist-no-test">
-		<antcall target="clean" />
-		<antcall target="prepare" />
-		<antcall target="compile" />
-		<antcall target="dist" />
-		<antcall target="javadoc" />
-		<antcall target="dist-doc" />
+	
+	<target name="cobertura" depends="clean, prepare" if="cobertura.path" description="Runs Cobertura code coverage tool.">
+		<antcall target="compile">
+			<param name="javac.debug" value="true" />
+		</antcall>
+		<antcall target="compile-tests">
+			<param name="javac.debug" value="true" />
+		</antcall>
+		
+		<taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
+		
+		<!-- datafile="${cobertura.work.dir}/cobertura.ser" -->
+		<cobertura-instrument 
+				todir="${cobertura.work.dir}">
+		    <fileset dir="${jar.work.dir}">
+		        <include name="**/*.class"/>
+		    </fileset>
+		</cobertura-instrument>
+		
+		<junit printsummary="no" haltonfailure="yes" fork="once">
+			<!--<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.work.dir}/cobertura.ser" />-->
+			<classpath refid="cobertura.classpath" />
+			<classpath refid="test.classpath" />
+			<formatter type="plain" />
+			<batchtest todir="${junit.work.dir}">
+				<fileset dir="${test.work.dir}">
+					<include name="**/*Test.*" />
+				</fileset>
+			</batchtest>
+		</junit>
+		
+		<!--datafile="${cobertura.work.dir}/cobertura.ser"-->
+		<cobertura-report  
+			srcdir="${java.dir}" 
+			destdir="${cobertura.report.dir}"/>
 	</target>
+	
 	
 	<target name="full-dist">
+		<antcall target="clean" />
 		<antcall target="test" />
 		<antcall target="dist" />
 		<antcall target="javadoc" />
