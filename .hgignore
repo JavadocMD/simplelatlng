@@ -6,3 +6,5 @@ syntax: regexp
 ^\.project$
 ^\.settings$
 Thumbs.db$
+syntax: regexp
+^cobertura\.ser$

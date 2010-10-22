@@ -18,6 +18,8 @@ package simplelatlng;
 import static org.junit.Assert.*;
 import static simplelatlng.LatLng.degreesEqual;
 
+import java.util.Random;
+
 import org.junit.Test;
 
 import simplelatlng.util.LatLngConfig;
@@ -75,6 +77,8 @@ public class LatLngTest {
 	public void testEqualsObject() {
 		LatLng l1 = new LatLng(0.0, 0.0);
 		assertTrue(l1.equals(l1));
+		assertFalse(l1.equals(new Object()));
+		assertFalse(l1.equals("This is a string"));
 
 		LatLng l2 = new LatLng(0.0, 0.0);
 		assertTrue(l1.equals(l2));
@@ -91,6 +95,9 @@ public class LatLngTest {
 		LatLng l6 = new LatLng(-90, 0);
 		LatLng l7 = new LatLng(-91, -127.3292);
 		assertTrue(l6.equals(l7));
+
+		LatLng l8 = new LatLng(33.987123, -127.839393);
+		assertFalse(l4.equals(l8));
 	}
 
 	@Test
@@ -117,6 +124,39 @@ public class LatLngTest {
 		assertFalse(degreesEqual(15, 15.000001));
 		assertFalse(degreesEqual(-15, -15.000001));
 		assertFalse(degreesEqual(-15, 15.000001));
+
+		assertFalse(degreesEqual(0, Double.POSITIVE_INFINITY));
+		assertFalse(degreesEqual(Double.POSITIVE_INFINITY, 0));
+		assertFalse(degreesEqual(Double.POSITIVE_INFINITY,
+				Double.POSITIVE_INFINITY));
+
+		assertFalse(degreesEqual(0, Double.NaN));
+		assertFalse(degreesEqual(Double.NaN, 0));
+		assertFalse(degreesEqual(Double.NaN, Double.NaN));
+
+		assertFalse(degreesEqual(Double.NaN, Double.NEGATIVE_INFINITY));
 	}
 
+	@Test
+	public void testLatLngRandom() {
+		assertNotNull(LatLng.random());
+	}
+
+	@Test
+	public void testLatLngRandomRandom() {
+		Random r = new Random();
+		assertNotNull(LatLng.random(r));
+	}
+
+	@Test
+	public void testHashCode() {
+		LatLng latLng = new LatLng(10, 10);
+		assertNotNull(latLng.hashCode());
+	}
+
+	@Test
+	public void testToString() {
+		LatLng latLng = new LatLng(10, 10);
+		assertTrue(latLng.toString().length() > 0);
+	}
 }

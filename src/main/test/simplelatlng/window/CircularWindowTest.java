@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import simplelatlng.LatLng;
 import simplelatlng.util.LatLngConfig;
+import simplelatlng.util.LengthUnit;
 
 public class CircularWindowTest {
 
@@ -36,9 +37,14 @@ public class CircularWindowTest {
 		assertEquals(45, w.getRadius(), LatLngConfig.DEGREE_TOLERANCE);
 	}
 
-	@Test
-	public void testCircularWindowLatLngDoubleLengthUnit() {
-		// TODO:
+	@Test(expected = IllegalArgumentException.class)
+	public void testCircularWindowLatLngDouble2() {
+		new CircularWindow(null, 45);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testCircularWindowLatLngDouble3() {
+		new CircularWindow(new LatLng(10, 0), Double.NaN);
 	}
 
 	@Test
@@ -71,11 +77,6 @@ public class CircularWindowTest {
 	}
 
 	@Test
-	public void testGetRadiusLengthUnit() {
-		// TODO:
-	}
-
-	@Test
 	public void testOverlaps() {
 		CircularWindow w1 = new CircularWindow(new LatLng(0, 0), 10);
 		CircularWindow w2 = new CircularWindow(new LatLng(0, 0), 10);
@@ -92,5 +93,18 @@ public class CircularWindowTest {
 	@Test
 	public void testFilter() {
 		// TODO:
+	}
+
+	@Test
+	public void testGetRadius() {
+		CircularWindow w = new CircularWindow(new LatLng(10, 0), 45);
+		assertEquals(45, w.getRadius(), 0.000001);
+	}
+
+	@Test
+	public void testWithLengthUnits() {
+		CircularWindow w = new CircularWindow(new LatLng(10, 0), 100,
+				LengthUnit.KILOMETER);
+		assertEquals(100, w.getRadius(LengthUnit.KILOMETER), 0.0001);
 	}
 }
