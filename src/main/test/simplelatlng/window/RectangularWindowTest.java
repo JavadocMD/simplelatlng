@@ -139,7 +139,6 @@ public class RectangularWindowTest {
 			assertFalse(window.contains(new LatLng(-90, lng)));
 			assertFalse(window.contains(new LatLng(90, lng)));
 		}
-
 	}
 
 	@Test
@@ -154,5 +153,17 @@ public class RectangularWindowTest {
 		assertTrue(w1.overlaps(w4));
 		RectangularWindow w5 = new RectangularWindow(new LatLng(11, 11), 10, 10);
 		assertFalse(w1.overlaps(w5));
+	}
+
+	@Test
+	public void testGetLatitudeDelta() {
+		RectangularWindow w = new RectangularWindow(new LatLng(45, -67.5), 30, 45);
+		assertEquals(30, w.getLatitudeDelta(), LatLngConfig.DEGREE_TOLERANCE);
+	}
+
+	@Test
+	public void testGetLongitudeDelta() {
+		RectangularWindow w = new RectangularWindow(new LatLng(45, -67.5), 30, 45);
+		assertEquals(45, w.getLongitudeDelta(), LatLngConfig.DEGREE_TOLERANCE);
 	}
 }
