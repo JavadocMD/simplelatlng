@@ -11,7 +11,7 @@
 	<property name="work.dir"		value="${basedir}/work" />
 	<property name="jar.work.dir"	value="${work.dir}/jar" />
 	<property name="test.work.dir"	value="${work.dir}/test" />
-	<property name="junit.work.dir" value="${test.work.dir}/report" />
+	<property name="test.report.dir" value="${test.work.dir}/report" />
 	<property name="doc.work.dir"   value="${work.dir}/doc" />
 	<property name="cobertura.work.dir" value="${work.dir}/cobertura" />
 	<property name="cobertura.report.dir" value="${cobertura.work.dir}/report" />
@@ -59,7 +59,7 @@
 		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${jar.work.dir}" />
 		<mkdir dir="${test.work.dir}" />
-		<mkdir dir="${junit.work.dir}" />
+		<mkdir dir="${test.report.dir}" />
 	</target>
 	
 	
@@ -81,7 +81,7 @@
 			<classpath refid="project.classpath" />
 			<classpath refid="test.classpath" />
 			<formatter type="plain" />
-			<batchtest todir="${junit.work.dir}">
+			<batchtest todir="${test.report.dir}">
 				<fileset dir="${test.work.dir}">
 					<include name="**/*Test.*" />
 				</fileset>
@@ -139,6 +139,8 @@
 	
 	
 	<target name="cobertura" depends="clean, prepare" if="cobertura.path" description="Runs Cobertura code coverage tool.">
+		<taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
+		
 		<antcall target="compile">
 			<param name="javac.debug" value="true" />
 		</antcall>
@@ -146,9 +148,6 @@
 			<param name="javac.debug" value="true" />
 		</antcall>
 		
-		<taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
-		
-		<!-- datafile="${cobertura.work.dir}/cobertura.ser" -->
 		<cobertura-instrument 
 				todir="${cobertura.work.dir}">
 		    <fileset dir="${jar.work.dir}">
@@ -156,22 +155,23 @@
 		    </fileset>
 		</cobertura-instrument>
 		
-		<junit printsummary="no" haltonfailure="yes" fork="once">
-			<!--<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.work.dir}/cobertura.ser" />-->
+		<junit printsummary="no" haltonfailure="no" fork="once">
 			<classpath refid="cobertura.classpath" />
 			<classpath refid="test.classpath" />
 			<formatter type="plain" />
-			<batchtest todir="${junit.work.dir}">
+			<batchtest todir="${test.report.dir}">
 				<fileset dir="${test.work.dir}">
 					<include name="**/*Test.*" />
 				</fileset>
 			</batchtest>
 		</junit>
+	</target>
+	
+	
+	<target name="cobertura-report" description="Generates the Cobertura report. Run cobertura target separately.">
+		<taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
 		
-		<!--datafile="${cobertura.work.dir}/cobertura.ser"-->
-		<cobertura-report  
-			srcdir="${java.dir}" 
-			destdir="${cobertura.report.dir}"/>
+		<cobertura-report srcdir="${java.dir}" destdir="${cobertura.report.dir}" />
 	</target>
 	
 	
@@ -179,7 +179,6 @@
 		<antcall target="clean" />
 		<antcall target="test" />
 		<antcall target="dist" />
-		<antcall target="javadoc" />
 		<antcall target="dist-doc" />
 	</target>
 </project>
