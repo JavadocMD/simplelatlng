@@ -44,6 +44,18 @@ public abstract class LatLngWindow<T extends LatLngWindow<T>> {
 	}
 
 	/**
+	 * Converts a latitude degree arc to the length of that arc.
+	 * This is the opposite operation to {@link #lengthToLatitudeDelta(double, LengthUnit)}
+	 * 
+	 * @param deltaLat the latitude arc degrees.
+	 * @param unit the desired length units.
+	 * @return the arc length.
+	 */
+	public static double latitudeDeltaToLength(double deltaLat, LengthUnit unit) {
+		return LatLngConfig.getEarthRadius(unit) * Math.toRadians(deltaLat);
+	}
+
+	/**
 	 * Converts a length measurement into the longitude that that length 
 	 * spans at the given latitude. This method is required because the
 	 * length of an arc covering X-degrees longitude changes as latitude changes.
@@ -58,6 +70,21 @@ public abstract class LatLngWindow<T extends LatLngWindow<T>> {
 		return Math.toDegrees(length
 				/ (LatLngConfig.getEarthRadius(unit) * Math.cos(Math
 						.toRadians(latitude))));
+	}
+
+	/**
+	 * Converts a longitude degree arc at a specific latitude to the length
+	 * of the arc. This is the opposite operation to {@link #lengthToLongitudeDelta(double, LengthUnit, double)}
+	 * 
+	 * @param deltaLng the longitude arc degrees.
+	 * @param unit the desired length units.
+	 * @param latitude the latitude at which this arc lies.
+	 * @return the arc length.
+	 */
+	public static double longitudeDeltaToLength(double deltaLng,
+			LengthUnit unit, double latitude) {
+		return LatLngConfig.getEarthRadius(unit) * Math.toRadians(deltaLng)
+				* Math.cos(Math.toRadians(latitude));
 	}
 
 	/**

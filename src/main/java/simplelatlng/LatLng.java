@@ -64,24 +64,12 @@ public class LatLng {
 			return false;
 		if (Double.isInfinite(degree1) || Double.isInfinite(degree2))
 			return false;
-		return doubleToLong(degree1) == doubleToLong(degree2);
+		return LatLngConfig.doubleToLong(degree1) == LatLngConfig
+				.doubleToLong(degree2);
 	}
 
-	/**
-	 * Function used to convert an angle in degrees to its internal long representation.
-	 * Not very useful for the average user.
-	 * 
-	 * @param value the value to convert.
-	 * @return the long value.
-	 */
-	public static long doubleToLong(double value) {
-		return (long) (value * 1000000L);
-	}
-
-	private double latitude;
-	private double longitude;
-	private long latitudeInternal;
-	private long longitudeInternal;
+	private long latitude;
+	private long longitude;
 
 	/**
 	 * Creates a LatLng point.
@@ -99,6 +87,16 @@ public class LatLng {
 	 * @return latitude in degrees.
 	 */
 	public double getLatitude() {
+		return LatLngConfig.longToDouble(latitude);
+	}
+
+	/**
+	 * Get the internal long representation of this point's latitude
+	 * in degrees. Intended for library use only.
+	 * 
+	 * @return the internal representation of latitude in degrees.
+	 */
+	public long getLatitudeInternal() {
 		return latitude;
 	}
 
@@ -108,6 +106,16 @@ public class LatLng {
 	 * @return longitude in degrees.
 	 */
 	public double getLongitude() {
+		return LatLngConfig.longToDouble(longitude);
+	}
+
+	/**
+	 * Get the internal long representation of this point's longitude
+	 * in degrees. Intended for library use only.
+	 * 
+	 * @return the internal representation of longitude in degrees.
+	 */
+	public long getLongitudeInternal() {
 		return longitude;
 	}
 
@@ -119,7 +127,7 @@ public class LatLng {
 	 */
 	public void setLatitudeLongitude(double latitude, double longitude) {
 		this.setLatitude(latitude);
-		if (Math.abs(this.latitudeInternal) == 90000000L) {
+		if (Math.abs(this.latitude) == 90000000L) {
 			// At the poles all longitudes intersect. Simplify for later comparison.
 			this.setLongitude(0);
 		} else {
@@ -134,8 +142,7 @@ public class LatLng {
 		double lat = LatLngTool.normalizeLatitude(latitude);
 		if (Double.isNaN(lat))
 			throw new IllegalArgumentException("Invalid latitude given.");
-		this.latitude = lat;
-		this.latitudeInternal = doubleToLong(lat);
+		this.latitude = LatLngConfig.doubleToLong(lat);
 	}
 
 	/**
@@ -145,8 +152,7 @@ public class LatLng {
 		double lng = LatLngTool.normalizeLongitude(longitude);
 		if (Double.isNaN(lng))
 			throw new IllegalArgumentException("Invalid longitude given.");
-		this.longitude = lng;
-		this.longitudeInternal = doubleToLong(lng);
+		this.longitude = LatLngConfig.doubleToLong(lng);
 	}
 
 	@Override
@@ -157,23 +163,24 @@ public class LatLng {
 			return false;
 
 		LatLng latlng = (LatLng) obj;
-		if (this.latitudeInternal != latlng.latitudeInternal) {
+		if (this.latitude != latlng.latitude) {
 			return false;
 		}
 
-		return this.longitudeInternal == latlng.longitudeInternal;
+		return this.longitude == latlng.longitude;
 	}
 
 	@Override
 	public int hashCode() {
-		String s = Long.toString(latitudeInternal) + "|"
-				+ Long.toString(longitudeInternal);
+		String s = Long.toString(latitude) + "|" + Long.toString(longitude);
 		return s.hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return "(" + LatLngConfig.DEGREE_FORMAT.format(this.latitude) + ","
-				+ LatLngConfig.DEGREE_FORMAT.format(this.longitude) + ")";
+		return String.format("(%s,%s)", LatLngConfig.DEGREE_FORMAT
+				.format(LatLngConfig.longToDouble(this.latitude)),
+				LatLngConfig.DEGREE_FORMAT.format(LatLngConfig
+						.longToDouble(this.longitude)));
 	}
 }

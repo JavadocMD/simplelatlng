@@ -80,4 +80,26 @@ public class LatLngConfig {
 
 	private LatLngConfig() {
 	}
+
+	/**
+	 * Function used to convert an angle in degrees to its internal, fixed-precision 
+	 * long representation. Intended for library use only.
+	 * 
+	 * @param value the value to convert.
+	 * @return the long value.
+	 */
+	public static long doubleToLong(double value) {
+		return (long) (value / DEGREE_TOLERANCE);
+	}
+
+	/**
+	 * Function used to convert an angle in degrees to its external double representation.
+	 * Intended for library use only.
+	 * 
+	 * @param value the value to convert.
+	 * @return the double value.
+	 */
+	public static double longToDouble(long value) {
+		return (double) value * DEGREE_TOLERANCE;
+	}
 }
