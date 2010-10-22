@@ -21,9 +21,9 @@ import simplelatlng.util.LatLngConfig;
 import simplelatlng.util.LengthUnit;
 
 /**
- * <p>A circular window.</p>
- * 
- * <p>Warning: this class is not yet well-tested.</p>
+ * <p>A circular window. Has the benefit of performing well around poles
+ * and regardless of the size of the window. <code>contains()</code> checks
+ * are slower with a CircularWindow than with a RectangularWindow, however.</p>
  * 
  * @author Tyler Coles
  */
@@ -104,8 +104,8 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	 * @return the radius in the desired length unit.
 	 */
 	public double getRadius(LengthUnit unit) {
-		return LatLngConfig.longToDouble(radius)
-				* LatLngConfig.getEarthRadius(unit);
+		return LatLngWindow.latitudeDeltaToLength(LatLngConfig
+				.longToDouble(radius), unit);
 	}
 
 	/**
