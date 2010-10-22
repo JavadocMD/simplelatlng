@@ -26,8 +26,6 @@ import simplelatlng.util.LatLngConfig;
 
 public class RectangularWindowTest {
 
-	// TODO: test constructors for exceptions.
-
 	@Test
 	public void testRectangularWindow1() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
@@ -59,6 +57,21 @@ public class RectangularWindowTest {
 		assertEquals(-20, w.getMinLatitude(), t);
 		assertEquals(20, w.getMaxLatitude(), t);
 		assertTrue(w.crosses180thMeridian());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRectangularWindow4() {
+		new RectangularWindow(null, 10, 10);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRectangularWindow5() {
+		new RectangularWindow(new LatLng(0, 0), Double.POSITIVE_INFINITY, 10);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRectangularWindow6() {
+		new RectangularWindow(new LatLng(0, 0), 10, Double.NaN);
 	}
 
 	@Test

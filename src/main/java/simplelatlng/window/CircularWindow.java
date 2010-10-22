@@ -30,8 +30,7 @@ import simplelatlng.util.LengthUnit;
 public class CircularWindow extends LatLngWindow<CircularWindow> {
 
 	private LatLng center;
-	private double radius;
-	private long radiusInternal;
+	private long radius;
 
 	/**
 	 * Constructs a circular window.
@@ -62,13 +61,13 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 
 	@Override
 	public boolean contains(LatLng point) {
-		return LatLng.doubleToLong(Math.toDegrees(LatLngTool.distanceInRadians(
-				center, point))) <= radiusInternal;
+		return LatLngConfig.doubleToLong(Math.toDegrees(LatLngTool
+				.distanceInRadians(center, point))) <= radius;
 	}
 
 	@Override
 	public boolean overlaps(CircularWindow window) {
-		double angle = LatLng.doubleToLong(Math.toDegrees(LatLngTool
+		long angle = LatLngConfig.doubleToLong(Math.toDegrees(LatLngTool
 				.distanceInRadians(this.center, window.getCenter())));
 		return angle <= (this.radius + window.radius);
 	}
@@ -95,7 +94,7 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	 * @return the radius in degrees.
 	 */
 	public double getRadius() {
-		return radius;
+		return LatLngConfig.longToDouble(radius);
 	}
 
 	/**
@@ -105,7 +104,8 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	 * @return the radius in the desired length unit.
 	 */
 	public double getRadius(LengthUnit unit) {
-		return radius * LatLngConfig.getEarthRadius(unit);
+		return LatLngConfig.longToDouble(radius)
+				* LatLngConfig.getEarthRadius(unit);
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	public void setRadius(double radius) {
 		if (Double.isNaN(radius))
 			throw new IllegalArgumentException("Invalid radius given.");
-		this.radius = Math.min(Math.abs(radius), 360.0);
-		this.radiusInternal = LatLng.doubleToLong(radius);
+		this.radius = LatLngConfig
+				.doubleToLong(Math.min(Math.abs(radius), 360.0));
 	}
 }

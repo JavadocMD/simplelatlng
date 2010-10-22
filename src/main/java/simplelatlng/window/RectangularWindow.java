@@ -19,12 +19,13 @@ import static java.lang.Math.abs;
 import static java.lang.Math.min;
 import simplelatlng.LatLng;
 import simplelatlng.LatLngTool;
+import simplelatlng.util.LatLngConfig;
 import simplelatlng.util.LengthUnit;
 
 /**
  * <p>A "pseudo-rectangular" window bounded by a minimum and maximum latitude
- * and a minimum and maximum longitude. (Large windows will lose the 
- * approximately rectangular shape.) Naturally a window cannot span more than 180 
+ * and a minimum and maximum longitude. (The larger the window, the less rectangular 
+ * this window actually is.) Naturally a window cannot span more than 180 
  * degrees latitude or 360 degrees longitude.</p>
  * 
  * <p>Note: the latitude span provided when creating this window is not a guarantee. 
@@ -36,14 +37,12 @@ import simplelatlng.util.LengthUnit;
  */
 public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 
-	// TODO: get width and height (in length units) methods 
-
-	private double latitudeDelta;
-	private double longitudeDelta;
-	private double minLatitude;
-	private double maxLatitude;
-	private double minLongitude;
-	private double maxLongitude;
+	private long latitudeDelta;
+	private long longitudeDelta;
+	private long minLatitude;
+	private long maxLatitude;
+	private long minLongitude;
+	private long maxLongitude;
 	private boolean crosses180thMeridian;
 	private LatLng center;
 
@@ -60,11 +59,11 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 
 	/**
 	 * Creates a psuedo-rectangular window. The height will include the all latitudes
-	 * within <code>height / 2</code> North and South, while the width will include all
-	 * longitudes within <code>width / 2</code> East and West of the center point. This
+	 * within <code>height/2</code> North and South, while the width will include all
+	 * longitudes within <code>width/2</code> East and West of the center point. This
 	 * is an approximation that will work fine for small window away from the poles, but
 	 * keep in mind that, for example in the northern hemisphere, the top of the rectangle
-	 * is less wide than the bottom of the rectangle, with the middle of the rectangle's width
+	 * is narrower than the bottom of the rectangle, with the middle of the rectangle's width
 	 * being somewhere in between. 
 	 * 
 	 * @param center the center point of the window.
@@ -88,12 +87,13 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	 * @param deltaLng the span of the window in longitude in degrees.
 	 */
 	public void setWindow(LatLng center, double deltaLat, double deltaLng) {
-		if (deltaLat == Double.NaN || deltaLat == Double.POSITIVE_INFINITY
-				|| deltaLat == Double.NEGATIVE_INFINITY)
+		if (center == null)
+			throw new IllegalArgumentException("Invalid center point.");
+		if (Double.isNaN(deltaLat) || Double.isInfinite(deltaLat))
 			throw new IllegalArgumentException("Invalid latitude delta.");
-		if (deltaLng == Double.NaN || deltaLng == Double.POSITIVE_INFINITY
-				|| deltaLng == Double.NEGATIVE_INFINITY)
+		if (Double.isNaN(deltaLng) || Double.isInfinite(deltaLng))
 			throw new IllegalArgumentException("Invalid longitude delta.");
+
 		double dlat = min(abs(deltaLat), 180.0);
 		this.setLatWindow(center.getLatitude(), dlat);
 
@@ -101,8 +101,6 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 		this.setLngWindow(center.getLongitude(), dlng);
 
 		this.center = center;
-		this.latitudeDelta = dlat;
-		this.longitudeDelta = dlng;
 	}
 
 	/**
@@ -111,8 +109,9 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	private void setLatWindow(double centerLat, double deltaLat) {
 		double lat1 = LatLngTool.normalizeLatitude(centerLat + (deltaLat / 2.0));
 		double lat2 = LatLngTool.normalizeLatitude(centerLat - (deltaLat / 2.0));
-		this.maxLatitude = Math.max(lat1, lat2);
-		this.minLatitude = Math.min(lat1, lat2);
+		this.maxLatitude = LatLngConfig.doubleToLong(Math.max(lat1, lat2));
+		this.minLatitude = LatLngConfig.doubleToLong(Math.min(lat1, lat2));
+		this.latitudeDelta = LatLngConfig.doubleToLong(deltaLat);
 	}
 
 	/**
@@ -128,34 +127,27 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 		}
 		lng1 = LatLngTool.normalizeLongitude(lng1);
 		lng2 = LatLngTool.normalizeLongitude(lng2);
-		this.maxLongitude = Math.max(lng1, lng2);
-		this.minLongitude = Math.min(lng1, lng2);
+		this.maxLongitude = LatLngConfig.doubleToLong(Math.max(lng1, lng2));
+		this.minLongitude = LatLngConfig.doubleToLong(Math.min(lng1, lng2));
+		this.longitudeDelta = LatLngConfig.doubleToLong(deltaLng);
 	}
 
 	@Override
 	public boolean contains(LatLng point) {
 
-		boolean onLatLine = LatLng.degreesEqual(point.getLatitude(), maxLatitude)
-				|| LatLng.degreesEqual(point.getLatitude(), minLatitude);
-		if (!onLatLine
-				&& (point.getLatitude() > maxLatitude || point.getLatitude() < minLatitude)) {
+		if (point.getLatitudeInternal() > maxLatitude
+				|| point.getLatitudeInternal() < minLatitude) {
 			return false;
 		}
 
-		if (LatLng.degreesEqual(point.getLongitude(), maxLongitude)
-				|| LatLng.degreesEqual(point.getLongitude(), minLongitude)) {
-			// Passed latitude test, lies on a longitude line.
-			return true;
-		}
-
 		if (crosses180thMeridian) {
-			if (point.getLongitude() < maxLongitude
-					&& point.getLongitude() > minLongitude) {
+			if (point.getLongitudeInternal() < maxLongitude
+					&& point.getLongitudeInternal() > minLongitude) {
 				return false;
 			}
 		} else {
-			if (point.getLongitude() > maxLongitude
-					|| point.getLongitude() < minLongitude) {
+			if (point.getLongitudeInternal() > maxLongitude
+					|| point.getLongitudeInternal() < minLongitude) {
 				return false;
 			}
 		}
@@ -170,17 +162,39 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 			return false;
 		}
 		if (crosses180thMeridian) {
-			if (window.getMaxLongitude() > minLongitude
-					|| window.getMinLongitude() < maxLongitude) {
+			if (window.maxLongitude > minLongitude
+					|| window.minLongitude < maxLongitude) {
 				return false;
 			}
 		} else {
-			if (window.getMaxLongitude() < minLongitude
-					|| window.getMinLongitude() > maxLongitude) {
+			if (window.maxLongitude < minLongitude
+					|| window.minLongitude > maxLongitude) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Returns the height of the window.
+	 * 
+	 * @param unit the length units to return.
+	 * @return the height of the window in the desired units.
+	 */
+	public double getHeight(LengthUnit unit) {
+		return LatLngWindow.latitudeDeltaToLength(LatLngConfig
+				.longToDouble(latitudeDelta), unit);
+	}
+
+	/**
+	 * Returns the width at the mid-line of the window.
+	 * 
+	 * @param unit the length units to return.
+	 * @return the width of the window's mid-line in the desired units
+	 */
+	public double getWidth(LengthUnit unit) {
+		return LatLngWindow.longitudeDeltaToLength(LatLngConfig
+				.longToDouble(longitudeDelta), unit, center.getLatitude());
 	}
 
 	@Override
@@ -204,26 +218,26 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	}
 
 	public double getLatitudeDelta() {
-		return latitudeDelta;
+		return LatLngConfig.longToDouble(latitudeDelta);
 	}
 
 	public double getLongitudeDelta() {
-		return longitudeDelta;
+		return LatLngConfig.longToDouble(longitudeDelta);
 	}
 
 	public double getMinLatitude() {
-		return minLatitude;
+		return LatLngConfig.longToDouble(minLatitude);
 	}
 
 	public double getMaxLatitude() {
-		return maxLatitude;
+		return LatLngConfig.longToDouble(maxLatitude);
 	}
 
 	public double getMinLongitude() {
-		return minLongitude;
+		return LatLngConfig.longToDouble(minLongitude);
 	}
 
 	public double getMaxLongitude() {
-		return maxLongitude;
+		return LatLngConfig.longToDouble(maxLongitude);
 	}
 }
