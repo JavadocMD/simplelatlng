@@ -8,3 +8,5 @@ syntax: regexp
 Thumbs.db$
 syntax: regexp
 ^cobertura\.ser$
+syntax: regexp
+^target$
