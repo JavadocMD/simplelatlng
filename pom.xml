@@ -1,0 +1,163 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>simplelatlng</groupId>
+	<artifactId>simplelatlng</artifactId>
+	<packaging>jar</packaging>
+	<version>0.0.2</version>
+	
+	<name>SimpleLatLng</name>
+	<description>Simple Java implementation of common latitude and longitude calculations.</description>
+	<url>http://code.google.com/p/simplelatlng/</url>
+	<inceptionYear>2010</inceptionYear>
+	
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<build>
+		<plugins>
+			<!-- Compiler -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			
+			<!-- Jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Built-By>${user.name}</Built-By>
+							<Implementation-Title>${pom.name}</Implementation-Title>
+							<Implementation-Version>${pom.version}</Implementation-Version>
+							<Built-Date>${buildNumber}</Built-Date>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			
+			<!-- Generate build timestamp -->
+			<plugin>
+				<groupId>org.codehaus.groovy.maven</groupId>
+				<artifactId>gmaven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<source>
+								import java.util.Date
+								import java.text.MessageFormat
+								project.properties['buildNumber'] = MessageFormat.format("{0,date,yyyy-MM-dd HH:mm:ss}", new Date())
+							</source>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<!-- Cobertura -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>LATEST</version>
+				<configuration>
+					<instrumentation>
+						<excludes>
+							<exclude>**/*Test.class</exclude>
+						</excludes>
+					</instrumentation>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<!-- Source jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>LATEST</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Built-By>${user.name}</Built-By>
+							<Implementation-Title>${pom.name}</Implementation-Title>
+							<Implementation-Version>${pom.version}</Implementation-Version>
+							<Built-Date>${buildNumber}</Built-Date>
+						</manifestEntries>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<!-- Javadoc jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>LATEST</version>
+				<configuration>
+					<overview>${basedir}/src/main/java/overview.html</overview>
+					<archive>
+						<manifestEntries>
+							<Built-By>${user.name}</Built-By>
+							<Implementation-Title>${pom.name}</Implementation-Title>
+							<Implementation-Version>${pom.version}</Implementation-Version>
+							<Built-Date>${buildNumber}</Built-Date>
+						</manifestEntries>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<scm>
+		<connection>scm:hg:https://simplelatlng.googlecode.com/hg/</connection>
+		<developerConnection>scm:hg:https://simplelatlng.googlecode.com/hg/</developerConnection>
+		<url>http://code.google.com/p/simplelatlng/source/browse/</url>
+	</scm>
+</project>
