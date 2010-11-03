@@ -5,7 +5,7 @@
 	<property name="version"        value="0.0.2" />
 	
 	<property name="java.dir"       value="${basedir}/src/main/java" />
-	<property name="resource.dir"   value="${basedir}/src/main/resources" />
+	<property name="resources.dir"  value="${basedir}/src/main/resources" />
 	<property name="test.dir"		value="${basedir}/src/test/java" />
 	<property name="dist.dir"       value="${basedir}/dist" />
 	<property name="work.dir"		value="${basedir}/work" />
@@ -96,7 +96,7 @@
 		</copy>
 		
 		<copy todir="${dest}/META-INF">
-			<fileset dir="${basedir}">
+			<fileset dir="${resources.dir}">
 				<include name="LICENSE.txt" />
 				<include name="NOTICE.txt" />
 				<include name="README.txt" />
