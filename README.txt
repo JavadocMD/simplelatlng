@@ -1,5 +1,7 @@
 SimpleLatLng README file
 
+Project Site: http://code.google.com/p/simplelatlng/
+
 INTRODUCTION
 
 SimpleLatLng provides a simple, lightweight library for common latitude 
@@ -11,6 +13,7 @@ With this library, you get the following:
   2. methods to calculate the approximate distance between two points,
   3. classes that specify windows of varying shapes for testing whether 
      or not a point lies within the window.
+  4. a Geohash implementation. [http://en.wikipedia.org/wiki/Geohash]
      
 In short, if you have looked at other geo-spatial libraries in Java and 
 thought "this is way more than I need", this library might be for you!
