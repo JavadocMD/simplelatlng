@@ -136,7 +136,7 @@ public class Geohasher {
 	 * Geohashes a latitude and longitude.
 	 * 
 	 * @param point the point to hash.
-	 * @return the hash string to the set character precision: {@link PRECISION}.
+	 * @return the hash string to the set character precision: {@link #PRECISION}.
 	 */
 	public static String hash(LatLng point) {
 		return bitsToHash(interleave(doubleToBits(point.getLongitude(), MAX_LNG),
