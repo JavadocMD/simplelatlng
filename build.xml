@@ -6,7 +6,7 @@
 	
 	<property name="java.dir"       value="${basedir}/src/main/java" />
 	<property name="resource.dir"   value="${basedir}/src/main/resources" />
-	<property name="test.dir"		value="${basedir}/src/main/test" />
+	<property name="test.dir"		value="${basedir}/src/test/java" />
 	<property name="dist.dir"       value="${basedir}/dist" />
 	<property name="work.dir"		value="${basedir}/work" />
 	<property name="jar.work.dir"	value="${work.dir}/jar" />
