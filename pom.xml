@@ -11,7 +11,7 @@
 	
 	<name>SimpleLatLng</name>
 	<description>Simple Java implementation of common latitude and longitude calculations.</description>
-	<url>http://code.google.com/p/simplelatlng/</url>
+	<url>http://code.google.com/p/simplelatlng</url>
 	<inceptionYear>2010</inceptionYear>
 	
 	<licenses>
@@ -160,4 +160,16 @@
 		<developerConnection>scm:hg:https://simplelatlng.googlecode.com/hg/</developerConnection>
 		<url>http://code.google.com/p/simplelatlng/source/browse/</url>
 	</scm>
+	
+	<developers>
+		<developer>
+			<id>tylercoles</id>
+			<name>Tyler Coles</name>
+			<email>tylercoles@gmail.com</email>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
 </project>
