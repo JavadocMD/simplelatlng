@@ -4,7 +4,7 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>simplelatlng</groupId>
+	<groupId>com.javadocmd</groupId>
 	<artifactId>simplelatlng</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1.0</version>
@@ -21,6 +21,12 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>5</version>
+	</parent>
 	
 	<build>
 		<plugins>
@@ -158,7 +164,7 @@
 	<scm>
 		<connection>scm:hg:https://simplelatlng.googlecode.com/hg/</connection>
 		<developerConnection>scm:hg:https://simplelatlng.googlecode.com/hg/</developerConnection>
-		<url>http://code.google.com/p/simplelatlng/source/browse/</url>
+		<url>http://simplelatlng.googlecode.com/hg/</url>
 	</scm>
 	
 	<developers>
