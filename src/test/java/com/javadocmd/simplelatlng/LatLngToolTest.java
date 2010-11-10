@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package simplelatlng;
+package com.javadocmd.simplelatlng;
 
+import static com.javadocmd.simplelatlng.LatLngTool.distance;
+import static com.javadocmd.simplelatlng.LatLngTool.distanceInRadians;
+import static com.javadocmd.simplelatlng.LatLngTool.normalizeLatitude;
+import static com.javadocmd.simplelatlng.LatLngTool.normalizeLongitude;
 import static org.junit.Assert.assertEquals;
-import static simplelatlng.LatLngTool.distance;
-import static simplelatlng.LatLngTool.distanceInRadians;
-import static simplelatlng.LatLngTool.normalizeLatitude;
-import static simplelatlng.LatLngTool.normalizeLongitude;
 
 import org.junit.Test;
 
-import simplelatlng.util.LatLngConfig;
-import simplelatlng.util.LengthUnit;
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.util.LatLngConfig;
+import com.javadocmd.simplelatlng.util.LengthUnit;
+
 
 public class LatLngToolTest {
 

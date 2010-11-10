@@ -7,7 +7,7 @@
 	<groupId>simplelatlng</groupId>
 	<artifactId>simplelatlng</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.2</version>
+	<version>0.1.0</version>
 	
 	<name>SimpleLatLng</name>
 	<description>Simple Java implementation of common latitude and longitude calculations.</description>

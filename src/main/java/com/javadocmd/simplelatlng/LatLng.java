@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package simplelatlng;
+package com.javadocmd.simplelatlng;
 
 import java.util.Random;
 
-import simplelatlng.util.LatLngConfig;
+import com.javadocmd.simplelatlng.util.LatLngConfig;
+
 
 /**
  * <p>A representation of a single point in latitude and longitude.
@@ -52,7 +53,7 @@ public class LatLng {
 
 	/**
 	 * Tests whether two angles fall within the tolerance
-	 * allowed in {@link simplelatlng.util.LatLngConfig}. Ignores
+	 * allowed in {@link com.javadocmd.simplelatlng.util.LatLngConfig}. Ignores
 	 * NaN and infinite values, returning false in either case.
 	 * 
 	 * @param degree1 one degree angle.

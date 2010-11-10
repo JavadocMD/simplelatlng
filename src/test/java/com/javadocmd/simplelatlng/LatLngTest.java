@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package simplelatlng;
+package com.javadocmd.simplelatlng;
 
+import static com.javadocmd.simplelatlng.LatLng.degreesEqual;
 import static org.junit.Assert.*;
-import static simplelatlng.LatLng.degreesEqual;
 
 import java.util.Random;
 
 import org.junit.Test;
 
-import simplelatlng.util.LatLngConfig;
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.util.LatLngConfig;
+
 
 public class LatLngTest {
 

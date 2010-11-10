@@ -1,12 +1,16 @@
-package simplelatlng;
+package com.javadocmd.simplelatlng;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 
-import simplelatlng.util.LengthUnit;
-import simplelatlng.window.CircularWindow;
-import simplelatlng.window.RectangularWindow;
+import com.javadocmd.simplelatlng.Geohasher;
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.LatLngTool;
+import com.javadocmd.simplelatlng.util.LengthUnit;
+import com.javadocmd.simplelatlng.window.CircularWindow;
+import com.javadocmd.simplelatlng.window.RectangularWindow;
+
 
 /**
  * Basic benchmarking test. Repeats the critical functions

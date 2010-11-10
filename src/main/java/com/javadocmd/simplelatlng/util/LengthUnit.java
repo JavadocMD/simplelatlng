@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package simplelatlng.util;
+package com.javadocmd.simplelatlng.util;
 
 /**
  * A utility class for handling units and unit conversions 
