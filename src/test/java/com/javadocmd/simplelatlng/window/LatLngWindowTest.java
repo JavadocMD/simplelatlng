@@ -1,4 +1,4 @@
-package simplelatlng.window;
+package com.javadocmd.simplelatlng.window;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -12,7 +12,11 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.window.CircularWindow;
+import com.javadocmd.simplelatlng.window.FilterHelper;
+import com.javadocmd.simplelatlng.window.RectangularWindow;
+
 
 public class LatLngWindowTest {
 

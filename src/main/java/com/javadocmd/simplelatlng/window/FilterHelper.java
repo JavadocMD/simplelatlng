@@ -1,6 +1,6 @@
-package simplelatlng.window;
+package com.javadocmd.simplelatlng.window;
 
-import simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.LatLng;
 
 /**
  * An abstract class to help LatLngWindows with the task of 

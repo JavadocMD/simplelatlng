@@ -1,4 +1,4 @@
-package simplelatlng;
+package com.javadocmd.simplelatlng;
 
 import java.util.BitSet;
 import java.util.HashMap;

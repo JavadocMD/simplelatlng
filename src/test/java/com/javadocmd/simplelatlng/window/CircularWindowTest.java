@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package simplelatlng.window;
+package com.javadocmd.simplelatlng.window;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,9 +21,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import simplelatlng.LatLng;
-import simplelatlng.util.LatLngConfig;
-import simplelatlng.util.LengthUnit;
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.util.LatLngConfig;
+import com.javadocmd.simplelatlng.util.LengthUnit;
+import com.javadocmd.simplelatlng.window.CircularWindow;
+
 
 public class CircularWindowTest {
 

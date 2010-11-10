@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package simplelatlng.window;
+package com.javadocmd.simplelatlng.window;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
-import simplelatlng.LatLng;
-import simplelatlng.LatLngTool;
-import simplelatlng.util.LatLngConfig;
-import simplelatlng.util.LengthUnit;
+
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.LatLngTool;
+import com.javadocmd.simplelatlng.util.LatLngConfig;
+import com.javadocmd.simplelatlng.util.LengthUnit;
+
 
 /**
  * <p>A "pseudo-rectangular" window bounded by a minimum and maximum latitude

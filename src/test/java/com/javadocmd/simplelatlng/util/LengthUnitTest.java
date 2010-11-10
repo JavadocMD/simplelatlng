@@ -1,7 +1,7 @@
-package simplelatlng.util;
+package com.javadocmd.simplelatlng.util;
 
+import static com.javadocmd.simplelatlng.util.LengthUnit.*;
 import static org.junit.Assert.*;
-import static simplelatlng.util.LengthUnit.*;
 
 import org.junit.Test;
 

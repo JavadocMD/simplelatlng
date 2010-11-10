@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package simplelatlng;
+package com.javadocmd.simplelatlng;
 
-import simplelatlng.util.LatLngConfig;
-import simplelatlng.util.LengthUnit;
+import com.javadocmd.simplelatlng.util.LatLngConfig;
+import com.javadocmd.simplelatlng.util.LengthUnit;
 
 /**
  * <p>Primary calculations and tools.</p> 
@@ -28,7 +28,7 @@ import simplelatlng.util.LengthUnit;
  * by default this library uses the mean radius of the Earth (6371.009 km). 
  * If your calculations are localized to a particular region of the Earth, 
  * there may be values to use for this radius which will yield more accurate 
- * results. To set the radius used by this library, see {@link simplelatlng.util.LatLngConfig}.</p> 
+ * results. To set the radius used by this library, see {@link com.javadocmd.simplelatlng.util.LatLngConfig}.</p> 
  * 
  * @author Tyler Coles
  */
