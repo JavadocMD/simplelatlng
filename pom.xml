@@ -103,7 +103,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>LATEST</version>
+				<version>2.1.2</version>
 				<configuration>
 					<archive>
 						<manifestEntries>
@@ -128,7 +128,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>LATEST</version>
+				<version>2.7</version>
 				<configuration>
 					<overview>${basedir}/src/main/java/overview.html</overview>
 					<archive>
