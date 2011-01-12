@@ -25,7 +25,6 @@ import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
 import com.javadocmd.simplelatlng.window.RectangularWindow;
 
-
 public class RectangularWindowTest {
 
 	@Test
@@ -74,6 +73,30 @@ public class RectangularWindowTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testRectangularWindow6() {
 		new RectangularWindow(new LatLng(0, 0), 10, Double.NaN);
+	}
+
+	@Test
+	public void testRectangularWindow7() {
+		double t = LatLngConfig.DEGREE_TOLERANCE;
+		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
+				-25.136718), 141.826753, 309.726562);
+		assertEquals(-179.999999, w.getMinLongitude(), t);
+		assertEquals(129.726563, w.getMaxLongitude(), t);
+		assertEquals(-47.833645, w.getMinLatitude(), t);
+		assertEquals(90, w.getMaxLatitude(), t);
+		assertFalse(w.crosses180thMeridian());
+	}
+
+	@Test
+	public void testRectangularWindow8() {
+		double t = LatLngConfig.DEGREE_TOLERANCE;
+		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
+				-30.136718), 141.826753, 309.726562);
+		assertEquals(124.726563, w.getMinLongitude(), t);
+		assertEquals(175.000001, w.getMaxLongitude(), t);
+		assertEquals(-47.833645, w.getMinLatitude(), t);
+		assertEquals(90, w.getMaxLatitude(), t);
+		assertTrue(w.crosses180thMeridian());
 	}
 
 	@Test
