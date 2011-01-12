@@ -23,7 +23,6 @@ import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 
-
 /**
  * <p>A "pseudo-rectangular" window bounded by a minimum and maximum latitude
  * and a minimum and maximum longitude. (The larger the window, the less rectangular 
@@ -241,5 +240,17 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 
 	public double getMaxLongitude() {
 		return LatLngConfig.longToDouble(maxLongitude);
+	}
+
+	@Override
+	public String toString() {
+		return String.format(
+				"center: %s; lat range: [%s,%s]; lng range: [%s,%s]; meridian? %s",
+				getCenter().toString(), LatLngConfig.DEGREE_FORMAT
+						.format(getMinLatitude()), LatLngConfig.DEGREE_FORMAT
+						.format(getMaxLatitude()), LatLngConfig.DEGREE_FORMAT
+						.format(getMinLongitude()), LatLngConfig.DEGREE_FORMAT
+						.format(getMaxLongitude()), Boolean
+						.toString(crosses180thMeridian()));
 	}
 }
