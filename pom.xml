@@ -4,7 +4,7 @@
 	<groupId>com.javadocmd</groupId>
 	<artifactId>simplelatlng</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	
 	<name>SimpleLatLng</name>
 	<description>Simple Java implementation of common latitude and longitude calculations.</description>
