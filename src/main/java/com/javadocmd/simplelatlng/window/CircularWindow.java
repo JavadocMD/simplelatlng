@@ -20,7 +20,6 @@ import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 
-
 /**
  * <p>A circular window. Has the benefit of performing well around poles
  * and regardless of the size of the window. <code>contains()</code> checks
@@ -119,5 +118,11 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 			throw new IllegalArgumentException("Invalid radius given.");
 		this.radius = LatLngConfig
 				.doubleToLong(Math.min(Math.abs(radius), 360.0));
+	}
+
+	@Override
+	public String toString() {
+		return String.format("center: %s; radius: %s degress", getCenter()
+				.toString(), LatLngConfig.DEGREE_FORMAT.format(getRadius()));
 	}
 }
