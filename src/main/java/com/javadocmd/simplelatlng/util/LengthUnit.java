@@ -39,7 +39,11 @@ public enum LengthUnit {
 	/**
 	 * Kilometers, the primary unit.
 	 */
-	KILOMETER(1.0);
+	KILOMETER(1.0),
+	/**
+	 * Meters, for ease of use.
+	 */
+	METER(1000.0);
 
 	/**
 	 * The primary length unit. All scale factors are relative
