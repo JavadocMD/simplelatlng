@@ -68,16 +68,28 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	 * being somewhere in between. 
 	 * 
 	 * @param center the center point of the window.
-	 * @param width the approximate width of the window in <code>LenghtUnit</code>s. 
+	 * @param width the approximate width of the window in <code>LengthUnit</code>s. 
 	 * @param height the height of the window in <code>LenghtUnit</code>s.
 	 * @param unit the units for <code>width</code> and <code>height</code>.
 	 */
 	public RectangularWindow(LatLng center, double width, double height,
 			LengthUnit unit) {
 		double deltaLat = LatLngWindow.lengthToLatitudeDelta(height, unit);
-		double deltaLng = LatLngWindow.lengthToLongitudeDelta(width, unit,
-				deltaLat);
+		double deltaLng = LatLngWindow.lengthToLongitudeDelta(width, unit, center
+				.getLatitude());
 		this.setWindow(center, deltaLat, deltaLng);
+	}
+
+	/**
+	 * Creates a psuedo-square window. This is a convenience method for creating a 
+	 * window with the same height and width as in {@link #RectangularWindow(LatLng, double, double, LengthUnit)}.
+	 * 
+	 * @param center the center point of the window.
+	 * @param widthHeight the approximate height and width of the window in <code>LengthUnit</code>s.
+	 * @param unit the units for <code>widthHeight</code>.
+	 */
+	public RectangularWindow(LatLng center, double widthHeight, LengthUnit unit) {
+		this(center, widthHeight, widthHeight, unit);
 	}
 
 	/**
