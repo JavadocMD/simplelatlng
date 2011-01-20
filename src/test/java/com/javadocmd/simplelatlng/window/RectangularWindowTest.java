@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
-import com.javadocmd.simplelatlng.window.RectangularWindow;
+import com.javadocmd.simplelatlng.util.LengthUnit;
 
 public class RectangularWindowTest {
 
@@ -92,6 +92,34 @@ public class RectangularWindowTest {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
 		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
 				-30.136718), 141.826753, 309.726562);
+		assertEquals(124.726563, w.getMinLongitude(), t);
+		assertEquals(175.000001, w.getMaxLongitude(), t);
+		assertEquals(-47.833645, w.getMinLatitude(), t);
+		assertEquals(90, w.getMaxLatitude(), t);
+		assertTrue(w.crosses180thMeridian());
+	}
+
+	@Test
+	public void testRectangularWindow9() {
+		double t = LatLngConfig.DEGREE_TOLERANCE;
+		double width = 31683.495744;
+		double height = 15770.437674;
+		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
+				-30.136718), width, height, LengthUnit.KILOMETER);
+		assertEquals(124.726563, w.getMinLongitude(), t);
+		assertEquals(175.000001, w.getMaxLongitude(), t);
+		assertEquals(-47.833645, w.getMinLatitude(), t);
+		assertEquals(90, w.getMaxLatitude(), t);
+		assertTrue(w.crosses180thMeridian());
+	}
+
+	@Test
+	public void testRectangularWindow10() {
+		double t = LatLngConfig.DEGREE_TOLERANCE;
+		double width = 19687.211770;
+		double height = 9799.295782;
+		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
+				-30.136718), width, height, LengthUnit.MILE);
 		assertEquals(124.726563, w.getMinLongitude(), t);
 		assertEquals(175.000001, w.getMaxLongitude(), t);
 		assertEquals(-47.833645, w.getMinLatitude(), t);
