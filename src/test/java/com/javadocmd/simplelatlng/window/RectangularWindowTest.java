@@ -31,8 +31,8 @@ public class RectangularWindowTest {
 	public void testRectangularWindow1() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
 		RectangularWindow w = new RectangularWindow(new LatLng(45, -67.5), 30, 45);
-		assertEquals(-90, w.getMinLongitude(), t);
-		assertEquals(-45, w.getMaxLongitude(), t);
+		assertEquals(-90, w.getLeftLongitude(), t);
+		assertEquals(-45, w.getRightLongitude(), t);
 		assertEquals(30, w.getMinLatitude(), t);
 		assertEquals(60, w.getMaxLatitude(), t);
 		assertFalse(w.crosses180thMeridian());
@@ -42,8 +42,8 @@ public class RectangularWindowTest {
 	public void testRectangularWindow2() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
 		RectangularWindow w = new RectangularWindow(new LatLng(-90, 0), 30, 30);
-		assertEquals(-15, w.getMinLongitude(), t);
-		assertEquals(15, w.getMaxLongitude(), t);
+		assertEquals(-15, w.getLeftLongitude(), t);
+		assertEquals(15, w.getRightLongitude(), t);
 		assertEquals(-90, w.getMinLatitude(), t);
 		assertEquals(-75, w.getMaxLatitude(), t);
 		assertFalse(w.crosses180thMeridian());
@@ -53,8 +53,8 @@ public class RectangularWindowTest {
 	public void testRectangularWindow3() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
 		RectangularWindow w = new RectangularWindow(new LatLng(0, 180), 40, 20);
-		assertEquals(-170, w.getMinLongitude(), t);
-		assertEquals(170, w.getMaxLongitude(), t);
+		assertEquals(-170, w.getRightLongitude(), t);
+		assertEquals(170, w.getLeftLongitude(), t);
 		assertEquals(-20, w.getMinLatitude(), t);
 		assertEquals(20, w.getMaxLatitude(), t);
 		assertTrue(w.crosses180thMeridian());
@@ -72,56 +72,66 @@ public class RectangularWindowTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testRectangularWindow6() {
+		new RectangularWindow(new LatLng(0, 180), 10, Double.NEGATIVE_INFINITY);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRectangularWindow7() {
 		new RectangularWindow(new LatLng(0, 0), 10, Double.NaN);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testRectangularWindow8() {
+		new RectangularWindow(new LatLng(0, 0), Double.NaN, 10);
+	}
+
 	@Test
-	public void testRectangularWindow7() {
+	public void testRectangularWindow9() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
 		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
 				-25.136718), 141.826753, 309.726562);
-		assertEquals(-179.999999, w.getMinLongitude(), t);
-		assertEquals(129.726563, w.getMaxLongitude(), t);
+		assertEquals(-179.999999, w.getLeftLongitude(), t);
+		assertEquals(129.726563, w.getRightLongitude(), t);
 		assertEquals(-47.833645, w.getMinLatitude(), t);
 		assertEquals(90, w.getMaxLatitude(), t);
 		assertFalse(w.crosses180thMeridian());
 	}
 
 	@Test
-	public void testRectangularWindow8() {
+	public void testRectangularWindow10() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
 		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
 				-30.136718), 141.826753, 309.726562);
-		assertEquals(124.726563, w.getMinLongitude(), t);
-		assertEquals(175.000001, w.getMaxLongitude(), t);
+		assertEquals(175.000001, w.getLeftLongitude(), t);
+		assertEquals(124.726563, w.getRightLongitude(), t);
 		assertEquals(-47.833645, w.getMinLatitude(), t);
 		assertEquals(90, w.getMaxLatitude(), t);
 		assertTrue(w.crosses180thMeridian());
 	}
 
 	@Test
-	public void testRectangularWindow9() {
+	public void testRectangularWindow11() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
 		double width = 31683.495744;
 		double height = 15770.437674;
 		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
 				-30.136718), width, height, LengthUnit.KILOMETER);
-		assertEquals(124.726563, w.getMinLongitude(), t);
-		assertEquals(175.000001, w.getMaxLongitude(), t);
+		assertEquals(175.000001, w.getLeftLongitude(), t);
+		assertEquals(124.726563, w.getRightLongitude(), t);
 		assertEquals(-47.833645, w.getMinLatitude(), t);
 		assertEquals(90, w.getMaxLatitude(), t);
 		assertTrue(w.crosses180thMeridian());
 	}
 
 	@Test
-	public void testRectangularWindow10() {
+	public void testRectangularWindow12() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
 		double width = 19687.211770;
 		double height = 9799.295782;
 		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
 				-30.136718), width, height, LengthUnit.MILE);
-		assertEquals(124.726563, w.getMinLongitude(), t);
-		assertEquals(175.000001, w.getMaxLongitude(), t);
+		assertEquals(175.000001, w.getLeftLongitude(), t);
+		assertEquals(124.726563, w.getRightLongitude(), t);
 		assertEquals(-47.833645, w.getMinLatitude(), t);
 		assertEquals(90, w.getMaxLatitude(), t);
 		assertTrue(w.crosses180thMeridian());
@@ -195,7 +205,19 @@ public class RectangularWindowTest {
 	}
 
 	@Test
-	public void testOverlaps() {
+	public void testContains4() {
+		RectangularWindow window = new RectangularWindow(new LatLng(0, 180), 40,
+				40);
+		assertTrue(window.contains(new LatLng(0, 180)));
+		assertTrue(window.contains(new LatLng(0, 200)));
+		assertTrue(window.contains(new LatLng(0, -160)));
+		assertTrue(window.contains(new LatLng(0, 160)));
+		assertFalse(window.contains(new LatLng(0, -159)));
+		assertFalse(window.contains(new LatLng(0, 159)));
+	}
+
+	@Test
+	public void testOverlaps1() {
 		RectangularWindow w1 = new RectangularWindow(new LatLng(0, 0), 10, 10);
 		RectangularWindow w2 = new RectangularWindow(new LatLng(0, 0), 10, 10);
 		assertTrue(w1.overlaps(w2));
@@ -206,6 +228,115 @@ public class RectangularWindowTest {
 		assertTrue(w1.overlaps(w4));
 		RectangularWindow w5 = new RectangularWindow(new LatLng(11, 11), 10, 10);
 		assertFalse(w1.overlaps(w5));
+		RectangularWindow w6 = new RectangularWindow(new LatLng(-5, -5), 10, 10);
+		assertTrue(w1.overlaps(w6));
+		assertFalse(w4.overlaps(w6));
+		assertFalse(w6.overlaps(w4));
+		RectangularWindow w7 = new RectangularWindow(new LatLng(-5, 5), 10, 10);
+		assertTrue(w1.overlaps(w7));
+		assertFalse(w4.overlaps(w7));
+		assertFalse(w7.overlaps(w4));
+	}
+
+	@Test
+	public void testOverlaps2() {
+		RectangularWindow w0 = new RectangularWindow(new LatLng(0, 0), 2, 2);
+		RectangularWindow a = new RectangularWindow(new LatLng(3, 1), 2, 2);
+		RectangularWindow b = new RectangularWindow(new LatLng(1, 3), 2, 2);
+		RectangularWindow c = new RectangularWindow(new LatLng(-1, 3), 2, 2);
+		RectangularWindow d = new RectangularWindow(new LatLng(-3, 1), 2, 2);
+		RectangularWindow e = new RectangularWindow(new LatLng(-3, -1), 2, 2);
+		RectangularWindow f = new RectangularWindow(new LatLng(-1, -3), 2, 2);
+		RectangularWindow g = new RectangularWindow(new LatLng(1, -3), 2, 2);
+		RectangularWindow h = new RectangularWindow(new LatLng(3, -1), 2, 2);
+
+		assertFalse(w0.overlaps(a));
+		assertFalse(w0.overlaps(b));
+		assertFalse(w0.overlaps(c));
+		assertFalse(w0.overlaps(d));
+		assertFalse(w0.overlaps(e));
+		assertFalse(w0.overlaps(f));
+		assertFalse(w0.overlaps(g));
+		assertFalse(w0.overlaps(h));
+
+		assertFalse(a.overlaps(w0));
+		assertFalse(b.overlaps(w0));
+		assertFalse(c.overlaps(w0));
+		assertFalse(d.overlaps(w0));
+		assertFalse(e.overlaps(w0));
+		assertFalse(f.overlaps(w0));
+		assertFalse(g.overlaps(w0));
+		assertFalse(h.overlaps(w0));
+	}
+
+	@Test
+	public void testOverlaps3() {
+		RectangularWindow w0 = new RectangularWindow(new LatLng(0, 180), 2, 2);
+		RectangularWindow a = new RectangularWindow(new LatLng(3, 181), 2, 2);
+		RectangularWindow b = new RectangularWindow(new LatLng(1, 183), 2, 2);
+		RectangularWindow c = new RectangularWindow(new LatLng(-1, 183), 2, 2);
+		RectangularWindow d = new RectangularWindow(new LatLng(-3, 181), 2, 2);
+		RectangularWindow e = new RectangularWindow(new LatLng(-3, 179), 2, 2);
+		RectangularWindow f = new RectangularWindow(new LatLng(-1, 177), 2, 2);
+		RectangularWindow g = new RectangularWindow(new LatLng(1, 177), 2, 2);
+		RectangularWindow h = new RectangularWindow(new LatLng(3, 179), 2, 2);
+
+		assertFalse(w0.overlaps(a));
+		assertFalse(w0.overlaps(b));
+		assertFalse(w0.overlaps(c));
+		assertFalse(w0.overlaps(d));
+		assertFalse(w0.overlaps(e));
+		assertFalse(w0.overlaps(f));
+		assertFalse(w0.overlaps(g));
+		assertFalse(w0.overlaps(h));
+
+		assertFalse(a.overlaps(w0));
+		assertFalse(b.overlaps(w0));
+		assertFalse(c.overlaps(w0));
+		assertFalse(d.overlaps(w0));
+		assertFalse(e.overlaps(w0));
+		assertFalse(f.overlaps(w0));
+		assertFalse(g.overlaps(w0));
+		assertFalse(h.overlaps(w0));
+	}
+
+	@Test
+	public void testOverlaps4() {
+		RectangularWindow w1 = new RectangularWindow(new LatLng(0, 180), 2, 2);
+		RectangularWindow w2 = new RectangularWindow(new LatLng(0, 180), 2, 1);
+		RectangularWindow w3 = new RectangularWindow(new LatLng(0, 180), 2, 4);
+
+		assertTrue(w1.overlaps(w2));
+		assertTrue(w2.overlaps(w1));
+
+		assertTrue(w1.overlaps(w3));
+		assertTrue(w3.overlaps(w1));
+
+		assertTrue(w3.overlaps(w2));
+		assertTrue(w2.overlaps(w3));
+
+		RectangularWindow w4 = new RectangularWindow(new LatLng(0, 178), 2, 2);
+		assertTrue(w1.overlaps(w4));
+		assertFalse(w2.overlaps(w4));
+		assertTrue(w3.overlaps(w4));
+
+		assertTrue(w4.overlaps(w1));
+		assertFalse(w4.overlaps(w2));
+		assertTrue(w4.overlaps(w3));
+	}
+
+	@Test
+	public void testGetHeight() {
+		RectangularWindow w = new RectangularWindow(new LatLng(0, 0), 111.195,
+				111.195, LengthUnit.KILOMETER);
+		assertEquals(111.195, w.getHeight(LengthUnit.KILOMETER), 0.001);
+	}
+
+	@Test
+	public void testGetWidth() {
+		RectangularWindow w = new RectangularWindow(new LatLng(0, 0), 111.195,
+				LengthUnit.KILOMETER);
+		assertEquals(111.195, w.getWidth(LengthUnit.KILOMETER), 0.001);
 	}
 
 	@Test

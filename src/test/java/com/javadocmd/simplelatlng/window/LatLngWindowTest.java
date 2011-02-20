@@ -28,10 +28,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.util.LengthUnit;
 import com.javadocmd.simplelatlng.window.CircularWindow;
 import com.javadocmd.simplelatlng.window.FilterHelper;
 import com.javadocmd.simplelatlng.window.RectangularWindow;
-
 
 public class LatLngWindowTest {
 
@@ -118,6 +118,22 @@ public class LatLngWindowTest {
 		assertEquals(new LatLng(3, 0), i.next().getPoint());
 		assertEquals(new LatLng(0, 3), i.next().getPoint());
 		assertEquals(5, result.size());
+	}
+
+	@Test
+	public void testLongitudeDeltaToLength() {
+		assertEquals(111.195, LatLngWindow.longitudeDeltaToLength(1.0,
+				LengthUnit.KILOMETER, 0.0), 0.001);
+		assertEquals(78.626, LatLngWindow.longitudeDeltaToLength(1.0,
+				LengthUnit.KILOMETER, 45.0), 0.001);
+	}
+
+	@Test
+	public void testLengthToLongitudeDelta() {
+		assertEquals(1.0, LatLngWindow.lengthToLongitudeDelta(111.195,
+				LengthUnit.KILOMETER, 0.0), 0.001);
+		assertEquals(.707, LatLngWindow.lengthToLongitudeDelta(78.626,
+				LengthUnit.KILOMETER, 0.0), 0.001);
 	}
 
 	/**
