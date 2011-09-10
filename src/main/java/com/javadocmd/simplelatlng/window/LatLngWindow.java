@@ -22,7 +22,6 @@ import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 
-
 /**
  * An interface specifying a region in the latitude/longitude space.
  * Implementations will decide upon the shape of this region. LatLngWindow
@@ -154,8 +153,7 @@ public abstract class LatLngWindow<T extends LatLngWindow<T>> {
 	 */
 	public <E> void filterCopy(Collection<E> source, Collection<E> destination,
 			FilterHelper<E> helper) {
-		for (Iterator<E> i = source.iterator(); i.hasNext();) {
-			E object = i.next();
+		for (E object : source) {
 			if (this.contains(helper.getLatLng(object))) {
 				destination.add(object);
 			}
