@@ -122,7 +122,7 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 
 	@Override
 	public String toString() {
-		return String.format("center: %s; radius: %s degress", getCenter()
+		return String.format("center: %s; radius: %s degrees", getCenter()
 				.toString(), LatLngConfig.DEGREE_FORMAT.format(getRadius()));
 	}
 }
