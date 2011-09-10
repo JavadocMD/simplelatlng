@@ -15,6 +15,8 @@
  */
 package com.javadocmd.simplelatlng.util;
 
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -33,6 +35,8 @@ public class LatLngConfig {
 	public static final double DEGREE_TOLERANCE = 0.000001;
 	public static final NumberFormat DEGREE_FORMAT = new DecimalFormat(
 			"0.000000");
+	public static final MathContext DEGREE_CONTEXT = new MathContext(6,
+			RoundingMode.DOWN);
 
 	/**
 	 * The Earth's mean radius in kilometers. Used as the default radius 
@@ -79,27 +83,5 @@ public class LatLngConfig {
 	}
 
 	private LatLngConfig() {
-	}
-
-	/**
-	 * Function used to convert an angle in degrees to its internal, fixed-precision 
-	 * long representation. Intended for library use only.
-	 * 
-	 * @param value the value to convert.
-	 * @return the long value.
-	 */
-	public static long doubleToLong(double value) {
-		return (long) (value / DEGREE_TOLERANCE);
-	}
-
-	/**
-	 * Function used to convert an angle in degrees to its external double representation.
-	 * Intended for library use only.
-	 * 
-	 * @param value the value to convert.
-	 * @return the double value.
-	 */
-	public static double longToDouble(long value) {
-		return (double) value * DEGREE_TOLERANCE;
 	}
 }

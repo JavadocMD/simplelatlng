@@ -15,6 +15,8 @@
  */
 package com.javadocmd.simplelatlng;
 
+import java.math.BigDecimal;
+
 import com.javadocmd.simplelatlng.util.LatLngConfig;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 
@@ -87,6 +89,22 @@ public class LatLngTool {
 	}
 
 	/**
+	 * Clamp latitude to +/- 90 degrees.
+	 * 
+	 * @param latitude in degrees.
+	 * @return the normalized latitude.
+	 */
+	public static BigDecimal normalizeLatitude(BigDecimal latitude) {
+		if (latitude == null)
+			throw new IllegalArgumentException("Latitude cannot be null.");
+		if (latitude.compareTo(BigDecimal.ZERO) > 0) {
+			return latitude.min(LatLng.DEGREE_90);
+		} else {
+			return latitude.max(LatLng.DEGREE_90.negate());
+		}
+	}
+
+	/**
 	 * Convert longitude to be within the +/- 180 degrees range.
 	 * 
 	 * @param longitude in degrees.
@@ -103,6 +121,27 @@ public class LatLngTool {
 		} else if (longitudeResult < -180) {
 			double diff = longitudeResult + 180;
 			longitudeResult = 180 + diff;
+		}
+		return longitudeResult;
+	}
+
+	/**
+	 * Convert longitude to be within the +/- 180 degrees range.
+	 * 
+	 * @param longitude in degrees.
+	 * @return the normalized longitude.
+	 */
+	public static BigDecimal normalizeLongitude(BigDecimal longitude) {
+		if (longitude == null)
+			throw new IllegalArgumentException("Longitude cannot be null.");
+		BigDecimal longitudeResult = longitude.remainder(LatLng.DEGREE_360,
+				LatLngConfig.DEGREE_CONTEXT);
+		if (longitudeResult.compareTo(LatLng.DEGREE_180) > 0) {
+			longitudeResult = longitudeResult.subtract(LatLng.DEGREE_360,
+					LatLngConfig.DEGREE_CONTEXT);
+		} else if (longitudeResult.compareTo(LatLng.DEGREE_180.negate()) < 0) {
+			longitudeResult = longitudeResult.add(LatLng.DEGREE_360,
+					LatLngConfig.DEGREE_CONTEXT);
 		}
 		return longitudeResult;
 	}

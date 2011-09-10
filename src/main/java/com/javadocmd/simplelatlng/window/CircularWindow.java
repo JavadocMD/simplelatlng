@@ -15,6 +15,8 @@
  */
 package com.javadocmd.simplelatlng.window;
 
+import java.math.BigDecimal;
+
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
@@ -30,7 +32,7 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
 public class CircularWindow extends LatLngWindow<CircularWindow> {
 
 	private LatLng center;
-	private long radius;
+	private BigDecimal radius;
 
 	/**
 	 * Constructs a circular window.
@@ -61,15 +63,17 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 
 	@Override
 	public boolean contains(LatLng point) {
-		return LatLngConfig.doubleToLong(Math.toDegrees(LatLngTool
-				.distanceInRadians(center, point))) <= radius;
+		return new BigDecimal(Math.toDegrees(LatLngTool.distanceInRadians(center,
+				point)), LatLngConfig.DEGREE_CONTEXT).compareTo(radius) <= 0;
 	}
 
 	@Override
 	public boolean overlaps(CircularWindow window) {
-		long angle = LatLngConfig.doubleToLong(Math.toDegrees(LatLngTool
-				.distanceInRadians(this.center, window.getCenter())));
-		return angle <= (this.radius + window.radius);
+		BigDecimal angle = new BigDecimal(Math.toDegrees(LatLngTool
+				.distanceInRadians(this.center, window.getCenter())),
+				LatLngConfig.DEGREE_CONTEXT);
+		BigDecimal combinedRadius = this.radius.add(window.radius);
+		return angle.compareTo(combinedRadius) <= 0;
 	}
 
 	@Override
@@ -94,7 +98,7 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	 * @return the radius in degrees.
 	 */
 	public double getRadius() {
-		return LatLngConfig.longToDouble(radius);
+		return radius.doubleValue();
 	}
 
 	/**
@@ -104,8 +108,7 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	 * @return the radius in the desired length unit.
 	 */
 	public double getRadius(LengthUnit unit) {
-		return LatLngWindow.latitudeDeltaToLength(LatLngConfig
-				.longToDouble(radius), unit);
+		return LatLngWindow.latitudeDeltaToLength(radius.doubleValue(), unit);
 	}
 
 	/**
@@ -116,13 +119,13 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	public void setRadius(double radius) {
 		if (Double.isNaN(radius))
 			throw new IllegalArgumentException("Invalid radius given.");
-		this.radius = LatLngConfig
-				.doubleToLong(Math.min(Math.abs(radius), 360.0));
+		this.radius = new BigDecimal(Math.min(Math.abs(radius), 360.0),
+				LatLngConfig.DEGREE_CONTEXT);
 	}
 
 	@Override
 	public String toString() {
-		return String.format("center: %s; radius: %s degrees", getCenter()
-				.toString(), LatLngConfig.DEGREE_FORMAT.format(getRadius()));
+		return String.format("center: %s; radius: %s degrees", center.toString(),
+				radius.toString());
 	}
 }
