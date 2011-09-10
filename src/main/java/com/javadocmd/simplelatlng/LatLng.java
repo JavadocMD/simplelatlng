@@ -16,6 +16,7 @@
 package com.javadocmd.simplelatlng;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Random;
 
 import com.javadocmd.simplelatlng.util.LatLngConfig;
@@ -35,6 +36,13 @@ public class LatLng implements Serializable {
 
 	private static final long serialVersionUID = 7086953744720769418L;
 
+	public static final BigDecimal DEGREE_90 = new BigDecimal(90,
+			LatLngConfig.DEGREE_CONTEXT);
+	public static final BigDecimal DEGREE_180 = new BigDecimal(180,
+			LatLngConfig.DEGREE_CONTEXT);
+	public static final BigDecimal DEGREE_360 = new BigDecimal(360,
+			LatLngConfig.DEGREE_CONTEXT);
+
 	/**
 	 * Creates a random latitude and longitude. (Not inclusive of (-90, 0))
 	 */
@@ -53,26 +61,8 @@ public class LatLng implements Serializable {
 				(r.nextDouble() * -360.0) + 180.0);
 	}
 
-	/**
-	 * Tests whether two angles fall within the tolerance
-	 * allowed in {@link com.javadocmd.simplelatlng.util.LatLngConfig}. Ignores
-	 * NaN and infinite values, returning false in either case.
-	 * 
-	 * @param degree1 one degree angle.
-	 * @param degree2 another degree angle.
-	 * @return true if they should be considered equal, false otherwise.
-	 */
-	public static boolean degreesEqual(double degree1, double degree2) {
-		if (Double.isNaN(degree1) || Double.isNaN(degree2))
-			return false;
-		if (Double.isInfinite(degree1) || Double.isInfinite(degree2))
-			return false;
-		return LatLngConfig.doubleToLong(degree1) == LatLngConfig
-				.doubleToLong(degree2);
-	}
-
-	private long latitude;
-	private long longitude;
+	private BigDecimal latitude;
+	private BigDecimal longitude;
 
 	/**
 	 * Creates a LatLng point.
@@ -90,16 +80,16 @@ public class LatLng implements Serializable {
 	 * @return latitude in degrees.
 	 */
 	public double getLatitude() {
-		return LatLngConfig.longToDouble(latitude);
+		return latitude.doubleValue();
 	}
 
 	/**
-	 * Get the internal long representation of this point's latitude
-	 * in degrees. Intended for library use only.
+	 * Get latitude for this point in degrees
+	 * as a BigDecimal.
 	 * 
-	 * @return the internal representation of latitude in degrees.
+	 * @return latitude in degrees;
 	 */
-	public long getLatitudeInternal() {
+	public BigDecimal getLatitudeBig() {
 		return latitude;
 	}
 
@@ -109,16 +99,16 @@ public class LatLng implements Serializable {
 	 * @return longitude in degrees.
 	 */
 	public double getLongitude() {
-		return LatLngConfig.longToDouble(longitude);
+		return longitude.doubleValue();
 	}
 
 	/**
-	 * Get the internal long representation of this point's longitude
-	 * in degrees. Intended for library use only.
+	 * Get longitude for this point in degrees
+	 * as a BigDecimal.
 	 * 
-	 * @return the internal representation of longitude in degrees.
+	 * @return longitude in degrees.
 	 */
-	public long getLongitudeInternal() {
+	public BigDecimal getLongitudeBig() {
 		return longitude;
 	}
 
@@ -130,7 +120,7 @@ public class LatLng implements Serializable {
 	 */
 	public void setLatitudeLongitude(double latitude, double longitude) {
 		this.setLatitude(latitude);
-		if (Math.abs(this.latitude) == 90000000L) {
+		if (this.latitude.abs().equals(DEGREE_90)) {
 			// At the poles all longitudes intersect. Simplify for later comparison.
 			this.setLongitude(0);
 		} else {
@@ -145,7 +135,7 @@ public class LatLng implements Serializable {
 		double lat = LatLngTool.normalizeLatitude(latitude);
 		if (Double.isNaN(lat))
 			throw new IllegalArgumentException("Invalid latitude given.");
-		this.latitude = LatLngConfig.doubleToLong(lat);
+		this.latitude = new BigDecimal(lat);
 	}
 
 	/**
@@ -155,7 +145,7 @@ public class LatLng implements Serializable {
 		double lng = LatLngTool.normalizeLongitude(longitude);
 		if (Double.isNaN(lng))
 			throw new IllegalArgumentException("Invalid longitude given.");
-		this.longitude = LatLngConfig.doubleToLong(lng);
+		this.longitude = new BigDecimal(lng);
 	}
 
 	@Override
@@ -166,24 +156,20 @@ public class LatLng implements Serializable {
 			return false;
 
 		LatLng latlng = (LatLng) obj;
-		if (this.latitude != latlng.latitude) {
-			return false;
-		}
+		return this.latitude.equals(latlng.latitude)
+				&& this.longitude.equals(latlng.longitude);
 
-		return this.longitude == latlng.longitude;
 	}
 
 	@Override
 	public int hashCode() {
-		String s = Long.toString(latitude) + "|" + Long.toString(longitude);
+		String s = latitude.toString() + "|" + longitude.toString();
 		return s.hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return String.format("(%s,%s)", LatLngConfig.DEGREE_FORMAT
-				.format(LatLngConfig.longToDouble(this.latitude)),
-				LatLngConfig.DEGREE_FORMAT.format(LatLngConfig
-						.longToDouble(this.longitude)));
+		return String.format("(%s,%s)", this.latitude.toString(),
+				this.longitude.toString());
 	}
 }

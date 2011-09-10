@@ -15,7 +15,6 @@
  */
 package com.javadocmd.simplelatlng;
 
-import static com.javadocmd.simplelatlng.LatLng.degreesEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -106,43 +105,6 @@ public class LatLngTest {
 
 		LatLng l8 = new LatLng(33.987123, -127.839393);
 		assertFalse(l4.equals(l8));
-	}
-
-	@Test
-	public void testDegreesEqual() {
-		assertTrue(degreesEqual(0.0, 0.0));
-		assertTrue(degreesEqual(123.123456, 123.123456));
-		assertTrue(degreesEqual(123456789.123456, 123456789.123456));
-		assertTrue(degreesEqual(123456789.1234560, 123456789.1234569));
-		assertTrue(degreesEqual(0.0, -0.0));
-		assertTrue(degreesEqual(-123456789.123456, -123456789.123456));
-		assertTrue(degreesEqual(-123456789.1234560, -123456789.1234569));
-
-		assertFalse(degreesEqual(0.0, 1.0));
-		assertFalse(degreesEqual(-123, 123));
-		assertFalse(degreesEqual(0.0, 0.1));
-		assertFalse(degreesEqual(0.0, 0.01));
-		assertFalse(degreesEqual(0.0, 0.001));
-		assertFalse(degreesEqual(0.0, 0.0001));
-		assertFalse(degreesEqual(0.0, 0.00001));
-		assertFalse(degreesEqual(0.0, 0.000001));
-		assertTrue(degreesEqual(0.0, 0.0000001));
-		assertTrue(degreesEqual(0.0, 0.000000999999));
-
-		assertFalse(degreesEqual(15, 15.000001));
-		assertFalse(degreesEqual(-15, -15.000001));
-		assertFalse(degreesEqual(-15, 15.000001));
-
-		assertFalse(degreesEqual(0, Double.POSITIVE_INFINITY));
-		assertFalse(degreesEqual(Double.POSITIVE_INFINITY, 0));
-		assertFalse(degreesEqual(Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY));
-
-		assertFalse(degreesEqual(0, Double.NaN));
-		assertFalse(degreesEqual(Double.NaN, 0));
-		assertFalse(degreesEqual(Double.NaN, Double.NaN));
-
-		assertFalse(degreesEqual(Double.NaN, Double.NEGATIVE_INFINITY));
 	}
 
 	@Test

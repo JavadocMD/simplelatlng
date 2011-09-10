@@ -18,6 +18,8 @@ package com.javadocmd.simplelatlng.window;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
+import java.math.BigDecimal;
+
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
@@ -38,12 +40,12 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
  */
 public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 
-	private long latitudeDelta;
-	private long longitudeDelta;
-	private long minLatitude;
-	private long maxLatitude;
-	private long leftLongitude; // Defined as normalized longitude_center - (delta_longitude / 2)
-	private long rightLongitude; // Defined as normalized longitude_center + (delta_longitude / 2)
+	private BigDecimal latitudeDelta;
+	private BigDecimal longitudeDelta;
+	private BigDecimal minLatitude;
+	private BigDecimal maxLatitude;
+	private BigDecimal leftLongitude; // Defined as normalized longitude_center - (delta_longitude / 2)
+	private BigDecimal rightLongitude; // Defined as normalized longitude_center + (delta_longitude / 2)
 	private boolean crosses180thMeridian;
 	private LatLng center;
 
@@ -75,8 +77,8 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	public RectangularWindow(LatLng center, double width, double height,
 			LengthUnit unit) {
 		double deltaLat = LatLngWindow.lengthToLatitudeDelta(height, unit);
-		double deltaLng = LatLngWindow.lengthToLongitudeDelta(width, unit, center
-				.getLatitude());
+		double deltaLng = LatLngWindow.lengthToLongitudeDelta(width, unit,
+				center.getLatitude());
 		this.setWindow(center, deltaLat, deltaLng);
 	}
 
@@ -120,49 +122,58 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	 * Fixes and sets the latitude parameters for the window.
 	 */
 	private void setLatWindow(double centerLat, double deltaLat) {
-		double lat1 = LatLngTool.normalizeLatitude(centerLat + (deltaLat / 2.0));
-		double lat2 = LatLngTool.normalizeLatitude(centerLat - (deltaLat / 2.0));
-		this.maxLatitude = LatLngConfig.doubleToLong(Math.max(lat1, lat2));
-		this.minLatitude = LatLngConfig.doubleToLong(Math.min(lat1, lat2));
-		this.latitudeDelta = LatLngConfig.doubleToLong(deltaLat);
+		BigDecimal lat1 = LatLngTool.normalizeLatitude(new BigDecimal(centerLat
+				+ (deltaLat / 2.0), LatLngConfig.DEGREE_CONTEXT));
+		BigDecimal lat2 = LatLngTool.normalizeLatitude(new BigDecimal(centerLat
+				- (deltaLat / 2.0), LatLngConfig.DEGREE_CONTEXT));
+		this.maxLatitude = lat1.max(lat2);
+		this.minLatitude = lat1.min(lat2);
+		this.latitudeDelta = new BigDecimal(deltaLat, LatLngConfig.DEGREE_CONTEXT);
 	}
+
+	private static final BigDecimal DEGREE_180 = new BigDecimal(180,
+			LatLngConfig.DEGREE_CONTEXT);
 
 	/**
 	 * Fixes and sets the longitude parameters for the window.
 	 */
 	private void setLngWindow(double centerLng, double deltaLng) {
-		double left = centerLng - (deltaLng / 2.0);
-		double right = centerLng + (deltaLng / 2.0);
-		if (LatLngConfig.doubleToLong(right) > 180000000l
-				|| LatLngConfig.doubleToLong(left) < -180000000l) {
+		BigDecimal left = new BigDecimal(centerLng - (deltaLng / 2.0),
+				LatLngConfig.DEGREE_CONTEXT);
+		BigDecimal right = new BigDecimal(centerLng + (deltaLng / 2.0),
+				LatLngConfig.DEGREE_CONTEXT);
+		if (right.compareTo(DEGREE_180) > 0
+				|| left.compareTo(DEGREE_180.negate()) < 0) {
 			this.crosses180thMeridian = true;
 		} else {
 			this.crosses180thMeridian = false;
 		}
-		left = LatLngTool.normalizeLongitude(left);
-		right = LatLngTool.normalizeLongitude(right);
-		this.leftLongitude = LatLngConfig.doubleToLong(left);
-		this.rightLongitude = LatLngConfig.doubleToLong(right);
-		this.longitudeDelta = LatLngConfig.doubleToLong(deltaLng);
+		this.leftLongitude = LatLngTool.normalizeLongitude(left);
+		this.rightLongitude = LatLngTool.normalizeLongitude(right);
+		this.longitudeDelta = new BigDecimal(deltaLng,
+				LatLngConfig.DEGREE_CONTEXT);
 	}
 
 	@Override
 	public boolean contains(LatLng point) {
 
-		if (point.getLatitudeInternal() > maxLatitude
-				|| point.getLatitudeInternal() < minLatitude) {
+		if (point.getLatitudeBig().compareTo(maxLatitude) > 0
+				|| point.getLatitudeBig().compareTo(minLatitude) < 0) {
 			return false;
 		}
 
-		long longitude = point.getLongitudeInternal();
+		BigDecimal longitude = point.getLongitudeBig();
 		if (crosses180thMeridian) {
-			if (longitude < 0 && longitude > rightLongitude) {
+			if (longitude.compareTo(BigDecimal.ZERO) < 0
+					&& longitude.compareTo(rightLongitude) > 0) {
 				return false;
 			}
-			if (longitude >= 0 && longitude < leftLongitude) {
+			if (longitude.compareTo(BigDecimal.ZERO) >= 0
+					&& longitude.compareTo(leftLongitude) < 0) {
 				return false;
 			}
-		} else if (longitude > rightLongitude || longitude < leftLongitude) {
+		} else if (longitude.compareTo(rightLongitude) > 0
+				|| longitude.compareTo(leftLongitude) < 0) {
 			return false;
 		}
 		return true;
@@ -171,20 +182,22 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	@Override
 	public boolean overlaps(RectangularWindow window) {
 
-		if (window.maxLatitude < minLatitude || window.minLatitude > maxLatitude) {
+		if (window.maxLatitude.compareTo(minLatitude) < 0
+				|| window.minLatitude.compareTo(maxLatitude) > 0) {
 			return false;
 		}
 
-		long thisLeft = leftLongitude;
-		long thisRight = rightLongitude;
-		long thatLeft = window.leftLongitude;
-		long thatRight = window.rightLongitude;
-		if (thisRight < thisLeft)
-			thisRight += 360000000l;
-		if (thatRight < thatLeft)
-			thatRight += 360000000l;
+		BigDecimal thisLeft = leftLongitude;
+		BigDecimal thisRight = rightLongitude;
+		BigDecimal thatLeft = window.leftLongitude;
+		BigDecimal thatRight = window.rightLongitude;
+		if (thisRight.compareTo(thisLeft) < 0)
+			thisRight = thisRight.add(LatLng.DEGREE_360);
+		if (thatRight.compareTo(thisLeft) < 0)
+			thatRight = thatRight.add(LatLng.DEGREE_360);
 
-		if (thisRight < thatLeft || thisLeft > thatRight) {
+		if (thisRight.compareTo(thatLeft) < 0
+				|| thisLeft.compareTo(thatRight) > 0) {
 			return false;
 		}
 
@@ -198,8 +211,8 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	 * @return the height of the window in the desired units.
 	 */
 	public double getHeight(LengthUnit unit) {
-		return LatLngWindow.latitudeDeltaToLength(LatLngConfig
-				.longToDouble(latitudeDelta), unit);
+		return LatLngWindow.latitudeDeltaToLength(latitudeDelta.doubleValue(),
+				unit);
 	}
 
 	/**
@@ -209,8 +222,8 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	 * @return the width of the window's mid-line in the desired units
 	 */
 	public double getWidth(LengthUnit unit) {
-		return LatLngWindow.longitudeDeltaToLength(LatLngConfig
-				.longToDouble(longitudeDelta), unit, center.getLatitude());
+		return LatLngWindow.longitudeDeltaToLength(longitudeDelta.doubleValue(),
+				unit, center.getLatitude());
 	}
 
 	@Override
@@ -234,38 +247,38 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	}
 
 	public double getLatitudeDelta() {
-		return LatLngConfig.longToDouble(latitudeDelta);
+		return latitudeDelta.doubleValue();
 	}
 
 	public double getLongitudeDelta() {
-		return LatLngConfig.longToDouble(longitudeDelta);
+		return longitudeDelta.doubleValue();
 	}
 
 	public double getMinLatitude() {
-		return LatLngConfig.longToDouble(minLatitude);
+		return minLatitude.doubleValue();
 	}
 
 	public double getMaxLatitude() {
-		return LatLngConfig.longToDouble(maxLatitude);
+		return maxLatitude.doubleValue();
 	}
 
 	public double getLeftLongitude() {
-		return LatLngConfig.longToDouble(leftLongitude);
+		return leftLongitude.doubleValue();
 	}
 
 	public double getRightLongitude() {
-		return LatLngConfig.longToDouble(rightLongitude);
+		return rightLongitude.doubleValue();
 	}
 
 	@Override
 	public String toString() {
 		return String.format(
 				"center: %s; lat range: [%s,%s]; lng range: [%s,%s]; meridian? %s",
-				getCenter().toString(), LatLngConfig.DEGREE_FORMAT
-						.format(getMinLatitude()), LatLngConfig.DEGREE_FORMAT
-						.format(getMaxLatitude()), LatLngConfig.DEGREE_FORMAT
-						.format(getLeftLongitude()), LatLngConfig.DEGREE_FORMAT
-						.format(getRightLongitude()), Boolean
-						.toString(crosses180thMeridian()));
+				getCenter().toString(),
+				LatLngConfig.DEGREE_FORMAT.format(getMinLatitude()),
+				LatLngConfig.DEGREE_FORMAT.format(getMaxLatitude()),
+				LatLngConfig.DEGREE_FORMAT.format(getLeftLongitude()),
+				LatLngConfig.DEGREE_FORMAT.format(getRightLongitude()),
+				Boolean.toString(crosses180thMeridian()));
 	}
 }
