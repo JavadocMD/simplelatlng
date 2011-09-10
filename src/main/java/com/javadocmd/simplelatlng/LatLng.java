@@ -15,10 +15,10 @@
  */
 package com.javadocmd.simplelatlng;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import com.javadocmd.simplelatlng.util.LatLngConfig;
-
 
 /**
  * <p>A representation of a single point in latitude and longitude.
@@ -31,7 +31,9 @@ import com.javadocmd.simplelatlng.util.LatLngConfig;
  * 
  * @author Tyler Coles
  */
-public class LatLng {
+public class LatLng implements Serializable {
+
+	private static final long serialVersionUID = 7086953744720769418L;
 
 	/**
 	 * Creates a random latitude and longitude. (Not inclusive of (-90, 0))

@@ -16,15 +16,21 @@
 package com.javadocmd.simplelatlng;
 
 import static com.javadocmd.simplelatlng.LatLng.degreesEqual;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Random;
 
 import org.junit.Test;
 
-import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
-
 
 public class LatLngTest {
 
@@ -160,5 +166,21 @@ public class LatLngTest {
 	public void testToString() {
 		LatLng latLng = new LatLng(10, 10);
 		assertTrue(latLng.toString().length() > 0);
+	}
+
+	@Test
+	public void testSerialize() throws IOException, ClassNotFoundException {
+		LatLng alpha = new LatLng(10.173820, 15.927812);
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(alpha);
+
+		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		ObjectInputStream ois = new ObjectInputStream(bais);
+
+		LatLng omega = (LatLng) ois.readObject();
+
+		assertEquals(alpha, omega);
 	}
 }
