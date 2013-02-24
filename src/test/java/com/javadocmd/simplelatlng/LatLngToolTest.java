@@ -17,6 +17,8 @@ package com.javadocmd.simplelatlng;
 
 import static com.javadocmd.simplelatlng.LatLngTool.distance;
 import static com.javadocmd.simplelatlng.LatLngTool.distanceInRadians;
+import static com.javadocmd.simplelatlng.LatLngTool.initialBearing;
+import static com.javadocmd.simplelatlng.LatLngTool.normalizeBearing;
 import static com.javadocmd.simplelatlng.LatLngTool.normalizeLatitude;
 import static com.javadocmd.simplelatlng.LatLngTool.normalizeLongitude;
 import static org.junit.Assert.assertEquals;
@@ -77,6 +79,34 @@ public class LatLngToolTest {
 		assertEquals(Double.NaN, normalizeLongitude(Double.NEGATIVE_INFINITY), t);
 		assertEquals(Double.NaN, normalizeLongitude(Double.NaN), t);
 	}
+	
+	@Test
+	public void testNormalizeBearing() {
+		double t = LatLngConfig.DEGREE_TOLERANCE;
+		assertEquals(0, normalizeBearing(0), t);
+		assertEquals(-0.0, normalizeBearing(-0.0), t);
+		assertEquals(5.3, normalizeBearing(5.3), t);
+		assertEquals(354.7, normalizeBearing(-5.3), t);
+		assertEquals(35.7838, normalizeBearing(35.7838), t);
+		assertEquals(324.2162, normalizeBearing(-35.7838), t);
+		assertEquals(90, normalizeBearing(90), t);
+		assertEquals(270, normalizeBearing(-90), t);
+		assertEquals(91.384, normalizeBearing(91.384), t);
+		assertEquals(268.616, normalizeBearing(-91.384), t);
+		assertEquals(171.384, normalizeBearing(171.384), t);
+		assertEquals(188.616, normalizeBearing(-171.384), t);
+		assertEquals(180, normalizeBearing(180), t);
+		assertEquals(180, normalizeBearing(-180), t);
+		assertEquals(190, normalizeBearing(190), t);
+		assertEquals(170, normalizeBearing(-190), t);
+		assertEquals(213.483909, normalizeBearing(213.483909), t);
+		assertEquals(146.516091, normalizeBearing(-213.483909), t);
+		assertEquals(190, normalizeBearing(1990), t);
+		assertEquals(170, normalizeBearing(-1990), t);
+		assertEquals(Double.NaN, normalizeBearing(Double.POSITIVE_INFINITY), t);
+		assertEquals(Double.NaN, normalizeBearing(Double.NEGATIVE_INFINITY), t);
+		assertEquals(Double.NaN, normalizeBearing(Double.NaN), t);
+	}
 
 	@Test
 	public void testDistance() {
@@ -114,5 +144,15 @@ public class LatLngToolTest {
 	private static void distRadTest(double expected, LatLng point1, LatLng point2) {
 		assertEquals(expected, Math.toDegrees(distanceInRadians(point1, point2)),
 				.00001);
+	}
+	
+	@Test
+	public void testInitialBearing() {
+		double t = LatLngConfig.DEGREE_TOLERANCE;
+		assertEquals(0.0, initialBearing(new LatLng(0, 0), new LatLng(0, 0)), t);
+		assertEquals(90.0, initialBearing(new LatLng(0, 0), new LatLng(0, 1)), t);
+		assertEquals(44.995636, initialBearing(new LatLng(0, 0), new LatLng(1, 1)), t);
+		assertEquals(315.004363, initialBearing(new LatLng(0, 0), new LatLng(1, -1)), t);
+		assertEquals(68.256958, initialBearing(new LatLng(33.45, -112.067), new LatLng(35.1108, -106.61)), t);
 	}
 }

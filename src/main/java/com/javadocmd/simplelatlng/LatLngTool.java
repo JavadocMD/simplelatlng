@@ -70,6 +70,41 @@ public class LatLngTool {
 	}
 
 	/**
+	 * <p>Calculate the initial bearing in degrees on a great-circle course from one point to another.</p>
+	 * 
+	 * <p>Remember, you can calculate the final bearing by swapping the start/end points and reversing the 
+	 * resulting "initial" bearing by adding or subtracting 180 degrees.</p>
+	 * 
+	 * @param start the starting point.
+	 * @param end the ending point.
+	 * @return the initial bearing in degrees, normalized to the 0 to +360 range.
+	 */
+	public static double initialBearing(LatLng start, LatLng end) {
+		return normalizeBearing(Math.toDegrees(initialBearingInRadians(start, end)));
+	}
+
+	/**
+	 * <p>Calculate the initial bearing in radians on a great-circle course from one point to another.</p>
+	 * 
+	 * <p>Remember, you can calculate the final bearing by swapping the start/end points and reversing the 
+	 * resulting "initial" bearing by adding or subtracting 180 degrees.</p>
+	 * 
+	 * @param start the starting point.
+	 * @param end the ending point.
+	 * @return the initial bearing in radians.
+	 */
+	public static double initialBearingInRadians(LatLng start, LatLng end) {
+		double lat1R = Math.toRadians(start.getLatitude());
+		double lat2R = Math.toRadians(end.getLatitude());
+		double dLngR = Math.toRadians(end.getLongitude()
+				- start.getLongitude());
+		double a = Math.sin(dLngR) * Math.cos(lat2R);
+		double b = Math.cos(lat1R) * Math.sin(lat2R) - Math.sin(lat1R)
+				* Math.cos(lat2R) * Math.cos(dLngR);
+		return Math.atan2(a, b);
+	}
+	
+	/**
 	 * Clamp latitude to +/- 90 degrees.
 	 * 
 	 * @param latitude in degrees.
@@ -105,6 +140,22 @@ public class LatLngTool {
 			longitudeResult = 180 + diff;
 		}
 		return longitudeResult;
+	}
+	
+	/**
+	 * Convert a bearing to be within the 0 to +360 degrees range.
+	 * 
+	 * @param bearing the bearing in degrees.
+	 * @return the normalized breaing. Returns NaN if the input
+	 * is NaN, positive infinity, or negative infinity.
+	 */
+	public static double normalizeBearing(double bearing) {
+		if (Double.isNaN(bearing) || Double.isInfinite(bearing))
+			return Double.NaN;
+		double bearingResult = bearing % 360;
+		if (bearingResult < 0)
+			bearingResult += 360;
+		return bearingResult;
 	}
 
 	private LatLngTool() {
