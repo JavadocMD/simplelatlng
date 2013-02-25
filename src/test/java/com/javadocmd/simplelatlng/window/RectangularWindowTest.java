@@ -136,6 +136,40 @@ public class RectangularWindowTest {
 		assertEquals(90, w.getMaxLatitude(), t);
 		assertTrue(w.crosses180thMeridian());
 	}
+	
+	@Test
+	public void testRectangularWindow13() {
+		double t = LatLngConfig.DEGREE_TOLERANCE;
+		RectangularWindow w = new RectangularWindow(new LatLng(60, -45), new LatLng(30, -90));
+		assertEquals(new LatLng(45, -67.5), w.getCenter());
+		assertEquals(-90, w.getLeftLongitude(), t);
+		assertEquals(-45, w.getRightLongitude(), t);
+		assertEquals(30, w.getMinLatitude(), t);
+		assertEquals(60, w.getMaxLatitude(), t);
+		assertFalse(w.crosses180thMeridian());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRectangularWindow14() {
+		new RectangularWindow(new LatLng(-75, 15), new LatLng(-90, -15));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testRectangularWindow15() {
+		new RectangularWindow(new LatLng(0, 0), new LatLng(45, -30));
+	}
+
+	@Test
+	public void testRectangularWindow16() {
+		double t = LatLngConfig.DEGREE_TOLERANCE;
+		RectangularWindow w = new RectangularWindow(new LatLng(20, -170), new LatLng(-20, 170));
+		assertEquals(new LatLng(0, 180), w.getCenter());
+		assertEquals(-170, w.getRightLongitude(), t);
+		assertEquals(170, w.getLeftLongitude(), t);
+		assertEquals(-20, w.getMinLatitude(), t);
+		assertEquals(20, w.getMaxLatitude(), t);
+		assertTrue(w.crosses180thMeridian());
+	}
 
 	@Test
 	public void testContains1() {

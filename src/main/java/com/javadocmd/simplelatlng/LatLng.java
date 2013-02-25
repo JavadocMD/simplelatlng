@@ -158,6 +158,13 @@ public class LatLng implements Serializable {
 		this.longitude = LatLngConfig.doubleToLong(lng);
 	}
 
+	/**
+	 * Returns true if this LatLng represents a polar coordinate (+/- 90 degrees latitude).
+	 */
+	public boolean isPolar() {
+		return this.latitude == 90000000L || this.latitude == -90000000L;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
