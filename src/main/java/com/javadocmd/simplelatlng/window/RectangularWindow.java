@@ -57,6 +57,33 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 	public RectangularWindow(LatLng center, double deltaLat, double deltaLng) {
 		this.setWindow(center, deltaLat, deltaLng);
 	}
+	
+	/**
+	 * Creates a pseudo-rectangular window. Note: this constructor must not 
+	 * be used with polar coordinates, where the notions of east and west
+	 * are invalid.
+	 * 
+	 * @param northeast the northeastern corner of this window.
+	 * @param southwest the southwestern corner of this window.
+	 * @throws IllegalArgumentException if either northeast or southwest are polar
+	 * coordinates, also if the northeast point is south of the southwest point.
+	 */
+	public RectangularWindow(LatLng northeast, LatLng southwest) {
+		if (northeast.isPolar() || southwest.isPolar())
+			throw new IllegalArgumentException("Window constructor is not valid for polar coordinates.");
+		if (northeast.getLatitudeInternal() < southwest.getLatitudeInternal())
+			throw new IllegalArgumentException("Provided northeast point is not north of provided southwest point.");
+		
+		double deltaLat = northeast.getLatitude() - southwest.getLatitude();
+		double deltaLng = northeast.getLongitude() - southwest.getLongitude();
+		if (northeast.getLongitude() < southwest.getLongitude())
+			deltaLng += 360;
+		
+		double centerLat = southwest.getLatitude() + deltaLat / 2;
+		double centerLng = southwest.getLongitude() + deltaLng / 2;
+		
+		this.setWindow(new LatLng(centerLat, centerLng), deltaLat, deltaLng);
+	}
 
 	/**
 	 * Creates a psuedo-rectangular window. The height will include the all latitudes
