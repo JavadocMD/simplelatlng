@@ -19,23 +19,24 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.junit.Test;
 
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
 import com.javadocmd.simplelatlng.util.LengthUnit;
-import com.javadocmd.simplelatlng.window.CircularWindow;
-
+import com.javadocmd.simplelatlng.window.LatLngWindowTest.TestObject;
 
 public class CircularWindowTest {
 
 	@Test
 	public void testCircularWindowLatLngDouble() {
 		CircularWindow w = new CircularWindow(new LatLng(10, 0), 45);
-		assertEquals(10, w.getCenter().getLatitude(),
-				LatLngConfig.DEGREE_TOLERANCE);
-		assertEquals(0, w.getCenter().getLongitude(),
-				LatLngConfig.DEGREE_TOLERANCE);
+		assertEquals(10, w.getCenter().getLatitude(), LatLngConfig.DEGREE_TOLERANCE);
+		assertEquals(0, w.getCenter().getLongitude(), LatLngConfig.DEGREE_TOLERANCE);
 		assertEquals(45, w.getRadius(), LatLngConfig.DEGREE_TOLERANCE);
 	}
 
@@ -79,6 +80,32 @@ public class CircularWindowTest {
 	}
 
 	@Test
+	public void filterCopySort() {
+		List<TestObject> source = new ArrayList<TestObject>();
+		source.add(new TestObject(new LatLng(0, 0))); // 0 *
+		source.add(new TestObject(new LatLng(90, 0))); // 10007.557535177228
+		source.add(new TestObject(new LatLng(45, 45))); // 6671.705023451485
+		source.add(new TestObject(new LatLng(20, -15))); // 2759.2189262563847
+		source.add(new TestObject(new LatLng(-5, 7))); // 955.7308173367139 *
+		source.add(new TestObject(new LatLng(8, -5))); // 1048.0527061057333 *
+		source.add(new TestObject(new LatLng(3, 0))); // 333.5852511725742 *
+		source.add(new TestObject(new LatLng(1, 3))); // 351.6136586697643 *
+
+		List<TestObject> destination = new ArrayList<TestObject>();
+
+		CircularWindow window = new CircularWindow(new LatLng(0, 0), 10);
+		window.filterCopySort(source, destination, LatLngWindowTest.helper);
+
+		Iterator<TestObject> i = destination.iterator();
+		assertEquals(new LatLng(0, 0), i.next().getPoint());
+		assertEquals(new LatLng(3, 0), i.next().getPoint());
+		assertEquals(new LatLng(1, 3), i.next().getPoint());
+		assertEquals(new LatLng(-5, 7), i.next().getPoint());
+		assertEquals(new LatLng(8, -5), i.next().getPoint());
+		assertEquals(5, destination.size());
+	}
+
+	@Test
 	public void testOverlaps() {
 		CircularWindow w1 = new CircularWindow(new LatLng(0, 0), 10);
 		CircularWindow w2 = new CircularWindow(new LatLng(0, 0), 10);
@@ -93,11 +120,6 @@ public class CircularWindowTest {
 	}
 
 	@Test
-	public void testFilter() {
-		// TODO:
-	}
-
-	@Test
 	public void testGetRadius() {
 		CircularWindow w = new CircularWindow(new LatLng(10, 0), 45);
 		assertEquals(45, w.getRadius(), 0.000001);
@@ -105,8 +127,7 @@ public class CircularWindowTest {
 
 	@Test
 	public void testWithLengthUnits() {
-		CircularWindow w = new CircularWindow(new LatLng(10, 0), 100,
-				LengthUnit.KILOMETER);
+		CircularWindow w = new CircularWindow(new LatLng(10, 0), 100, LengthUnit.KILOMETER);
 		assertEquals(100, w.getRadius(LengthUnit.KILOMETER), 0.0001);
 	}
 }
