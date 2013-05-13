@@ -21,6 +21,7 @@ import static com.javadocmd.simplelatlng.LatLngTool.initialBearing;
 import static com.javadocmd.simplelatlng.LatLngTool.normalizeBearing;
 import static com.javadocmd.simplelatlng.LatLngTool.normalizeLatitude;
 import static com.javadocmd.simplelatlng.LatLngTool.normalizeLongitude;
+import static com.javadocmd.simplelatlng.LatLngTool.travel;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -154,5 +155,15 @@ public class LatLngToolTest {
 		assertEquals(44.995636, initialBearing(new LatLng(0, 0), new LatLng(1, 1)), t);
 		assertEquals(315.004363, initialBearing(new LatLng(0, 0), new LatLng(1, -1)), t);
 		assertEquals(68.256958, initialBearing(new LatLng(33.45, -112.067), new LatLng(35.1108, -106.61)), t);
+	}
+	
+	@Test
+	public void testTravel() {
+		// Distance and bearing numbers are very picky if we're trying to hit an exact LatLng.
+		assertEquals(new LatLng(0,0), travel(new LatLng(0,0), 0, 0, LengthUnit.KILOMETER));
+		assertEquals(new LatLng(0,0), travel(new LatLng(0,0), 180, 0, LengthUnit.KILOMETER));
+		assertEquals(new LatLng(1,0), travel(new LatLng(0,0), 0, 111.19508372419142, LengthUnit.KILOMETER));
+		assertEquals(new LatLng(0,1), travel(new LatLng(0,0), 90, 111.19508372419142, LengthUnit.KILOMETER));
+		assertEquals(new LatLng(0,0), travel(new LatLng(-67.5, 45), 312.7342096008998, 5133.651152139029, LengthUnit.MILE));
 	}
 }
