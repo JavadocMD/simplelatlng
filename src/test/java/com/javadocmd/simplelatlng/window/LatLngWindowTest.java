@@ -35,7 +35,7 @@ import com.javadocmd.simplelatlng.window.RectangularWindow;
 
 public class LatLngWindowTest {
 
-	private static FilterHelper<TestObject> helper = new FilterHelper<TestObject>() {
+	static FilterHelper<TestObject> helper = new FilterHelper<TestObject>() {
 
 		@Override
 		public LatLng getLatLng(TestObject object) {
