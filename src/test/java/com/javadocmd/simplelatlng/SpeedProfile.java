@@ -96,7 +96,17 @@ public class SpeedProfile {
 		}
 		Date end = new Date();
 
-		System.out.printf("Geohashed in %s ms.\n", integer.format(end.getTime()
+		System.out.printf("Geohashed (one way) in %s ms.\n", integer.format(end.getTime()
+				- start.getTime()));
+		
+		start = new Date();
+		for (int i = 0; i < points.length; i++) {
+			String s = Geohasher.hash(points[i]);
+			Geohasher.decode(s);
+		}
+		end = new Date();
+
+		System.out.printf("Geohashed and decoded in %s ms.\n", integer.format(end.getTime()
 				- start.getTime()));
 
 		start = new Date();
