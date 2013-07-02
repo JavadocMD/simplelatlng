@@ -188,9 +188,8 @@ public class LatLng implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("(%s,%s)", LatLngConfig.DEGREE_FORMAT
-				.format(LatLngConfig.longToDouble(this.latitude)),
-				LatLngConfig.DEGREE_FORMAT.format(LatLngConfig
-						.longToDouble(this.longitude)));
+		return String.format("(%s,%s)",
+				LatLngConfig.getDegreeFormat().format(LatLngConfig.longToDouble(this.latitude)),
+				LatLngConfig.getDegreeFormat().format(LatLngConfig.longToDouble(this.longitude)));
 	}
 }
