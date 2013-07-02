@@ -18,6 +18,8 @@ package com.javadocmd.simplelatlng.window;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
+import java.text.NumberFormat;
+
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
@@ -286,13 +288,10 @@ public class RectangularWindow extends LatLngWindow<RectangularWindow> {
 
 	@Override
 	public String toString() {
-		return String.format(
-				"center: %s; lat range: [%s,%s]; lng range: [%s,%s]; meridian? %s",
-				getCenter().toString(), LatLngConfig.DEGREE_FORMAT
-						.format(getMinLatitude()), LatLngConfig.DEGREE_FORMAT
-						.format(getMaxLatitude()), LatLngConfig.DEGREE_FORMAT
-						.format(getLeftLongitude()), LatLngConfig.DEGREE_FORMAT
-						.format(getRightLongitude()), Boolean
-						.toString(crosses180thMeridian()));
+		NumberFormat f = LatLngConfig.getDegreeFormat();
+		return String.format("center: %s; lat range: [%s,%s]; lng range: [%s,%s]; meridian? %s",
+				getCenter().toString(), f.format(getMinLatitude()), f.format(getMaxLatitude()),
+				f.format(getLeftLongitude()), f.format(getRightLongitude()),
+				Boolean.toString(crosses180thMeridian()));
 	}
 }
