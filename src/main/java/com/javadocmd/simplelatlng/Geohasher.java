@@ -15,6 +15,8 @@
  */
 package com.javadocmd.simplelatlng;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,16 +51,18 @@ public class Geohasher {
 			'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
 			'z'};
 	private static final Map<Character, Integer> HASH_CHARS_MAP;
-	private static final double[] LAT_BIT_VALUES;
-	private static final double[] LNG_BIT_VALUES;
+	protected static final BigDecimal[] LAT_BIT_VALUES;
+	protected static final BigDecimal[] LNG_BIT_VALUES;
 	static {
-		double latValue = MAX_LAT;
-		double lngValue = MAX_LNG;
-		LAT_BIT_VALUES = new double[BITS];
-		LNG_BIT_VALUES = new double[BITS];
+		BigDecimal latValue = new BigDecimal(MAX_LAT);
+		BigDecimal lngValue = new BigDecimal(MAX_LNG);
+		LAT_BIT_VALUES = new BigDecimal[BITS];
+		LNG_BIT_VALUES = new BigDecimal[BITS];
+		
+		BigDecimal TWO = new BigDecimal("2");
 		for (int i = 0; i < BITS; i++) {
-			latValue /= 2.0;
-			lngValue /= 2.0;
+			latValue = latValue.divide(TWO);
+			lngValue = lngValue.divide(TWO);
 			LAT_BIT_VALUES[i] = latValue;
 			LNG_BIT_VALUES[i] = lngValue;
 		}
@@ -86,7 +90,7 @@ public class Geohasher {
 	/**
 	 * Converts a hash string into a string of bits.
 	 */
-	private static BitSet hashToBits(String hash) {
+	protected static BitSet hashToBits(String hash) {
 		try {
 			BitSet bits = new BitStore();
 
@@ -114,12 +118,12 @@ public class Geohasher {
 	 * @param bits the bits to de-interleave.
 	 * @return two bit sets: [0] = even bits, [1] = odd bits
 	 */
-	private static BitSet[] deInterleave(BitSet bits) {
+	protected static BitSet[] deInterleave(BitSet bits) {
 		BitSet[] sets = new BitSet[]{new BitStore(), new BitStore()};
 
 		int n = bits.size();
 		for (int i = 0; i < n; i++) {
-			sets[i % 2].set(i / 2, bits.get(i));
+			sets[i % 2].set((n - i - 1) / 2, bits.get(n - i - 1));
 		}
 
 		return sets;
@@ -134,17 +138,28 @@ public class Geohasher {
 	 * for the particular value we are decoding: latitude or longitude. 
 	 * @return the value.
 	 */
-	private static double bitsToDouble(BitSet bits, double[] bitValues) {
-		double value = 0.0;
+	protected static double bitsToDouble(BitSet bits, BigDecimal[] bitValues) {
+		BigDecimal value = BigDecimal.ZERO;
+		BigDecimal lastValue = value;
 		int n = bits.size();
 		for (int i = 0; i < n; i++) {
-			if (bits.get(n - i - 1)) {
-				value += bitValues[i];
+			lastValue = value;
+			if (bits.get(i)) {
+				value = value.add(bitValues[n - i - 1]);
 			} else {
-				value -= bitValues[i];
+				value = value.subtract(bitValues[n - i - 1]);
 			}
 		}
-		return value;
+		
+		BigDecimal lastDelta2x = bitValues[n - 1].multiply(new BigDecimal(2));
+		BigDecimal roundingMin = lastValue.subtract(lastDelta2x);
+		BigDecimal roundingMax = lastValue.add(lastDelta2x);
+		
+		BigDecimal rounded = value.setScale(6, RoundingMode.HALF_UP);
+		if (rounded.compareTo(roundingMin) < 0 || rounded.compareTo(roundingMax) > 0) {
+			rounded = value.setScale(6, RoundingMode.HALF_DOWN);
+		}
+		return rounded.doubleValue();
 	}
 
 	/**
@@ -154,8 +169,9 @@ public class Geohasher {
 	 * @return the hash string to the set character precision: {@link #PRECISION}.
 	 */
 	public static String hash(LatLng point) {
-		return bitsToHash(interleave(doubleToBits(point.getLongitude(), MAX_LNG),
-				doubleToBits(point.getLatitude(), MAX_LAT)));
+		BitSet lat = doubleToBits(point.getLatitude(), MAX_LAT);
+		BitSet lng = doubleToBits(point.getLongitude(), MAX_LNG);
+		return bitsToHash(interleave(lng, lat));
 	}
 
 	/**
@@ -164,7 +180,7 @@ public class Geohasher {
 	 * @param bits the set of bits to encode.
 	 * @return the encoded string.
 	 */
-	private static String bitsToHash(BitSet bits) {
+	protected static String bitsToHash(BitSet bits) {
 		StringBuilder hash = new StringBuilder();
 		for (int i = 0; i < bits.size(); i += 5) {
 			int value = 0;
@@ -185,13 +201,14 @@ public class Geohasher {
 	 * @param oddBits the bits to use for odd bits. (1, 3, 5,...)
 	 * @return the interleaved bits.
 	 */
-	private static BitSet interleave(BitSet evenBits, BitSet oddBits) {
+	protected static BitSet interleave(BitSet evenBits, BitSet oddBits) {
+		int n = evenBits.size() + oddBits.size();
 		BitSet bits = new BitStore();
-		for (int i = 0; i < (evenBits.size() + oddBits.size()); i++) {
+		for (int i = 0; i < n; i++) {
 			if (i % 2 == 0) {
-				bits.set(i, evenBits.get(i / 2));
+				bits.set(n - i - 1, evenBits.get((n - i - 1) / 2));
 			} else {
-				bits.set(i, oddBits.get(i / 2));
+				bits.set(n - i - 1, oddBits.get((n - i - 1) / 2));
 			}
 		}
 		return bits;
@@ -206,7 +223,7 @@ public class Geohasher {
 	 * encoding: latitude = 90.0, longitude = 180.0.
 	 * @return the bit set for this value.
 	 */
-	private static BitSet doubleToBits(double value, double maxRange) {
+	protected static BitSet doubleToBits(double value, double maxRange) {
 		BitSet bits = new BitStore();
 
 		double maxValue = maxRange;
@@ -235,7 +252,7 @@ public class Geohasher {
 	 * 
 	 * @author Tyler Coles
 	 */
-	private static class BitStore extends BitSet {
+	protected static class BitStore extends BitSet {
 
 		private static final long serialVersionUID = 4630759467120792604L;
 		private int highestBit = -1;
@@ -245,6 +262,13 @@ public class Geohasher {
 				highestBit = bitIndex;
 		}
 
+		public String toString() {
+			String s = "";
+			for (int i = 0; i < size(); i++)
+				s = (get(i) ? "1" : "0") + s;
+			return s;
+		}
+		
 		@Override
 		public void set(int bitIndex) {
 			super.set(bitIndex);
