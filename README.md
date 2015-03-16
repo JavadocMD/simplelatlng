@@ -10,6 +10,10 @@ With this library, you get the following:
 
 In short, if you have looked at other geo-spatial libraries in Java and thought "this is way more than I need", this library might be for you!
 
+## License
+
+**SimpleLatLng** is licensed through the commercial-friendly [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0)
+
 ## News
 
 v1.3.0 is released and I strongly suggest you upgrade. It [fixes two potentially harmful bugs](http://github.com/JavadocMD/simplelatlng/wiki/Version-History).
