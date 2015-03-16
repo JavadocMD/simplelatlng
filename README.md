@@ -12,7 +12,7 @@ In short, if you have looked at other geo-spatial libraries in Java and thought 
 
 ## News
 
-v1.3.0 is released and I strongly suggest you upgrade. It [fixes two potentially harmful bugs].
+v1.3.0 is released and I strongly suggest you upgrade. It [fixes two potentially harmful bugs](http://github.com/JavadocMD/simplelatlng/wiki/Version-History).
 
 ## Maven
 
