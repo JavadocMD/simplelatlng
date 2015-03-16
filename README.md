@@ -18,9 +18,11 @@ In short, if you have looked at other geo-spatial libraries in Java and thought 
 
 [v1.3.0 is released](https://github.com/JavadocMD/simplelatlng/releases/tag/v1.3.0) and I strongly suggest you upgrade. It fixes two potentially harmful bugs.
 
-## Maven
+## Download
 
-SimpleLatLng is also available from the Maven central repositories.
+Binaries can be downloaded directly from the [releases page](http://github.com/JavadocMD/simplelatlng/releases).
+
+SimpleLatLng is also available from the [Maven central repositories](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.javadocmd%22%20AND%20a%3A%22simplelatlng%22):
 
 ```
 <dependency>
