@@ -22,24 +22,51 @@ import org.junit.Test;
 
 public class LengthUnitTest {
 
+	private static final double DELTA = 0.000001;
+
 	@Test
-	public void testConvertTo() {
-		assertEquals(10.0, KILOMETER.convertTo(KILOMETER, 10.0), 0.000001);
-		assertEquals(-10.0, KILOMETER.convertTo(KILOMETER, -10.0), 0.000001);
-		assertEquals(0, KILOMETER.convertTo(KILOMETER, 0), 0.000001);
+	public void testKilometerConversions() {
+		assertEquals(10.0, KILOMETER.convertTo(KILOMETER, 10.0), DELTA);
+		assertEquals(-10.0, KILOMETER.convertTo(KILOMETER, -10.0), DELTA);
+		assertEquals(0, KILOMETER.convertTo(KILOMETER, 0), DELTA);
 		assertTrue(Double.isInfinite(KILOMETER.convertTo(KILOMETER,
 				Double.POSITIVE_INFINITY)));
-
-		assertEquals(0.6213712, KILOMETER.convertTo(MILE, 1.0), 0.000001);
-		assertEquals(0.5399568, KILOMETER.convertTo(NAUTICAL_MILE, 1.0), 0.000001);
-		assertEquals(0.0050292, KILOMETER.convertTo(ROD, 1.0), 0.000001);
-
-		assertEquals(0.8689762, MILE.convertTo(NAUTICAL_MILE, 1.0), 0.000001);
+	}
+	
+	@Test
+	public void testSameUnitConversions() {
+		assertEquals(5.7, MILE.convertTo(MILE, 5.7), DELTA);
+		
+		assertEquals(-3.758, NAUTICAL_MILE.convertTo(NAUTICAL_MILE, -3.758), DELTA);
+		
+		assertEquals(981723, ROD.convertTo(ROD, 981723), DELTA);
+		
+		assertEquals(0.000078, METER.convertTo(METER, 0.000078), DELTA);
+	}
+	
+	@Test
+	public void testSingleConversions() {
+		assertEquals(1000.0, KILOMETER.convertTo(METER, 1.0), DELTA);
+		
+		assertEquals(0.6213712, KILOMETER.convertTo(MILE, 1.0), DELTA);
+		
+		assertEquals(0.5399568, KILOMETER.convertTo(NAUTICAL_MILE, 1.0), DELTA);
+		
+		assertEquals(198.8387815, KILOMETER.convertTo(ROD, 1.0), DELTA);
 	}
 
 	@Test
-	public void testGetScaleFactor() {
-		assertEquals(1.0, PRIMARY.getScaleFactor(), 0.000001);
+	public void testDoubleConversions() {
+		assertEquals(0.8689762, MILE.convertTo(NAUTICAL_MILE, 1.0), DELTA);
+		
+		assertEquals(13.5788400, ROD.convertTo(METER, 2.7), DELTA);
+		
+		assertTrue(Double.isInfinite(MILE.convertTo(METER, Double.POSITIVE_INFINITY)));
+	}
+
+	@Test
+	public void testPrimaryIsScaleOfOne() {
+		assertEquals(1.0, PRIMARY.getScaleFactor(), DELTA);
 	}
 
 }

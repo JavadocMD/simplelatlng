@@ -31,11 +31,11 @@ public enum LengthUnit {
 	 */
 	NAUTICAL_MILE(0.5399568),
 	/**
-	 * Rods, using the scale factor 0.0050292 rods to the kilometer.
+	 * Rods, using the scale factor 198.8387815 rods to the kilometer.
 	 * Because your car gets forty rods to the hogshead and that's 
 	 * they way you likes it.
 	 */
-	ROD(0.0050292),
+	ROD(198.8387815),
 	/**
 	 * Kilometers, the primary unit.
 	 */
@@ -68,14 +68,18 @@ public enum LengthUnit {
 	 * @return the converted value.
 	 */
 	public double convertTo(LengthUnit toUnit, double value) {
-		double _value = value;
-		if (this == PRIMARY) {
-			if (toUnit == PRIMARY)
-				return value; // Avoid multiplying by 1.0 needlessly.
-		} else {
-			_value = value / this.scaleFactor; // Convert to primary unit.
+		if (this == toUnit) {
+			return value;
 		}
-		return _value * toUnit.scaleFactor; // Convert to destination unit.
+		
+		double _value = value;
+		if (this != PRIMARY) {
+			_value /= this.scaleFactor; // Convert to primary unit.
+		}
+		if (toUnit != PRIMARY) {
+			_value *= toUnit.scaleFactor; // Convert to destination unit.
+		}
+		return _value;
 	}
 
 	/**
