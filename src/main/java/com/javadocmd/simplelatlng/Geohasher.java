@@ -35,12 +35,12 @@ public class Geohasher {
 
 	/**
 	 * <p>Number of hash characters supported.</p> 
-	 * <p>Translates to binary bits per value by the formula:<br/>
-	 * BITS = ((PRECISION * 5) / 2) + PRECISION % 2.</p>
+	 * <p>Translates to binary bits per value by the formula:</p>
+	 * <pre>BITS = ((PRECISION * 5) / 2) + PRECISION % 2.</pre>
 	 * <p>BITS in turn translates to numerical precision
-	 * by the formula:<br/>
-	 * LATITUDE_ERROR = 90.0 / (2 ^ (BITS + 1))<br/>
-	 * LONGITUDE_ERROR = 180.0 / (2 ^ (BITS + 1))</p>
+	 * by the formula:</p>
+	 * <pre>LATITUDE_ERROR = 90.0 / (2 ^ (BITS + 1))
+	 *LONGITUDE_ERROR = 180.0 / (2 ^ (BITS + 1))</pre>
 	 */
 	public static final int PRECISION = 12;
 	private static final int BITS = ((PRECISION * 5) / 2) + PRECISION % 2;
@@ -88,7 +88,10 @@ public class Geohasher {
 	}
 
 	/**
-	 * Converts a hash string into a string of bits.
+	 * Converts a hash string into a series of bits.
+	 * 
+	 * @param hash the geohash string.
+	 * @return the bits in the geohash.
 	 */
 	protected static BitSet hashToBits(String hash) {
 		try {

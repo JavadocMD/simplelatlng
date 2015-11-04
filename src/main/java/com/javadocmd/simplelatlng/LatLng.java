@@ -37,6 +37,8 @@ public class LatLng implements Serializable {
 
 	/**
 	 * Creates a random latitude and longitude. (Not inclusive of (-90, 0))
+	 * 
+	 * @return the random LatLng.
 	 */
 	public static LatLng random() {
 		return random(new Random());
@@ -47,6 +49,7 @@ public class LatLng implements Serializable {
 	 * 
 	 * @param r the random number generator to use, if you want to be 
 	 * specific or are creating many LatLngs at once.
+	 * @return the random LatLng.
 	 */
 	public static LatLng random(Random r) {
 		return new LatLng((r.nextDouble() * -180.0) + 90.0,
@@ -159,7 +162,7 @@ public class LatLng implements Serializable {
 	}
 
 	/**
-	 * Returns true if this LatLng represents a polar coordinate (+/- 90 degrees latitude).
+	 * @return true if this LatLng represents a polar coordinate (+/- 90 degrees latitude).
 	 */
 	public boolean isPolar() {
 		return this.latitude == 90000000L || this.latitude == -90000000L;

@@ -83,6 +83,10 @@ public class LatLngTool {
 	 * to get the length of the arc.
 	 * </p>
 	 * 
+	 * @param point1
+	 *            the first point.
+	 * @param point2
+	 *            the second point.
 	 * @return the internal angle for the arc connecting the two points in
 	 *         radians.
 	 */

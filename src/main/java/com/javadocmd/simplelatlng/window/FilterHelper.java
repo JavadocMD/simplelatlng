@@ -18,14 +18,14 @@ package com.javadocmd.simplelatlng.window;
 import com.javadocmd.simplelatlng.LatLng;
 
 /**
- * An abstract class to help LatLngWindows with the task of 
+ * <p>An abstract class to help LatLngWindows with the task of 
  * filtering collections based on whether or not a point
  * is contained within the window. Rather than only filter
  * collections of LatLng, this helper enables you to filter
  * any class that has a LatLng value or for which a LatLng
- * value can be computed.<br/><br/>
- * An example of how you would instantiate a helper for 
- * filtering on a collection of type MyObject:<br/>
+ * value can be computed.</p>
+ * <p>An example of how you would instantiate a helper for 
+ * filtering on a collection of type MyObject:</p>
  * <pre>FilterHelper&lt;MyObject&gt; helper = new FilterHelper&lt;MyObject&gt;() {
  *    &#64;Override
  *    public LatLng getLatLng(MyObject object) {
@@ -40,8 +40,8 @@ import com.javadocmd.simplelatlng.LatLng;
 public abstract class FilterHelper<S> {
 
 	/**
-	 * Returns <code>object</code>'s <code>LatLng</code>
-	 * value to be filtered.
+	 * @param object the object being filtered.
+	 * @return the <code>LatLng</code> value to use in the filter.
 	 */
 	public abstract LatLng getLatLng(S object);
 }
