@@ -16,7 +16,7 @@ In short, if you have looked at other geo-spatial libraries in Java and thought 
 
 ## News
 
-[v1.3.0 is released](https://github.com/JavadocMD/simplelatlng/releases/tag/v1.3.0) and I strongly suggest you upgrade. It fixes two potentially harmful bugs.
+[v1.3.1 is released](https://github.com/JavadocMD/simplelatlng/releases/tag/v1.3.1).
 
 ## Download
 
