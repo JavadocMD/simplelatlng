@@ -118,7 +118,7 @@ public class LatLngConfig {
 	 * @return the long value.
 	 */
 	public static long doubleToLong(double value) {
-		return (long) (value / DEGREE_TOLERANCE);
+		return Math.round(value / DEGREE_TOLERANCE);
 	}
 
 	/**

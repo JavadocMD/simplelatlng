@@ -16,6 +16,7 @@
 package com.javadocmd.simplelatlng;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Random;
 
 import com.javadocmd.simplelatlng.util.LatLngConfig;
@@ -185,8 +186,7 @@ public class LatLng implements Serializable {
 
 	@Override
 	public int hashCode() {
-		String s = Long.toString(latitude) + "|" + Long.toString(longitude);
-		return s.hashCode();
+		return Arrays.hashCode(new long[] {latitude, longitude});
 	}
 
 	@Override
