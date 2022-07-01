@@ -21,9 +21,10 @@ import java.util.Collections;
 import java.util.List;
 
 import com.javadocmd.simplelatlng.LatLng;
-import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
 import com.javadocmd.simplelatlng.util.LengthUnit;
+
+import static com.javadocmd.simplelatlng.LatLngTool.distanceInRadians;
 
 /**
  * <p>
@@ -105,6 +106,12 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 		}
 	}
 
+	private long toDegreesInternal(Double radians) {
+		// When converting a radian distance to the internal degrees representation
+		// for the sake of comparison, rounding the result seems to be appropriate.
+		return Math.round(Math.toDegrees(radians) / LatLngConfig.DEGREE_TOLERANCE);
+	}
+
 	/**
 	 * A specialized implementation of the {@link #contains(LatLng)} check which
 	 * returns the distance from the center of the window if the window contains
@@ -112,8 +119,8 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	 * {@link #filterCopySort(Collection, Collection, FilterHelper)}.
 	 */
 	private Double containsForSort(LatLng point) {
-		double d = Math.toDegrees(LatLngTool.distanceInRadians(center, point));
-		if (LatLngConfig.doubleToLong(d) <= radius)
+		double d = distanceInRadians(center, point);
+		if (toDegreesInternal(d) <= radius)
 			return d;
 		else
 			return null;
@@ -121,14 +128,12 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 
 	@Override
 	public boolean contains(LatLng point) {
-		return LatLngConfig
-				.doubleToLong(Math.toDegrees(LatLngTool.distanceInRadians(center, point))) <= radius;
+		return toDegreesInternal(distanceInRadians(center, point)) <= radius;
 	}
 
 	@Override
 	public boolean overlaps(CircularWindow window) {
-		long angle = LatLngConfig.doubleToLong(Math.toDegrees(LatLngTool.distanceInRadians(
-				this.center, window.getCenter())));
+		long angle = toDegreesInternal(distanceInRadians(this.center, window.getCenter()));
 		return angle <= (this.radius + window.radius);
 	}
 
