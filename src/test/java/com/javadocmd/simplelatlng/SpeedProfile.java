@@ -18,6 +18,7 @@ package com.javadocmd.simplelatlng;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
+import java.util.Random;
 
 import com.javadocmd.simplelatlng.util.LengthUnit;
 import com.javadocmd.simplelatlng.window.CircularWindow;
@@ -50,10 +51,11 @@ public class SpeedProfile {
 	private LatLng[] points;
 
 	public SpeedProfile() {
+		Random random = new Random();
 		long memStart = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		points = new LatLng[NUMBER_OF_POINTS];
 		for (int i = 0; i < points.length; i++) {
-			points[i] = LatLng.random();
+			points[i] = LatLng.random(random);
 		}
 		long memEnd = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
