@@ -15,6 +15,8 @@
  */
 package com.javadocmd.simplelatlng.window;
 
+import static com.javadocmd.simplelatlng.LatLngTool.distanceInRadians;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,16 +26,12 @@ import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 
-import static com.javadocmd.simplelatlng.LatLngTool.distanceInRadians;
-
 /**
  * <p>
  * A circular window. Has the benefit of performing well around poles and
  * regardless of the size of the window. <code>contains()</code> checks are
  * slower with a CircularWindow than with a RectangularWindow, however.
  * </p>
- * 
- * @author Tyler Coles
  */
 public class CircularWindow extends LatLngWindow<CircularWindow> {
 
@@ -43,13 +41,11 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	/**
 	 * Constructs a circular window.
 	 * 
-	 * @param center
-	 *            the center point.
-	 * @param radiusInDegrees
-	 *            the radius of the circle given in degrees of angle required to
-	 *            create the circle. This angle is measured from an axis that
-	 *            joins the center of the Earth to our circle's center point on
-	 *            the surface.
+	 * @param center          the center point.
+	 * @param radiusInDegrees the radius of the circle given in degrees of angle
+	 *                        required to create the circle. This angle is measured
+	 *                        from an axis that joins the center of the Earth to our
+	 *                        circle's center point on the surface.
 	 */
 	public CircularWindow(LatLng center, double radiusInDegrees) {
 		this.setCenter(center);
@@ -60,12 +56,9 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	 * Constructs a circular window that will contain all points within the
 	 * specified radius.
 	 * 
-	 * @param center
-	 *            the center point.
-	 * @param radius
-	 *            the radius of the circle given in length units.
-	 * @param unit
-	 *            the unit to use for the radius.
+	 * @param center the center point.
+	 * @param radius the radius of the circle given in length units.
+	 * @param unit   the unit to use for the radius.
 	 */
 	public CircularWindow(LatLng center, double radius, LengthUnit unit) {
 		this.setCenter(center);
@@ -74,25 +67,21 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 
 	/**
 	 * A specialized extension of
-	 * {@link LatLngWindow#filterCopy(Collection, Collection, FilterHelper)}
-	 * which returns the filtered results in sorted order from the center of the
-	 * window. This method re-uses the distance calculation used for filtering
-	 * to do the sorting, so that the number of distance calculations done is
-	 * halved (at most).
+	 * {@link LatLngWindow#filterCopy(Collection, Collection, FilterHelper)} which
+	 * returns the filtered results in sorted order from the center of the window.
+	 * This method re-uses the distance calculation used for filtering to do the
+	 * sorting, so that the number of distance calculations done is halved (at
+	 * most).
 	 * 
-	 * @param <E>
-	 *            the type of elements in the collection.
-	 * @param source
-	 *            the source collection of elements.
-	 * @param destination
-	 *            the destination collection; after this method runs,
-	 *            destination contains all items that fit within this window.
-	 * @param helper
-	 *            the instance of FilterHelper that gives this method access to
-	 *            E's LatLng value that we will test against this window.
+	 * @param <E>         the type of elements in the collection.
+	 * @param source      the source collection of elements.
+	 * @param destination the destination collection; after this method runs,
+	 *                    destination contains all items that fit within this
+	 *                    window.
+	 * @param helper      the instance of FilterHelper that gives this method access
+	 *                    to E's LatLng value that we will test against this window.
 	 */
-	public <E> void filterCopySort(Collection<E> source, Collection<E> destination,
-			FilterHelper<E> helper) {
+	public <E> void filterCopySort(Collection<E> source, Collection<E> destination, FilterHelper<E> helper) {
 		List<SortWrapper<E>> sortList = new ArrayList<SortWrapper<E>>();
 		for (E object : source) {
 			Double distance = this.containsForSort(helper.getLatLng(object));
@@ -114,8 +103,8 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 
 	/**
 	 * A specialized implementation of the {@link #contains(LatLng)} check which
-	 * returns the distance from the center of the window if the window contains
-	 * the point and null if it does not. Used in
+	 * returns the distance from the center of the window if the window contains the
+	 * point and null if it does not. Used in
 	 * {@link #filterCopySort(Collection, Collection, FilterHelper)}.
 	 */
 	private Double containsForSort(LatLng point) {
@@ -145,8 +134,7 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	/**
 	 * Sets the center of this window.
 	 * 
-	 * @param center
-	 *            the center point; may not be null.
+	 * @param center the center point; may not be null.
 	 */
 	public void setCenter(LatLng center) {
 		if (center == null)
@@ -166,8 +154,7 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	/**
 	 * Gets the radius of this window in a length unit.
 	 * 
-	 * @param unit
-	 *            the unit in which to receive the result.
+	 * @param unit the unit in which to receive the result.
 	 * @return the radius in the desired length unit.
 	 */
 	public double getRadius(LengthUnit unit) {
@@ -177,8 +164,7 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 	/**
 	 * Sets the radius of this window.
 	 * 
-	 * @param radius
-	 *            radius in degrees.
+	 * @param radius radius in degrees.
 	 */
 	public void setRadius(double radius) {
 		if (Double.isNaN(radius))
@@ -188,7 +174,7 @@ public class CircularWindow extends LatLngWindow<CircularWindow> {
 
 	@Override
 	public String toString() {
-		return String.format("center: %s; radius: %s degrees", getCenter().toString(), LatLngConfig
-				.getDegreeFormat().format(getRadius()));
+		return String.format("center: %s; radius: %s degrees", getCenter().toString(),
+				LatLngConfig.getDegreeFormat().format(getRadius()));
 	}
 }

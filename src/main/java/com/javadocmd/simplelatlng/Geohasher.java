@@ -22,34 +22,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implements the <a href="http://en.wikipedia.org/wiki/Geohash">Geohash</a> 
- * algorithm for hashing latitude and longitude points. Note: this implementation
- * is only "stable" with 12-character hashes. Decoding "s" and re-hashing the 
- * result yields "t40000000000". Decoding and re-hashing "t40000000000" yields 
- * the same. 12 characters was chosen because this gives us precision up to
- * one-millionth of a degree, like the rest of this library.
- * 
- * @author Tyler Coles
+ * Implements the <a href="http://en.wikipedia.org/wiki/Geohash">Geohash</a>
+ * algorithm for hashing latitude and longitude points. Note: this
+ * implementation is only "stable" with 12-character hashes. Decoding "s" and
+ * re-hashing the result yields "t40000000000". Decoding and re-hashing
+ * "t40000000000" yields the same. 12 characters was chosen because this gives
+ * us precision up to one-millionth of a degree, like the rest of this library.
  */
 public class Geohasher {
 
 	/**
-	 * <p>Number of hash characters supported.</p> 
-	 * <p>Translates to binary bits per value by the formula:</p>
-	 * <pre>BITS = ((PRECISION * 5) / 2) + PRECISION % 2.</pre>
-	 * <p>BITS in turn translates to numerical precision
-	 * by the formula:</p>
-	 * <pre>LATITUDE_ERROR = 90.0 / (2 ^ (BITS + 1))
-	 *LONGITUDE_ERROR = 180.0 / (2 ^ (BITS + 1))</pre>
+	 * <p>
+	 * Number of hash characters supported.
+	 * </p>
+	 * <p>
+	 * Translates to binary bits per value by the formula:
+	 * </p>
+	 * 
+	 * <pre>
+	 * BITS = ((PRECISION * 5) / 2) + PRECISION % 2.
+	 * </pre>
+	 * <p>
+	 * BITS in turn translates to numerical precision by the formula:
+	 * </p>
+	 * 
+	 * <pre>
+	 * LATITUDE_ERROR = 90.0 / (2 ^ (BITS + 1))
+	 *LONGITUDE_ERROR = 180.0 / (2 ^ (BITS + 1))
+	 * </pre>
 	 */
 	public static final int PRECISION = 12;
 	private static final int BITS = ((PRECISION * 5) / 2) + PRECISION % 2;
 	private static final double MAX_LAT = 90.0;
 	private static final double MAX_LNG = 180.0;
-	private static final char[] HASH_CHARS_ARRAY = new char[]{'0', '1', '2',
-			'3', '4', '5', '6', '7', '8', '9', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
-			'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
-			'z'};
+	private static final char[] HASH_CHARS_ARRAY = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'b',
+			'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 	private static final Map<Character, Integer> HASH_CHARS_MAP;
 	protected static final BigDecimal[] LAT_BIT_VALUES;
 	protected static final BigDecimal[] LNG_BIT_VALUES;
@@ -58,7 +65,7 @@ public class Geohasher {
 		BigDecimal lngValue = new BigDecimal(MAX_LNG);
 		LAT_BIT_VALUES = new BigDecimal[BITS];
 		LNG_BIT_VALUES = new BigDecimal[BITS];
-		
+
 		BigDecimal TWO = new BigDecimal("2");
 		for (int i = 0; i < BITS; i++) {
 			latValue = latValue.divide(TWO);
@@ -76,8 +83,8 @@ public class Geohasher {
 	/**
 	 * Decodes a geohash string to its LatLng equivalent.
 	 * 
-	 * @param hash the geohash string of any precision, although LatLng will 
-	 * still not become <em>more</em> precise than its settings.
+	 * @param hash the geohash string of any precision, although LatLng will still
+	 *             not become <em>more</em> precise than its settings.
 	 * @return the decoded point.
 	 */
 	public static LatLng decode(String hash) {
@@ -110,8 +117,7 @@ public class Geohasher {
 
 			return bits;
 		} catch (NullPointerException e) {
-			throw new IllegalArgumentException(
-					"Geohash string contains invalid characters.");
+			throw new IllegalArgumentException("Geohash string contains invalid characters.");
 		}
 	}
 
@@ -122,7 +128,7 @@ public class Geohasher {
 	 * @return two bit sets: [0] = even bits, [1] = odd bits
 	 */
 	protected static BitSet[] deInterleave(BitSet bits) {
-		BitSet[] sets = new BitSet[]{new BitStore(), new BitStore()};
+		BitSet[] sets = new BitSet[] { new BitStore(), new BitStore() };
 
 		int n = bits.size();
 		for (int i = 0; i < n; i++) {
@@ -133,12 +139,12 @@ public class Geohasher {
 	}
 
 	/**
-	 * Converts the set of bits representing a single value to double.
-	 * The bit set passed into this function should already be de-interleaved.
+	 * Converts the set of bits representing a single value to double. The bit set
+	 * passed into this function should already be de-interleaved.
 	 * 
-	 * @param bits the bits for this value.
-	 * @param bitValues the correct set of pre-computed bit-values to use
-	 * for the particular value we are decoding: latitude or longitude. 
+	 * @param bits      the bits for this value.
+	 * @param bitValues the correct set of pre-computed bit-values to use for the
+	 *                  particular value we are decoding: latitude or longitude.
 	 * @return the value.
 	 */
 	protected static double bitsToDouble(BitSet bits, BigDecimal[] bitValues) {
@@ -153,11 +159,11 @@ public class Geohasher {
 				value = value.subtract(bitValues[n - i - 1]);
 			}
 		}
-		
+
 		BigDecimal lastDelta2x = bitValues[n - 1].multiply(new BigDecimal(2));
 		BigDecimal roundingMin = lastValue.subtract(lastDelta2x);
 		BigDecimal roundingMax = lastValue.add(lastDelta2x);
-		
+
 		BigDecimal rounded = value.setScale(6, RoundingMode.HALF_UP);
 		if (rounded.compareTo(roundingMin) < 0 || rounded.compareTo(roundingMax) > 0) {
 			rounded = value.setScale(6, RoundingMode.HALF_DOWN);
@@ -201,7 +207,7 @@ public class Geohasher {
 	 * Interleaves two sets of bits.
 	 * 
 	 * @param evenBits the bits to use for even bits. (0, 2, 4,...)
-	 * @param oddBits the bits to use for odd bits. (1, 3, 5,...)
+	 * @param oddBits  the bits to use for odd bits. (1, 3, 5,...)
 	 * @return the interleaved bits.
 	 */
 	protected static BitSet interleave(BitSet evenBits, BitSet oddBits) {
@@ -218,12 +224,12 @@ public class Geohasher {
 	}
 
 	/**
-	 * Converts a double value to its bit representation in the geohash 
+	 * Converts a double value to its bit representation in the geohash
 	 * specification.
 	 * 
-	 * @param value the value to encode.
-	 * @param maxRange the max range for the particular value we are
-	 * encoding: latitude = 90.0, longitude = 180.0.
+	 * @param value    the value to encode.
+	 * @param maxRange the max range for the particular value we are encoding:
+	 *                 latitude = 90.0, longitude = 180.0.
 	 * @return the bit set for this value.
 	 */
 	protected static BitSet doubleToBits(double value, double maxRange) {
@@ -247,13 +253,11 @@ public class Geohasher {
 	}
 
 	/**
-	 * Specialization of BitSet to <em>actually</em> keep track of
-	 * the number of bits that are being usefully employed, regardless
-	 * of whether or not they are 1 or 0. This requires that you call set
-	 * for 0's <em>and</em> 1's. Not all features are implemented, but setting, 
-	 * getting, and size work fine, which is all I need for this class.
-	 * 
-	 * @author Tyler Coles
+	 * Specialization of BitSet to <em>actually</em> keep track of the number of
+	 * bits that are being usefully employed, regardless of whether or not they are
+	 * 1 or 0. This requires that you call set for 0's <em>and</em> 1's. Not all
+	 * features are implemented, but setting, getting, and size work fine, which is
+	 * all I need for this class.
 	 */
 	protected static class BitStore extends BitSet {
 
@@ -271,7 +275,7 @@ public class Geohasher {
 				s = (get(i) ? "1" : "0") + s;
 			return s;
 		}
-		
+
 		@Override
 		public void set(int bitIndex) {
 			super.set(bitIndex);

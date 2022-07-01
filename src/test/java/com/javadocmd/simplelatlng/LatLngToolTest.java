@@ -26,10 +26,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
 import com.javadocmd.simplelatlng.util.LengthUnit;
-
 
 public class LatLngToolTest {
 
@@ -80,7 +78,7 @@ public class LatLngToolTest {
 		assertEquals(Double.NaN, normalizeLongitude(Double.NEGATIVE_INFINITY), t);
 		assertEquals(Double.NaN, normalizeLongitude(Double.NaN), t);
 	}
-	
+
 	@Test
 	public void testNormalizeBearing() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
@@ -112,26 +110,17 @@ public class LatLngToolTest {
 	@Test
 	public void testDistance() {
 		double t = 0.01; // Distance tolerance is less picky.
-		assertEquals(0, distance(new LatLng(0, 0), new LatLng(0, 0),
-				LengthUnit.MILE), t);
-		assertEquals(0, distance(new LatLng(36.79283, -127.36629), new LatLng(
-				36.79283, -127.36629), LengthUnit.MILE), t);
+		assertEquals(0, distance(new LatLng(0, 0), new LatLng(0, 0), LengthUnit.MILE), t);
+		assertEquals(0, distance(new LatLng(36.79283, -127.36629), new LatLng(36.79283, -127.36629), LengthUnit.MILE), t);
 
-		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(0, 1),
-				LengthUnit.KILOMETER), t);
-		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(1, 0),
-				LengthUnit.KILOMETER), t);
-		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(0, -1),
-				LengthUnit.KILOMETER), t);
-		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(-1, 0),
-				LengthUnit.KILOMETER), t);
-		assertEquals(111.19, distance(new LatLng(-1, 0), new LatLng(0, 0),
-				LengthUnit.KILOMETER), t);
+		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(0, 1), LengthUnit.KILOMETER), t);
+		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(1, 0), LengthUnit.KILOMETER), t);
+		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(0, -1), LengthUnit.KILOMETER), t);
+		assertEquals(111.19, distance(new LatLng(0, 0), new LatLng(-1, 0), LengthUnit.KILOMETER), t);
+		assertEquals(111.19, distance(new LatLng(-1, 0), new LatLng(0, 0), LengthUnit.KILOMETER), t);
 
-		assertEquals(5133.65, distance(new LatLng(-67.5, 45), new LatLng(0, 0),
-				LengthUnit.MILE), t);
-		assertEquals(8261.81, distance(new LatLng(-67.5, 45), new LatLng(0, 0),
-				LengthUnit.KILOMETER), t);
+		assertEquals(5133.65, distance(new LatLng(-67.5, 45), new LatLng(0, 0), LengthUnit.MILE), t);
+		assertEquals(8261.81, distance(new LatLng(-67.5, 45), new LatLng(0, 0), LengthUnit.KILOMETER), t);
 	}
 
 	@Test
@@ -145,7 +134,7 @@ public class LatLngToolTest {
 	private static void distRadTest(double expected, LatLng point1, LatLng point2) {
 		assertEquals(expected, Math.toDegrees(distanceInRadians(point1, point2)), .000001);
 	}
-	
+
 	@Test
 	public void testInitialBearing() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
@@ -155,14 +144,16 @@ public class LatLngToolTest {
 		assertEquals(315.004363, initialBearing(new LatLng(0, 0), new LatLng(1, -1)), t);
 		assertEquals(68.256958, initialBearing(new LatLng(33.45, -112.067), new LatLng(35.1108, -106.61)), t);
 	}
-	
+
 	@Test
 	public void testTravel() {
-		// Distance and bearing numbers are very picky if we're trying to hit an exact LatLng.
-		assertEquals(new LatLng(0,0), travel(new LatLng(0,0), 0, 0, LengthUnit.KILOMETER));
-		assertEquals(new LatLng(0,0), travel(new LatLng(0,0), 180, 0, LengthUnit.KILOMETER));
-		assertEquals(new LatLng(1,0), travel(new LatLng(0,0), 0, 111.19508372419142, LengthUnit.KILOMETER));
-		assertEquals(new LatLng(0,1), travel(new LatLng(0,0), 90, 111.19508372419142, LengthUnit.KILOMETER));
-		assertEquals(new LatLng(0,0), travel(new LatLng(-67.5, 45), 312.7342096008998, 5133.651152139029, LengthUnit.MILE));
+		// Distance and bearing numbers are very picky if we're trying to hit an exact
+		// LatLng.
+		assertEquals(new LatLng(0, 0), travel(new LatLng(0, 0), 0, 0, LengthUnit.KILOMETER));
+		assertEquals(new LatLng(0, 0), travel(new LatLng(0, 0), 180, 0, LengthUnit.KILOMETER));
+		assertEquals(new LatLng(1, 0), travel(new LatLng(0, 0), 0, 111.19508372419142, LengthUnit.KILOMETER));
+		assertEquals(new LatLng(0, 1), travel(new LatLng(0, 0), 90, 111.19508372419142, LengthUnit.KILOMETER));
+		assertEquals(new LatLng(0, 0),
+				travel(new LatLng(-67.5, 45), 312.7342096008998, 5133.651152139029, LengthUnit.MILE));
 	}
 }

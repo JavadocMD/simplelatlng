@@ -135,8 +135,7 @@ public class LatLngTest {
 
 		assertFalse(degreesEqual(0, Double.POSITIVE_INFINITY));
 		assertFalse(degreesEqual(Double.POSITIVE_INFINITY, 0));
-		assertFalse(degreesEqual(Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY));
+		assertFalse(degreesEqual(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
 
 		assertFalse(degreesEqual(0, Double.NaN));
 		assertFalse(degreesEqual(Double.NaN, 0));

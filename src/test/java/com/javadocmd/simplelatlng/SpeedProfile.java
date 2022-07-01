@@ -24,11 +24,8 @@ import com.javadocmd.simplelatlng.window.CircularWindow;
 import com.javadocmd.simplelatlng.window.RectangularWindow;
 
 /**
- * Basic benchmarking test. Repeats the critical functions
- * a bunch of times and reports how long that took. Also 
- * reports on approximate memory usage.
- * 
- * @author Tyler Coles
+ * Basic benchmarking test. Repeats the critical functions a bunch of times and
+ * reports how long that took. Also reports on approximate memory usage.
  */
 public class SpeedProfile {
 
@@ -53,23 +50,18 @@ public class SpeedProfile {
 	private LatLng[] points;
 
 	public SpeedProfile() {
-		long memStart = Runtime.getRuntime().totalMemory()
-				- Runtime.getRuntime().freeMemory();
+		long memStart = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		points = new LatLng[NUMBER_OF_POINTS];
 		for (int i = 0; i < points.length; i++) {
 			points[i] = LatLng.random();
 		}
-		long memEnd = Runtime.getRuntime().totalMemory()
-				- Runtime.getRuntime().freeMemory();
+		long memEnd = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
 		double mem = (double) (memEnd - memStart);
 
-		System.out.printf("All test run against %s points.\n", integer
-				.format(NUMBER_OF_POINTS));
-		System.out.printf("Storage approximately %s MB.\n", decimal
-				.format(mem / 1048576.0));
-		System.out.printf("Averages %s bytes per LatLng.\n", decimal.format(mem
-				/ (double) NUMBER_OF_POINTS));
+		System.out.printf("All test run against %s points.\n", integer.format(NUMBER_OF_POINTS));
+		System.out.printf("Storage approximately %s MB.\n", decimal.format(mem / 1048576.0));
+		System.out.printf("Averages %s bytes per LatLng.\n", decimal.format(mem / (double) NUMBER_OF_POINTS));
 	}
 
 	private void profileEquals() {
@@ -81,9 +73,7 @@ public class SpeedProfile {
 		}
 		Date end = new Date();
 
-		System.out.printf("Tested equality in %s ms.\n", integer.format(end
-				.getTime()
-				- start.getTime()));
+		System.out.printf("Tested equality in %s ms.\n", integer.format(end.getTime() - start.getTime()));
 	}
 
 	private void profileGeohasher() {
@@ -93,9 +83,8 @@ public class SpeedProfile {
 		}
 		Date end = new Date();
 
-		System.out.printf("Geohashed (one way) in %s ms.\n", integer.format(end.getTime()
-				- start.getTime()));
-		
+		System.out.printf("Geohashed (one way) in %s ms.\n", integer.format(end.getTime() - start.getTime()));
+
 		start = new Date();
 		for (int i = 0; i < points.length; i++) {
 			String s = Geohasher.hash(points[i]);
@@ -103,8 +92,7 @@ public class SpeedProfile {
 		}
 		end = new Date();
 
-		System.out.printf("Geohashed and decoded in %s ms.\n", integer.format(end.getTime()
-				- start.getTime()));
+		System.out.printf("Geohashed and decoded in %s ms.\n", integer.format(end.getTime() - start.getTime()));
 	}
 
 	private void profileHashCode() {
@@ -117,8 +105,7 @@ public class SpeedProfile {
 		}
 		Date end = new Date();
 
-		System.out.printf("hashCode() 5x in %s ms.\n", integer.format(end.getTime()
-				- start.getTime()));
+		System.out.printf("hashCode() 5x in %s ms.\n", integer.format(end.getTime() - start.getTime()));
 	}
 
 	private void profileDistance() {
@@ -130,8 +117,7 @@ public class SpeedProfile {
 		}
 		Date end = new Date();
 
-		System.out.printf("Calculated kilometer distances in %s ms.\n", integer
-				.format(end.getTime() - start.getTime()));
+		System.out.printf("Calculated kilometer distances in %s ms.\n", integer.format(end.getTime() - start.getTime()));
 
 		start = new Date();
 		for (int i = 0; i < points.length; i++) {
@@ -139,8 +125,7 @@ public class SpeedProfile {
 		}
 		end = new Date();
 
-		System.out.printf("Calculated mile distances in %s ms.\n", integer
-				.format(end.getTime() - start.getTime()));
+		System.out.printf("Calculated mile distances in %s ms.\n", integer.format(end.getTime() - start.getTime()));
 	}
 
 	private void profileRectangularWindow() {
@@ -152,8 +137,7 @@ public class SpeedProfile {
 		}
 		Date end = new Date();
 
-		System.out.printf("RectangularWindow tested contains in %s ms.\n",
-				integer.format(end.getTime() - start.getTime()));
+		System.out.printf("RectangularWindow tested contains in %s ms.\n", integer.format(end.getTime() - start.getTime()));
 	}
 
 	private void profileCircularWindow() {
@@ -165,7 +149,6 @@ public class SpeedProfile {
 		}
 		Date end = new Date();
 
-		System.out.printf("CircularWindow tested contains in %s ms.\n", integer
-				.format(end.getTime() - start.getTime()));
+		System.out.printf("CircularWindow tested contains in %s ms.\n", integer.format(end.getTime() - start.getTime()));
 	}
 }

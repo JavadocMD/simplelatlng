@@ -28,12 +28,12 @@ public class GeohasherTest {
 
 	@Test
 	public void testHash1() {
-		assertEquals("s00000000000", Geohasher.hash(new LatLng(0,0)));
+		assertEquals("s00000000000", Geohasher.hash(new LatLng(0, 0)));
 	}
 
 	@Test
 	public void testDecode1() {
-		assertEquals(new LatLng(0,0), Geohasher.decode("s00000000000"));
+		assertEquals(new LatLng(0, 0), Geohasher.decode("s00000000000"));
 	}
 
 	@Test
@@ -119,10 +119,10 @@ public class GeohasherTest {
 		BitSet[] bits = deInterleave(hashToBits("ezs42"));
 		double lng = bitsToDouble(bits[0], Geohasher.LNG_BIT_VALUES);
 		assertEquals(-5.603, lng, 0.001);
-		
+
 		double lat = bitsToDouble(bits[1], Geohasher.LAT_BIT_VALUES);
 		assertEquals(42.605, lat, 0.001);
-		
+
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class GeohasherTest {
 		BitSet[] bits = deInterleave(hashToBits("ezs42ebpbpbm"));
 		BitStore evens = (BitStore) bits[0];
 		assertEquals("011111000000010000000000000001", evens.toString());
-		
+
 		BitStore odds = (BitStore) bits[1];
 		assertEquals("101111001001011111111111111101", odds.toString());
 	}
@@ -148,16 +148,16 @@ public class GeohasherTest {
 		BitSet[] bits = deInterleave(hashToBits("ezs42ebpbpbm"));
 		double lng = bitsToDouble(bits[0], Geohasher.LNG_BIT_VALUES);
 		assertEquals(-5.603027, lng, 0.000001);
-		
+
 		double lat = bitsToDouble(bits[1], Geohasher.LAT_BIT_VALUES);
 		assertEquals(42.604980, lat, 0.000001);
 	}
-	
+
 	@Test
 	public void testDecodeHash1() {
-		 LatLng p = new LatLng(42.604980, -5.603027);
-		 assertEquals(p, Geohasher.decode("ezs42"));
-		 assertEquals("ezs42ebpbpbm", Geohasher.hash(p));
-		 assertEquals(p, Geohasher.decode("ezs42ebpbpbm"));
+		LatLng p = new LatLng(42.604980, -5.603027);
+		assertEquals(p, Geohasher.decode("ezs42"));
+		assertEquals("ezs42ebpbpbm", Geohasher.hash(p));
+		assertEquals(p, Geohasher.decode("ezs42ebpbpbm"));
 	}
 }

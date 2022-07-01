@@ -88,8 +88,7 @@ public class RectangularWindowTest {
 	@Test
 	public void testRectangularWindow9() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
-		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
-				-25.136718), 141.826753, 309.726562);
+		RectangularWindow w = new RectangularWindow(new LatLng(23.079731, -25.136718), 141.826753, 309.726562);
 		assertEquals(-179.999999, w.getLeftLongitude(), t);
 		assertEquals(129.726563, w.getRightLongitude(), t);
 		assertEquals(-47.833645, w.getMinLatitude(), t);
@@ -100,8 +99,7 @@ public class RectangularWindowTest {
 	@Test
 	public void testRectangularWindow10() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
-		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
-				-30.136718), 141.826753, 309.726562);
+		RectangularWindow w = new RectangularWindow(new LatLng(23.079731, -30.136718), 141.826753, 309.726562);
 		assertEquals(175.000001, w.getLeftLongitude(), t);
 		assertEquals(124.726563, w.getRightLongitude(), t);
 		assertEquals(-47.833645, w.getMinLatitude(), t);
@@ -114,8 +112,7 @@ public class RectangularWindowTest {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
 		double width = 31683.495744;
 		double height = 15770.437674;
-		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
-				-30.136718), width, height, LengthUnit.KILOMETER);
+		RectangularWindow w = new RectangularWindow(new LatLng(23.079731, -30.136718), width, height, LengthUnit.KILOMETER);
 		assertEquals(175.000001, w.getLeftLongitude(), t);
 		assertEquals(124.726563, w.getRightLongitude(), t);
 		assertEquals(-47.833645, w.getMinLatitude(), t);
@@ -128,15 +125,14 @@ public class RectangularWindowTest {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
 		double width = 19687.211770;
 		double height = 9799.295782;
-		RectangularWindow w = new RectangularWindow(new LatLng(23.079731,
-				-30.136718), width, height, LengthUnit.MILE);
+		RectangularWindow w = new RectangularWindow(new LatLng(23.079731, -30.136718), width, height, LengthUnit.MILE);
 		assertEquals(175.000001, w.getLeftLongitude(), t);
 		assertEquals(124.726563, w.getRightLongitude(), t);
 		assertEquals(-47.833645, w.getMinLatitude(), t);
 		assertEquals(90, w.getMaxLatitude(), t);
 		assertTrue(w.crosses180thMeridian());
 	}
-	
+
 	@Test
 	public void testRectangularWindow13() {
 		double t = LatLngConfig.DEGREE_TOLERANCE;
@@ -153,7 +149,7 @@ public class RectangularWindowTest {
 	public void testRectangularWindow14() {
 		new RectangularWindow(new LatLng(-75, 15), new LatLng(-90, -15));
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testRectangularWindow15() {
 		new RectangularWindow(new LatLng(0, 0), new LatLng(45, -30));
@@ -173,8 +169,7 @@ public class RectangularWindowTest {
 
 	@Test
 	public void testContains1() {
-		RectangularWindow window = new RectangularWindow(new LatLng(45, -67.5),
-				30, 45);
+		RectangularWindow window = new RectangularWindow(new LatLng(45, -67.5), 30, 45);
 		assertTrue(window.contains(new LatLng(45, -67.5)));
 		assertTrue(window.contains(new LatLng(30, -67.5)));
 		assertTrue(window.contains(new LatLng(60, -67.5)));
@@ -196,8 +191,7 @@ public class RectangularWindowTest {
 
 	@Test
 	public void testContains2() {
-		RectangularWindow window = new RectangularWindow(new LatLng(-90, 0), 30,
-				30);
+		RectangularWindow window = new RectangularWindow(new LatLng(-90, 0), 30, 30);
 		assertTrue(window.contains(new LatLng(-90, 0)));
 		assertTrue(window.contains(new LatLng(-90, 10)));
 		assertTrue(window.contains(new LatLng(-90, 180)));
@@ -218,8 +212,7 @@ public class RectangularWindowTest {
 
 	@Test
 	public void testContains3() {
-		RectangularWindow window = new RectangularWindow(new LatLng(0, 180), 40,
-				360);
+		RectangularWindow window = new RectangularWindow(new LatLng(0, 180), 40, 360);
 		for (double lng = 0; lng < 720; lng += 20) {
 			assertTrue(window.contains(new LatLng(0, lng)));
 			assertTrue(window.contains(new LatLng(5, lng)));
@@ -240,8 +233,7 @@ public class RectangularWindowTest {
 
 	@Test
 	public void testContains4() {
-		RectangularWindow window = new RectangularWindow(new LatLng(0, 180), 40,
-				40);
+		RectangularWindow window = new RectangularWindow(new LatLng(0, 180), 40, 40);
 		assertTrue(window.contains(new LatLng(0, 180)));
 		assertTrue(window.contains(new LatLng(0, 200)));
 		assertTrue(window.contains(new LatLng(0, -160)));
@@ -361,15 +353,13 @@ public class RectangularWindowTest {
 
 	@Test
 	public void testGetHeight() {
-		RectangularWindow w = new RectangularWindow(new LatLng(0, 0), 111.195,
-				111.195, LengthUnit.KILOMETER);
+		RectangularWindow w = new RectangularWindow(new LatLng(0, 0), 111.195, 111.195, LengthUnit.KILOMETER);
 		assertEquals(111.195, w.getHeight(LengthUnit.KILOMETER), 0.001);
 	}
 
 	@Test
 	public void testGetWidth() {
-		RectangularWindow w = new RectangularWindow(new LatLng(0, 0), 111.195,
-				LengthUnit.KILOMETER);
+		RectangularWindow w = new RectangularWindow(new LatLng(0, 0), 111.195, LengthUnit.KILOMETER);
 		assertEquals(111.195, w.getWidth(LengthUnit.KILOMETER), 0.001);
 	}
 

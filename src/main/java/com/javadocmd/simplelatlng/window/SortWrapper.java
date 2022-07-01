@@ -21,10 +21,7 @@ import java.util.Comparator;
  * This class wraps another class in order to attach a distance value to it. A
  * list of SortWrappers may then be easily sorted.
  * 
- * @author Tyler Coles
- * 
- * @param <E>
- *            the type that SortWrapper is wrapping.
+ * @param <E> the type that SortWrapper is wrapping.
  */
 public class SortWrapper<E> {
 

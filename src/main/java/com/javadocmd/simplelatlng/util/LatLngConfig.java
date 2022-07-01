@@ -20,19 +20,17 @@ import java.util.Locale;
 
 /**
  * Configuration parameters for latitude and longitude calculations.
- * 
- * @author Tyler Coles
  */
 public class LatLngConfig {
 
 	/**
 	 * The tolerance (in degrees) by which two angles can differ and still be
 	 * considered the same. A tolerance of 1e-6 yields a precision of nearly 1
-	 * centimeter, which is far more accurate than any of the distance
-	 * calculations can claim to be.
+	 * centimeter, which is far more accurate than any of the distance calculations
+	 * can claim to be.
 	 */
 	public static final double DEGREE_TOLERANCE = 0.000001;
-	
+
 	private static ThreadLocal<NumberFormat> DEGREE_FORMAT;
 	static {
 		setDegreeFormat(new ThreadLocal<NumberFormat>() {
@@ -54,11 +52,11 @@ public class LatLngConfig {
 
 	/**
 	 * Sets the NumberFormatter to use for the purposes of all future coordinate
-	 * formatting in this library. You must provide an instance of ThreadLocal
-	 * for this.
+	 * formatting in this library. You must provide an instance of ThreadLocal for
+	 * this.
 	 * 
 	 * @param formatThreadLocal a ThreadLocal instance which instantiates the
-	 *            NumberFormatter to use.
+	 *                          NumberFormatter to use.
 	 */
 	synchronized public static void setDegreeFormat(ThreadLocal<NumberFormat> formatThreadLocal) {
 		DEGREE_FORMAT = formatThreadLocal;
@@ -93,12 +91,12 @@ public class LatLngConfig {
 	}
 
 	/**
-	 * Sets the Earth's radius for the purposes of all future calculations in
-	 * this library. If there is a radius that is more accurate for the
-	 * locations you most care about, you can configure that here.
+	 * Sets the Earth's radius for the purposes of all future calculations in this
+	 * library. If there is a radius that is more accurate for the locations you
+	 * most care about, you can configure that here.
 	 * 
 	 * @param radius the Earth's spherical approximation radius.
-	 * @param unit the unit the radius is given in.
+	 * @param unit   the unit the radius is given in.
 	 */
 	synchronized public static void setEarthRadius(double radius, LengthUnit unit) {
 		EARTH_RADIUS = new double[LengthUnit.values().length];
@@ -107,12 +105,11 @@ public class LatLngConfig {
 		}
 	}
 
-	private LatLngConfig() {
-	}
+	private LatLngConfig() {}
 
 	/**
-	 * Function used to convert an angle in degrees to its internal,
-	 * fixed-precision long representation. Intended for library use only.
+	 * Function used to convert an angle in degrees to its internal, fixed-precision
+	 * long representation. Intended for library use only.
 	 * 
 	 * @param value the value to convert.
 	 * @return the long value.

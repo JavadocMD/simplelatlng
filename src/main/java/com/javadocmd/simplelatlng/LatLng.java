@@ -21,15 +21,15 @@ import java.util.Random;
 import com.javadocmd.simplelatlng.util.LatLngConfig;
 
 /**
- * <p>A representation of a single point in latitude and longitude.
- * All data is handled in degrees and will be normalized if possible 
- * to the +/- 90 latitude, +/- 180 longitude region.</p>
- * 
- * <p>Note that attempting to create a LatLng with invalid values 
- * (NaN, negative infinity, positive infinity) will throw
- * IllegalArgumentExceptions.</p>
- * 
- * @author Tyler Coles
+ * <p>
+ * A representation of a single point in latitude and longitude. All data is
+ * handled in degrees and will be normalized if possible to the +/- 90 latitude,
+ * +/- 180 longitude region.
+ * </p>
+ * <p>
+ * Note that attempting to create a LatLng with invalid values (NaN, negative
+ * infinity, positive infinity) will throw IllegalArgumentExceptions.
+ * </p>
  */
 public class LatLng implements Serializable {
 
@@ -47,19 +47,18 @@ public class LatLng implements Serializable {
 	/**
 	 * Creates a random latitude and longitude. (Not inclusive of (-90, 0))
 	 * 
-	 * @param r the random number generator to use, if you want to be 
-	 * specific or are creating many LatLngs at once.
+	 * @param r the random number generator to use, if you want to be specific or
+	 *          are creating many LatLngs at once.
 	 * @return the random LatLng.
 	 */
 	public static LatLng random(Random r) {
-		return new LatLng((r.nextDouble() * -180.0) + 90.0,
-				(r.nextDouble() * -360.0) + 180.0);
+		return new LatLng((r.nextDouble() * -180.0) + 90.0, (r.nextDouble() * -360.0) + 180.0);
 	}
 
 	/**
-	 * Tests whether two angles fall within the tolerance
-	 * allowed in {@link com.javadocmd.simplelatlng.util.LatLngConfig}. Ignores
-	 * NaN and infinite values, returning false in either case.
+	 * Tests whether two angles fall within the tolerance allowed in
+	 * {@link com.javadocmd.simplelatlng.util.LatLngConfig}. Ignores NaN and
+	 * infinite values, returning false in either case.
 	 * 
 	 * @param degree1 one degree angle.
 	 * @param degree2 another degree angle.
@@ -70,8 +69,7 @@ public class LatLng implements Serializable {
 			return false;
 		if (Double.isInfinite(degree1) || Double.isInfinite(degree2))
 			return false;
-		return LatLngConfig.doubleToLong(degree1) == LatLngConfig
-				.doubleToLong(degree2);
+		return LatLngConfig.doubleToLong(degree1) == LatLngConfig.doubleToLong(degree2);
 	}
 
 	private long latitude;
@@ -80,7 +78,7 @@ public class LatLng implements Serializable {
 	/**
 	 * Creates a LatLng point.
 	 * 
-	 * @param latitude the latitude in degrees.
+	 * @param latitude  the latitude in degrees.
 	 * @param longitude the longitude in degrees.
 	 */
 	public LatLng(double latitude, double longitude) {
@@ -97,8 +95,8 @@ public class LatLng implements Serializable {
 	}
 
 	/**
-	 * Get the internal long representation of this point's latitude
-	 * in degrees. Intended for library use only.
+	 * Get the internal long representation of this point's latitude in degrees.
+	 * Intended for library use only.
 	 * 
 	 * @return the internal representation of latitude in degrees.
 	 */
@@ -116,8 +114,8 @@ public class LatLng implements Serializable {
 	}
 
 	/**
-	 * Get the internal long representation of this point's longitude
-	 * in degrees. Intended for library use only.
+	 * Get the internal long representation of this point's longitude in degrees.
+	 * Intended for library use only.
 	 * 
 	 * @return the internal representation of longitude in degrees.
 	 */
@@ -128,7 +126,7 @@ public class LatLng implements Serializable {
 	/**
 	 * Sets the latitude and longitude for this point.
 	 * 
-	 * @param latitude the latitude in degrees.
+	 * @param latitude  the latitude in degrees.
 	 * @param longitude the longitude in degrees.
 	 */
 	public void setLatitudeLongitude(double latitude, double longitude) {
@@ -162,12 +160,13 @@ public class LatLng implements Serializable {
 	}
 
 	/**
-	 * @return true if this LatLng represents a polar coordinate (+/- 90 degrees latitude).
+	 * @return true if this LatLng represents a polar coordinate (+/- 90 degrees
+	 *         latitude).
 	 */
 	public boolean isPolar() {
 		return this.latitude == 90000000L || this.latitude == -90000000L;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
@@ -193,8 +192,7 @@ public class LatLng implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("(%s,%s)",
-				LatLngConfig.getDegreeFormat().format(LatLngConfig.longToDouble(this.latitude)),
+		return String.format("(%s,%s)", LatLngConfig.getDegreeFormat().format(LatLngConfig.longToDouble(this.latitude)),
 				LatLngConfig.getDegreeFormat().format(LatLngConfig.longToDouble(this.longitude)));
 	}
 }

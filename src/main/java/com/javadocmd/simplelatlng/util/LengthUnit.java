@@ -16,10 +16,7 @@
 package com.javadocmd.simplelatlng.util;
 
 /**
- * A utility class for handling units and unit conversions 
- * within this library.
- * 
- * @author Tyler Coles
+ * A utility class for handling units and unit conversions within this library.
  */
 public enum LengthUnit {
 	/**
@@ -27,13 +24,13 @@ public enum LengthUnit {
 	 */
 	MILE(0.6213712),
 	/**
-	 * Nautical miles, using the scale factor 0.5399568 nautical miles per kilometer.
+	 * Nautical miles, using the scale factor 0.5399568 nautical miles per
+	 * kilometer.
 	 */
 	NAUTICAL_MILE(0.5399568),
 	/**
-	 * Rods, using the scale factor 198.8387815 rods to the kilometer.
-	 * Because your car gets forty rods to the hogshead and that's 
-	 * they way you likes it.
+	 * Rods, using the scale factor 198.8387815 rods to the kilometer. Because your
+	 * car gets forty rods to the hogshead and that's they way you likes it.
 	 */
 	ROD(198.8387815),
 	/**
@@ -46,10 +43,9 @@ public enum LengthUnit {
 	METER(1000.0);
 
 	/**
-	 * The primary length unit. All scale factors are relative
-	 * to this unit. Any conversion not involving the primary
-	 * unit will first be converted to this unit, then to 
-	 * the desired unit.
+	 * The primary length unit. All scale factors are relative to this unit. Any
+	 * conversion not involving the primary unit will first be converted to this
+	 * unit, then to the desired unit.
 	 */
 	public static final LengthUnit PRIMARY = KILOMETER;
 
@@ -60,18 +56,17 @@ public enum LengthUnit {
 	}
 
 	/**
-	 * Convert a value of this unit type to the units specified
-	 * in the parameters.
-	 *  
+	 * Convert a value of this unit type to the units specified in the parameters.
+	 * 
 	 * @param toUnit the unit to convert to.
-	 * @param value the value to convert.
+	 * @param value  the value to convert.
 	 * @return the converted value.
 	 */
 	public double convertTo(LengthUnit toUnit, double value) {
 		if (this == toUnit) {
 			return value;
 		}
-		
+
 		double _value = value;
 		if (this != PRIMARY) {
 			_value /= this.scaleFactor; // Convert to primary unit.
@@ -83,8 +78,7 @@ public enum LengthUnit {
 	}
 
 	/**
-	 * Retrieve the scale factor between this unit and the primary 
-	 * length unit.
+	 * Retrieve the scale factor between this unit and the primary length unit.
 	 * 
 	 * @return the scale factor.
 	 */
