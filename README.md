@@ -14,10 +14,6 @@ In short, if you have looked at other geo-spatial libraries in Java and thought 
 
 **SimpleLatLng** is licensed through the commercial-friendly [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0)
 
-## News
-
-[v1.3.1 is released](https://github.com/JavadocMD/simplelatlng/releases/tag/v1.3.1).
-
 ## Download
 
 Binaries can be downloaded directly from the [releases page](http://github.com/JavadocMD/simplelatlng/releases).
@@ -44,6 +40,3 @@ before relying upon it in a production environment.
 If you would like to contribute to the correctness of the code or the
 battery of tests it is run through, the project founder would greatly
 appreciate it.
-
-## Tip Jar
-If you're feeling generous and have Bitcoins to spare, you'll find donation information at http://javadocmd.com Thank you!
