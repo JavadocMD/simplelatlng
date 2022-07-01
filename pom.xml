@@ -99,6 +99,7 @@
 					</execution>
 					<execution>
 						<id>default-check</id>
+						<phase>test</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
@@ -110,7 +111,7 @@
 										<limit>
 											<counter>INSTRUCTION</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>80%</minimum>
+											<minimum>90%</minimum>
 										</limit>
 									</limits>
 								</rule>
