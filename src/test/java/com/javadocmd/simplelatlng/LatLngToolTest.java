@@ -143,8 +143,7 @@ public class LatLngToolTest {
 	}
 
 	private static void distRadTest(double expected, LatLng point1, LatLng point2) {
-		assertEquals(expected, Math.toDegrees(distanceInRadians(point1, point2)),
-				.00001);
+		assertEquals(expected, Math.toDegrees(distanceInRadians(point1, point2)), .000001);
 	}
 	
 	@Test
