@@ -3,12 +3,17 @@
 **SimpleLatLng** provides a simple, lightweight library for common latitude and longitude calculation needs in Java.
 
 With this library, you get the following:
-  1. an object to represent a Latitude/Longitude point,
-  1. methods to calculate the approximate distance between two points,
-  1. classes that specify windows of varying shapes for testing whether or not a point lies within the window,
-  1. a [Geohash](http://en.wikipedia.org/wiki/Geohash) implementation.
+
+1. an object to represent a Latitude/Longitude point,
+1. methods to calculate the approximate distance between two points,
+1. classes that specify windows of varying shapes for testing whether or not a point lies within the window,
+1. a [Geohash](http://en.wikipedia.org/wiki/Geohash) implementation.
 
 In short, if you have looked at other geo-spatial libraries in Java and thought "this is way more than I need", this library might be for you!
+
+## Usage
+
+[See the wiki for basic usage.](https://github.com/JavadocMD/simplelatlng/wiki)
 
 ## License
 
@@ -29,6 +34,7 @@ SimpleLatLng is also available from the [Maven central repositories](http://sear
 ```
 
 ## Disclaimer
+
 At this point no claims are made as to the accuracy of the calculations
 provided by this library. They are based upon approximations and your
 results may differ from tested results. However, this project makes a best
