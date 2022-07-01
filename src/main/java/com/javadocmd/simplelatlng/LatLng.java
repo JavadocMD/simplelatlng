@@ -185,8 +185,10 @@ public class LatLng implements Serializable {
 
 	@Override
 	public int hashCode() {
-		String s = Long.toString(latitude) + "|" + Long.toString(longitude);
-		return s.hashCode();
+		int result = 1;
+		result = 31 * result + (int) (latitude ^ (latitude >>> 32));
+		result = 31 * result + (int) (longitude ^ (longitude >>> 32));
+		return result;
 	}
 
 	@Override
