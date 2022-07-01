@@ -19,13 +19,9 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 
-import com.javadocmd.simplelatlng.Geohasher;
-import com.javadocmd.simplelatlng.LatLng;
-import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 import com.javadocmd.simplelatlng.window.CircularWindow;
 import com.javadocmd.simplelatlng.window.RectangularWindow;
-
 
 /**
  * Basic benchmarking test. Repeats the critical functions
@@ -51,6 +47,7 @@ public class SpeedProfile {
 		p.profileRectangularWindow();
 		p.profileCircularWindow();
 		p.profileGeohasher();
+		p.profileHashCode();
 	}
 
 	private LatLng[] points;
@@ -108,14 +105,19 @@ public class SpeedProfile {
 
 		System.out.printf("Geohashed and decoded in %s ms.\n", integer.format(end.getTime()
 				- start.getTime()));
+	}
 
-		start = new Date();
-		for (int i = 0; i < points.length; i++) {
-			points[i].hashCode();
+	private void profileHashCode() {
+		// Repeat 5 times in hopes of detecting a caching benefit if any exists.
+		Date start = new Date();
+		for (int j = 0; j < 5; j++) {
+			for (int i = 0; i < points.length; i++) {
+				points[i].hashCode();
+			}
 		}
-		end = new Date();
+		Date end = new Date();
 
-		System.out.printf("hashCode() in %s ms.\n", integer.format(end.getTime()
+		System.out.printf("hashCode() 5x in %s ms.\n", integer.format(end.getTime()
 				- start.getTime()));
 	}
 
