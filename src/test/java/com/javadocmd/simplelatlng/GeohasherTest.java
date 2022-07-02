@@ -97,6 +97,31 @@ public class GeohasherTest {
 	}
 
 	@Test
+	public void testDecode7() {
+		// Test long inputs.
+		LatLng p = new LatLng(1, 1);
+		assertEquals(p, Geohasher.decode("s00twy01mtw0bbbbbbbbbbbbbbbb"));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDecode8() {
+		// Test empty input.
+		Geohasher.decode("");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDecode9() {
+		// Test null input.
+		Geohasher.decode(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDecode10() {
+		// Test invalid characters input.
+		Geohasher.decode("this input is invalid");
+	}
+
+	@Test
 	public void testHashToBits() {
 		BitStore bits = (BitStore) hashToBits("ezs42");
 		assertEquals(25, bits.size());

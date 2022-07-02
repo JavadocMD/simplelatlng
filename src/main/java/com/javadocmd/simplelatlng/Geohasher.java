@@ -48,7 +48,7 @@ public class Geohasher {
 	 * 
 	 * <pre>
 	 * LATITUDE_ERROR = 90.0 / (2 ^ (BITS + 1))
-	 *LONGITUDE_ERROR = 180.0 / (2 ^ (BITS + 1))
+	 * LONGITUDE_ERROR = 180.0 / (2 ^ (BITS + 1))
 	 * </pre>
 	 */
 	public static final int PRECISION = 12;
@@ -86,9 +86,16 @@ public class Geohasher {
 	 * @param hash the geohash string of any precision, although LatLng will still
 	 *             not become <em>more</em> precise than its settings.
 	 * @return the decoded point.
+	 * @throws IllegalArgumentException on null or empty strings, or strings which
+	 *                                  contain invalid geohash characters:
+	 *                                  [0-9bcdefghjkmnpqrstuvwxyz]
 	 */
 	public static LatLng decode(String hash) {
-		BitSet[] b = deInterleave(hashToBits(hash));
+		if (hash == null || hash.isEmpty()) {
+			throw new IllegalArgumentException("Geohash string cannot be empty or null.");
+		}
+		int n = Math.min(hash.length(), PRECISION); // truncate hashes that are longer than supported
+		BitSet[] b = deInterleave(hashToBits(hash.substring(0, n).toLowerCase()));
 		double lat = bitsToDouble(b[1], LAT_BIT_VALUES);
 		double lng = bitsToDouble(b[0], LNG_BIT_VALUES);
 		return new LatLng(lat, lng);
@@ -104,10 +111,9 @@ public class Geohasher {
 		try {
 			BitSet bits = new BitStore();
 
-			char[] chars = hash.toLowerCase().toCharArray();
-			int offset = (chars.length - 1) * 5;
-			for (int i = 0; i < chars.length; i++) {
-				int value = HASH_CHARS_MAP.get(chars[i]).intValue();
+			int offset = (hash.length() - 1) * 5;
+			for (int i = 0; i < hash.length(); i++) {
+				int value = HASH_CHARS_MAP.get(hash.charAt(i)).intValue();
 				for (int x = 0; x < 5; x++) {
 					bits.set(offset + x, (value & 0x1) == 0x1);
 					value >>= 1;
