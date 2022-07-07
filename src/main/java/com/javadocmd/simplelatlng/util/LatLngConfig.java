@@ -126,6 +126,6 @@ public class LatLngConfig {
 	 * @return the double value.
 	 */
 	public static double longToDouble(long value) {
-		return (double) value * DEGREE_TOLERANCE;
+		return value * DEGREE_TOLERANCE;
 	}
 }
