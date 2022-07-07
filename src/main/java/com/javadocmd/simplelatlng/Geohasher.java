@@ -17,9 +17,8 @@ package com.javadocmd.simplelatlng;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 /**
  * Implements the <a href="http://en.wikipedia.org/wiki/Geohash">Geohash</a>
@@ -52,31 +51,33 @@ public class Geohasher {
 	 * </pre>
 	 */
 	public static final int PRECISION = 12;
+	public static final Predicate<String> isGeohash = Pattern
+			.compile("^[0-9bcdefghjkmnpqrstuvwxyz]+$", Pattern.CASE_INSENSITIVE).asPredicate();
+
 	private static final int BITS = ((PRECISION * 5) / 2) + PRECISION % 2;
-	private static final double MAX_LAT = 90.0;
-	private static final double MAX_LNG = 180.0;
 	private static final char[] HASH_CHARS_ARRAY = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'b',
 			'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-	private static final Map<Character, Integer> HASH_CHARS_MAP;
-	protected static final BigDecimal[] LAT_BIT_VALUES;
-	protected static final BigDecimal[] LNG_BIT_VALUES;
-	static {
-		BigDecimal latValue = new BigDecimal(MAX_LAT);
-		BigDecimal lngValue = new BigDecimal(MAX_LNG);
-		LAT_BIT_VALUES = new BigDecimal[BITS];
-		LNG_BIT_VALUES = new BigDecimal[BITS];
+	protected static final int[] CHAR_VALUE = new int[(int) 'z' + 1];
+	protected static final double[] LAT_BIT_VALUES = new double[BITS];
+	protected static final double[] LNG_BIT_VALUES = new double[BITS];
+	private static final double MAX_LAT = 90.0;
+	private static final double MAX_LNG = 180.0;
 
-		BigDecimal TWO = new BigDecimal("2");
+	static {
+		double latValue = MAX_LAT;
+		double lngValue = MAX_LNG;
 		for (int i = 0; i < BITS; i++) {
-			latValue = latValue.divide(TWO);
-			lngValue = lngValue.divide(TWO);
+			latValue = latValue / 2d;
+			lngValue = lngValue / 2d;
 			LAT_BIT_VALUES[i] = latValue;
 			LNG_BIT_VALUES[i] = lngValue;
 		}
 
-		HASH_CHARS_MAP = new HashMap<Character, Integer>(HASH_CHARS_ARRAY.length);
 		for (int i = 0; i < HASH_CHARS_ARRAY.length; i++) {
-			HASH_CHARS_MAP.put(HASH_CHARS_ARRAY[i], i);
+			char c = HASH_CHARS_ARRAY[i];
+			char d = Character.toUpperCase(c);
+			CHAR_VALUE[c] = i;
+			CHAR_VALUE[d] = i;
 		}
 	}
 
@@ -94,11 +95,20 @@ public class Geohasher {
 		if (hash == null || hash.isEmpty()) {
 			throw new IllegalArgumentException("Geohash string cannot be empty or null.");
 		}
-		int n = Math.min(hash.length(), PRECISION); // truncate hashes that are longer than supported
-		BitSet[] b = deInterleave(hashToBits(hash.substring(0, n).toLowerCase()));
-		double lat = bitsToDouble(b[1], LAT_BIT_VALUES);
-		double lng = bitsToDouble(b[0], LNG_BIT_VALUES);
-		return new LatLng(lat, lng);
+		// truncate hashes that are longer than supported
+		int charLength = Math.min(hash.length(), PRECISION);
+		hash = hash.substring(0, charLength);
+		if (!isGeohash.test(hash)) {
+			throw new IllegalArgumentException("Geohash string contains invalid characters.");
+		}
+
+		int bitSize = charLength * 5;
+		int latSize = bitSize / 2;
+		int lngSize = bitSize / 2 + bitSize % 2;
+		DeInterleaveResult bits = deInterleave(bitSize, hashToBits(hash));
+		double latd = bitsToDouble(latSize, bits.lat, LAT_BIT_VALUES);
+		double lngd = bitsToDouble(lngSize, bits.lng, LNG_BIT_VALUES);
+		return new LatLng(latd, lngd);
 	}
 
 	/**
@@ -107,41 +117,43 @@ public class Geohasher {
 	 * @param hash the geohash string.
 	 * @return the bits in the geohash.
 	 */
-	protected static BitSet hashToBits(String hash) {
-		try {
-			BitSet bits = new BitStore();
+	protected static long hashToBits(String hash) {
+		long bits = 0;
+		for (char c : hash.toCharArray()) {
+			bits = (bits << 5) | CHAR_VALUE[c];
+		}
+		return bits;
+	}
 
-			int offset = (hash.length() - 1) * 5;
-			for (int i = 0; i < hash.length(); i++) {
-				int value = HASH_CHARS_MAP.get(hash.charAt(i)).intValue();
-				for (int x = 0; x < 5; x++) {
-					bits.set(offset + x, (value & 0x1) == 0x1);
-					value >>= 1;
-				}
-				offset -= 5;
-			}
+	protected static class DeInterleaveResult {
+		public final long lat;
+		public final long lng;
 
-			return bits;
-		} catch (NullPointerException e) {
-			throw new IllegalArgumentException("Geohash string contains invalid characters.");
+		public DeInterleaveResult(long lat, long lng) {
+			this.lat = lat;
+			this.lng = lng;
 		}
 	}
 
 	/**
 	 * De-interleaves a series of bits.
 	 * 
-	 * @param bits the bits to de-interleave.
-	 * @return two bit sets: [0] = even bits, [1] = odd bits
+	 * @param bitSize the number of bits in our hash.
+	 * @param bits    the bits in the geohash.
 	 */
-	protected static BitSet[] deInterleave(BitSet bits) {
-		BitSet[] sets = new BitSet[] { new BitStore(), new BitStore() };
-
-		int n = bits.size();
-		for (int i = 0; i < n; i++) {
-			sets[i % 2].set((n - i - 1) / 2, bits.get(n - i - 1));
+	protected static DeInterleaveResult deInterleave(int bitSize, long bits) {
+		long a = 0;
+		long b = 0;
+		for (int i = 0; i < bitSize; i++) {
+			long write = 1L << i;
+			a |= (bits >> i) & write;
+			b |= (bits >> (i + 1)) & write;
 		}
-
-		return sets;
+		if (bitSize % 2 == 0) {
+			return new DeInterleaveResult(a, b);
+		} else {
+			return new DeInterleaveResult(b, a);
+		}
 	}
 
 	/**
@@ -153,28 +165,45 @@ public class Geohasher {
 	 *                  particular value we are decoding: latitude or longitude.
 	 * @return the value.
 	 */
-	protected static double bitsToDouble(BitSet bits, BigDecimal[] bitValues) {
-		BigDecimal value = BigDecimal.ZERO;
-		BigDecimal lastValue = value;
-		int n = bits.size();
-		for (int i = 0; i < n; i++) {
+	protected static double bitsToDouble(int bitSize, long bits, double[] bitValues) {
+		// assumes bitSize > 1; realistically 5 is the least we would expect
+		double value = 0;
+		double lastValue = value;
+
+		for (int i = 0; i < bitSize; i++) {
 			lastValue = value;
-			if (bits.get(i)) {
-				value = value.add(bitValues[n - i - 1]);
+			long read = 1L << (bitSize - i - 1);
+			if ((bits & read) == 0) {
+				value -= bitValues[i];
 			} else {
-				value = value.subtract(bitValues[n - i - 1]);
+				value += bitValues[i];
 			}
 		}
 
-		BigDecimal lastDelta2x = bitValues[n - 1].multiply(new BigDecimal(2));
-		BigDecimal roundingMin = lastValue.subtract(lastDelta2x);
-		BigDecimal roundingMax = lastValue.add(lastDelta2x);
-
-		BigDecimal rounded = value.setScale(6, RoundingMode.HALF_UP);
-		if (rounded.compareTo(roundingMin) < 0 || rounded.compareTo(roundingMax) > 0) {
-			rounded = value.setScale(6, RoundingMode.HALF_DOWN);
+		// Round the result.
+		// The spec requires that our final result lie within the final step's min/max
+		// values. Using fixed degrees precision as we do, it turns out that's not
+		// always possible.
+		// So we'll try rounding half-up, then up, and finally default to down. This
+		// also implies this geohashing implementation is not round-trip stable for all
+		// values.
+		final BigDecimal unrounded = new BigDecimal(value);
+		double lastBounds = bitValues[bitSize - 2];
+		final BigDecimal min = new BigDecimal(lastValue - lastBounds);
+		final BigDecimal max = new BigDecimal(lastValue + lastBounds);
+		// Try half-up rounding...
+		BigDecimal x = unrounded.setScale(6, RoundingMode.HALF_UP);
+		if (x.compareTo(min) >= 0 && x.compareTo(max) <= 0) {
+			return x.doubleValue();
 		}
-		return rounded.doubleValue();
+		// If that's not in the min/max range, try rounding up...
+		x = unrounded.setScale(6, RoundingMode.UP);
+		if (x.compareTo(min) >= 0 && x.compareTo(max) <= 0) {
+			return x.doubleValue();
+		}
+		// Finally fall-back to rounding down.
+		x = unrounded.setScale(6, RoundingMode.DOWN);
+		return x.doubleValue();
 	}
 
 	/**
@@ -184,9 +213,10 @@ public class Geohasher {
 	 * @return the hash string to the set character precision: {@link #PRECISION}.
 	 */
 	public static String hash(LatLng point) {
-		BitSet lat = doubleToBits(point.getLatitude(), MAX_LAT);
-		BitSet lng = doubleToBits(point.getLongitude(), MAX_LNG);
-		return bitsToHash(interleave(lng, lat));
+		long lat = doubleToBits(BITS, point.getLatitude(), MAX_LAT);
+		long lng = doubleToBits(BITS, point.getLongitude(), MAX_LNG);
+		long bits = interleave(BITS * 2, lat, lng);
+		return bitsToHash(BITS * 2, bits);
 	}
 
 	/**
@@ -195,16 +225,11 @@ public class Geohasher {
 	 * @param bits the set of bits to encode.
 	 * @return the encoded string.
 	 */
-	protected static String bitsToHash(BitSet bits) {
+	protected static String bitsToHash(int bitSize, long bits) {
 		StringBuilder hash = new StringBuilder();
-		for (int i = 0; i < bits.size(); i += 5) {
-			int value = 0;
-			for (int j = 0; j < 5; j++) {
-				if (bits.get(i + j)) {
-					value |= (0x1 << j);
-				}
-			}
-			hash.insert(0, HASH_CHARS_ARRAY[value]);
+		for (int i = bitSize - 5; i >= 0; i -= 5) {
+			int value = (int) (bits >> i) & 0b11111;
+			hash.append(HASH_CHARS_ARRAY[value]);
 		}
 		return hash.toString();
 	}
@@ -216,15 +241,20 @@ public class Geohasher {
 	 * @param oddBits  the bits to use for odd bits. (1, 3, 5,...)
 	 * @return the interleaved bits.
 	 */
-	protected static BitSet interleave(BitSet evenBits, BitSet oddBits) {
-		int n = evenBits.size() + oddBits.size();
-		BitSet bits = new BitStore();
-		for (int i = 0; i < n; i++) {
-			if (i % 2 == 0) {
-				bits.set(n - i - 1, evenBits.get((n - i - 1) / 2));
-			} else {
-				bits.set(n - i - 1, oddBits.get((n - i - 1) / 2));
-			}
+	protected static long interleave(int bitSize, long lat, long lng) {
+		long a = lat;
+		long b = lng;
+		if (bitSize % 2 == 1) {
+			a = lng;
+			b = lat;
+		}
+
+		long bits = 0;
+		for (int i = 0; i < bitSize; i++) {
+			bits |= (a & 1L) << i;
+			long tmp = b;
+			b = a >> 1;
+			a = tmp;
 		}
 		return bits;
 	}
@@ -238,89 +268,23 @@ public class Geohasher {
 	 *                 latitude = 90.0, longitude = 180.0.
 	 * @return the bit set for this value.
 	 */
-	protected static BitSet doubleToBits(double value, double maxRange) {
-		BitSet bits = new BitStore();
+	protected static long doubleToBits(int bitSize, double value, double maxRange) {
+		long bits = 0;
 
 		double maxValue = maxRange;
 		double minValue = -maxRange;
 		double midValue;
-		for (int i = 0; i < BITS; i++) {
-			midValue = (maxValue + minValue) / 2.0;
+		for (int i = bitSize - 1; i >= 0; i--) {
+			midValue = (maxValue + minValue) / 2.0d;
 			if (value >= midValue) {
-				bits.set(BITS - i - 1);
+				bits |= 1L << i;
 				minValue = midValue;
 			} else {
-				bits.set(BITS - i - 1, false);
+				// bits |= 0L << i; (which is a no-op)
 				maxValue = midValue;
 			}
 		}
 
 		return bits;
-	}
-
-	/**
-	 * Specialization of BitSet to <em>actually</em> keep track of the number of
-	 * bits that are being usefully employed, regardless of whether or not they are
-	 * 1 or 0. This requires that you call set for 0's <em>and</em> 1's. Not all
-	 * features are implemented, but setting, getting, and size work fine, which is
-	 * all I need for this class.
-	 */
-	protected static class BitStore extends BitSet {
-
-		private static final long serialVersionUID = 4630759467120792604L;
-		private int highestBit = -1;
-
-		private void updateHighestBit(int bitIndex) {
-			if (bitIndex > highestBit)
-				highestBit = bitIndex;
-		}
-
-		public String toString() {
-			String s = "";
-			for (int i = 0; i < size(); i++)
-				s = (get(i) ? "1" : "0") + s;
-			return s;
-		}
-
-		@Override
-		public void set(int bitIndex) {
-			super.set(bitIndex);
-			updateHighestBit(bitIndex);
-		}
-
-		@Override
-		public void set(int bitIndex, boolean value) {
-			super.set(bitIndex, value);
-			updateHighestBit(bitIndex);
-		}
-
-		@Override
-		public void set(int fromIndex, int toIndex) {
-			super.set(fromIndex, toIndex);
-			updateHighestBit(toIndex);
-		}
-
-		@Override
-		public void set(int fromIndex, int toIndex, boolean value) {
-			super.set(fromIndex, toIndex, value);
-			updateHighestBit(toIndex);
-		}
-
-		@Override
-		public void flip(int bitIndex) {
-			super.flip(bitIndex);
-			updateHighestBit(bitIndex);
-		}
-
-		@Override
-		public void flip(int fromIndex, int toIndex) {
-			super.flip(fromIndex, toIndex);
-			updateHighestBit(toIndex);
-		}
-
-		@Override
-		public int size() {
-			return highestBit + 1;
-		}
 	}
 }

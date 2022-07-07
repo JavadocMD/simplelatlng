@@ -40,6 +40,14 @@ public class SpeedProfile {
 
 		System.out.println();
 
+		// To profile with VisualVM:
+		// Run it, then uncomment the below and run this class;
+		// in VVM you will find this as a running application.
+		// Start a CPU profiling session then return to the runner window and hit enter.
+		// Scanner in = new Scanner(System.in);
+		// in.nextLine();
+		// in.close();
+
 		p.profileEquals();
 		p.profileDistance();
 		p.profileRectangularWindow();
@@ -85,16 +93,20 @@ public class SpeedProfile {
 		}
 		Date end = new Date();
 
-		System.out.printf("Geohashed (one way) in %s ms.\n", integer.format(end.getTime() - start.getTime()));
+		System.out.printf("Geohash encode in %s ms.\n", integer.format(end.getTime() - start.getTime()));
+
+		String[] hashes = new String[points.length];
+		for (int i = 0; i < points.length; i++) {
+			hashes[i] = Geohasher.hash(points[i]);
+		}
 
 		start = new Date();
-		for (int i = 0; i < points.length; i++) {
-			String s = Geohasher.hash(points[i]);
-			Geohasher.decode(s);
+		for (int i = 0; i < hashes.length; i++) {
+			Geohasher.decode(hashes[i]);
 		}
 		end = new Date();
 
-		System.out.printf("Geohashed and decoded in %s ms.\n", integer.format(end.getTime() - start.getTime()));
+		System.out.printf("Geohash decode in %s ms.\n", integer.format(end.getTime() - start.getTime()));
 	}
 
 	private void profileHashCode() {
